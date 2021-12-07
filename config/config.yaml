@@ -1,0 +1,8 @@
+dbinfo:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: leeprince
+  database: tmp
+  type: 0 # 数据库类型:0:mysql
+tableprefix: ""

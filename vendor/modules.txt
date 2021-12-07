@@ -1,0 +1,65 @@
+# github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
+github.com/axgle/mahonia
+# github.com/go-sql-driver/mysql v1.5.0
+github.com/go-sql-driver/mysql
+# github.com/gookit/color v1.2.5
+github.com/gookit/color
+# github.com/inconshreveable/mousetrap v1.0.0
+github.com/inconshreveable/mousetrap
+# github.com/jinzhu/inflection v1.0.0
+github.com/jinzhu/inflection
+# github.com/jinzhu/now v1.1.3
+github.com/jinzhu/now
+# github.com/leeprince/gopublic v0.0.0-20211031121100-201bb5abb745
+## explicit
+github.com/leeprince/gopublic/dev
+github.com/leeprince/gopublic/errors
+github.com/leeprince/gopublic/mybigcamel
+github.com/leeprince/gopublic/mylog
+github.com/leeprince/gopublic/mysqldb
+github.com/leeprince/gopublic/tools
+# github.com/pkg/errors v0.9.1
+github.com/pkg/errors
+# github.com/sirupsen/logrus v1.8.1
+## explicit
+github.com/sirupsen/logrus
+# github.com/spf13/cast v1.3.0
+## explicit
+github.com/spf13/cast
+# github.com/spf13/cobra v1.0.0
+## explicit
+github.com/spf13/cobra
+# github.com/spf13/pflag v1.0.3
+github.com/spf13/pflag
+# go.uber.org/atomic v1.4.0
+go.uber.org/atomic
+# go.uber.org/multierr v1.1.0
+go.uber.org/multierr
+# go.uber.org/zap v1.10.0
+go.uber.org/zap
+go.uber.org/zap/buffer
+go.uber.org/zap/internal/bufferpool
+go.uber.org/zap/internal/color
+go.uber.org/zap/internal/exit
+go.uber.org/zap/zapcore
+# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# gopkg.in/natefinch/lumberjack.v2 v2.0.0
+gopkg.in/natefinch/lumberjack.v2
+# gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+## explicit
+gopkg.in/yaml.v3
+# gorm.io/driver/mysql v1.0.1
+## explicit
+gorm.io/driver/mysql
+# gorm.io/gorm v1.22.4
+## explicit
+gorm.io/gorm
+gorm.io/gorm/callbacks
+gorm.io/gorm/clause
+gorm.io/gorm/logger
+gorm.io/gorm/migrator
+gorm.io/gorm/schema
+gorm.io/gorm/utils
