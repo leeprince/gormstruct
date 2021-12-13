@@ -1,3 +1,4 @@
+# 数据库设置
 dbinfo:
   host: 127.0.0.1
   port: 3306
@@ -5,4 +6,23 @@ dbinfo:
   password: leeprince
   database: tmp
   type: 0 # 数据库类型:0:mysql
-tableprefix: ""
+
+# ------ 自定义设置：建议保留默认 ------
+
+# 生成的基本方法版本:V1,V2
+gen_base_func_version: V2
+
+# 生成的逻辑方法版本:V1,V2
+gen_logic_func_version: V2
+
+# 主键ID的数据类型
+primary_id_type: int
+
+# 是否自动根据存在 id+created_at+updated_at+deleted_at 字段时，统一使用 gorm 的结构体 `gorm.Model` 覆盖
+# true: 因为 gorm.model 默认这三个时间字段为time.Time数据类型，所以需要表设置的数据类型为时间类型：date、datetime、timestamp。否则字段值为非NULL，并且查询记录存在时会报：unsupported Scan, storing driver.Value type []uint8 into type *time.Time。其中自动设置 `deleted_at` IS NULL，除非添加`db.Unscoped()`方法
+# false: 建议设置
+is_gorm_model_tag: false
+
+# 当字段允许空时，是否设置该字段的数据类型为指针。uint、int、float类型的字段允许为空时设置指针的好处是 gorm 的更新操作会更新字段为0或者NULL
+is_null_to_point: true
+# ------ 自定义设置：建议保留默认-end ------

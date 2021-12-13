@@ -2,14 +2,17 @@ package out
 
 import (
     "fmt"
-    model_bak "github.com/leeprince/gormstruct/out/model.bak"
+    model "github.com/leeprince/gormstruct/out/model"
+    // model "github.com/leeprince/gormstruct/out/model_bv2_lv2"
+    // model "github.com/leeprince/gormstruct/out/model_bv1_lv1"
+    // model "github.com/leeprince/gormstruct/out/model_bv2_lv1"
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
     "testing"
     "time"
 )
 
-var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=True&loc=Local&interpolateParams=True"
+var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
 
 func GetGorm() *gorm.DB {
     mysqlConnDns := mysqlDns
@@ -40,57 +43,119 @@ func GetGorm() *gorm.DB {
 func TestModelGet(t *testing.T) {
     db := GetGorm()
     
-    var user model_bak.Users
+    var user model.Users
     var err error
     
-    user, err = model_bak.UsersMgr(db).Get()
+    user, err = model.UsersMgr(db).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model_bak.UsersMgr(db.Where("id = ?", 1)).Get()
+    user, err = model.UsersMgr(db.Where("id = ?", 1)).Get()
+    fmt.Println("user, err:", user, err)
+    
+    user, err = model.UsersMgr(db.Where("id = ?", 2)).Get()
     fmt.Println("user, err:", user, err)
 }
 
 func TestModelGets(t *testing.T) {
     db := GetGorm()
     
-    var users []*model_bak.Users
+    var users []*model.Users
     var err error
     
-    users, err = model_bak.UsersMgr(db.Where("id = ?", 1)).Gets()
+    users, err = model.UsersMgr(db.Where("id = ?", 1)).Gets()
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
     
-    users, err = model_bak.UsersMgr(db.Where("name = ?", "name01")).Gets()
+    users, err = model.UsersMgr(db.Where("name = ?", "name01")).Gets()
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
 }
 
-func TestModelCout(t *testing.T) {
+func TestModelCount(t *testing.T) {
     db := GetGorm()
     
     var count int64
     
-    db1 := model_bak.UsersMgr(db.Where("id = ?", 11)).Count(&count)
+    db1 := model.UsersMgr(db.Where("id = ?", 11)).Count(&count)
     fmt.Printf("count:%+v, db.err:%v \n", count, db1.Error)
     
-    db2 := model_bak.UsersMgr(db.Where("id in (?)", []int64{1, 2})).Count(&count)
+    db2 := model.UsersMgr(db.Where("id in (?)", []int64{1, 2})).Count(&count)
     fmt.Printf("count:%+v, db.err:%v \n", count, db2.Error)
 }
+
+// 依赖 gen_base_func_version == V1
+// 暂注释
+// func TestModelCondition(t *testing.T) {
+//     db := GetGorm()
+//
+//     var users []*model.Users
+//     var err error
+//     var condition model.Condition
+//     var where string
+//     var args []interface{}
+//
+//     // condition.And("id", "in", []int{1, 2})
+//     condition.And("id", "in", []int{1})
+//     // condition.And("name", "in", []string{"name01", "name02"})
+//     condition.Or("name", "in", []string{"name01", "name02"})
+//     condition.And("age", "=", 13)
+//     where, args = condition.Get()
+//     fmt.Println(where, args)
+//     users, err = model.UsersMgr(db.Where(where, args...)).Gets()
+//     for _, i2 := range users {
+//         fmt.Printf("err:%v, users:%+v \n", err, *i2)
+//     }
+//     fmt.Println("---1")
+//     condition = model.Condition{}
+//     // condition.And("id", "in", []int{1, 2})
+//     condition.And("id", "in", []int{1})
+//     // condition.And("name", "in", []string{"name01", "name02"})
+//     condition.Or("name", "in", []string{"name01", "name02"})
+//     whereTmp, argsTmp := condition.Get()
+//     fmt.Println(whereTmp, argsTmp)
+//     fmt.Println("---2")
+//     condition = model.Condition{}
+//     condition.And("age", "=", 13)
+//     where, args = condition.Get()
+//     fmt.Println(where, args)
+//     fmt.Println("---3")
+//     where = fmt.Sprintf("(%s) AND %s", whereTmp, where)
+//     argsTmp = append(argsTmp, args...)
+//     fmt.Println(where, argsTmp)
+//     users, err = model.UsersMgr(db.Where(where, argsTmp...)).Gets()
+//     for _, i2 := range users {
+//         fmt.Printf("err:%v, users:%+v \n", err, *i2)
+//     }
+// }
 
 func TestModelWith(t *testing.T) {
     db := GetGorm()
     
-    var user model_bak.Users
-    var users []*model_bak.Users
+    var user model.Users
+    var users []*model.Users
     var err error
     
-    usersMgr := model_bak.UsersMgr(db)
+    usersMgr := model.UsersMgr(db)
+    
     user, err = usersMgr.GetByOption(usersMgr.WithID(1))
     fmt.Println("user, err:", user, err)
+
+    usersMgr = model.UsersMgr(db)
+    users, err = usersMgr.GetByOptions(usersMgr.WithBatchID([]int{1, 2}))
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, *i2)
+    }
     
     users, err = usersMgr.GetByOptions(usersMgr.WithID(1))
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, *i2)
+    }
+    
+    users, err = usersMgr.GetByOptions(
+        usersMgr.WithName("name01"),
+    )
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
@@ -103,35 +168,46 @@ func TestModelWith(t *testing.T) {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
     
+    // 分页
+    users, err = usersMgr.GetByOptions(
+        usersMgr.WithName("name01"),
+        usersMgr.WithPage(1, 2),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, *i2)
+    }
 }
 
 func TestModelFrom(t *testing.T) {
     db := GetGorm()
     
-    var user model_bak.Users
-    var users []*model_bak.Users
+    var user model.Users
+    var users []*model.Users
     var err error
     
-    user, err = model_bak.UsersMgr(db).GetFromID(1)
+    user, err = model.UsersMgr(db).GetFromID(1)
     fmt.Println("GetFromID..user, err:", user, err)
     
-    users, err = model_bak.UsersMgr(db).GetBatchFromID([]int{1, 2})
+    user, err = model.UsersMgr(db).GetFromID(10000)
+    fmt.Println("GetFromID..user, err:", user, err)
+    
+    users, err = model.UsersMgr(db).GetBatchFromID([]int{1, 2})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, *i2)
     }
     
-    users, err = model_bak.UsersMgr(db).GetFromName("name01")
+    users, err = model.UsersMgr(db).GetFromName("name01")
     fmt.Println("GetFromName..user, err:", user, err)
     
-    users, err = model_bak.UsersMgr(db).GetBatchFromID([]int{1, 2})
+    users, err = model.UsersMgr(db).GetBatchFromID([]int{1, 2})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, *i2)
     }
     
-    user, err = model_bak.UsersMgr(db).GetFromCardNo("1")
+    user, err = model.UsersMgr(db).GetFromCardNo("1")
     fmt.Println("GetFromCardNo..user, err:", user, err)
     
-    users, err = model_bak.UsersMgr(db).GetBatchFromCardNo([]string{"1", "2"})
+    users, err = model.UsersMgr(db).GetBatchFromCardNo([]string{"1", "2"})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromCardNo..err:%v, users:%+v \n", err, *i2)
     }
@@ -141,21 +217,53 @@ func TestModelFrom(t *testing.T) {
 func TestModelFetch(t *testing.T) {
     db := GetGorm()
     
-    var user model_bak.Users
-    var users []*model_bak.Users
+    var user model.Users
+    var users []*model.Users
     var err error
     
-    user, err = model_bak.UsersMgr(db).FetchByPrimaryKey(1)
+    user, err = model.UsersMgr(db).FetchByPrimaryKey(1)
     fmt.Println("FetchByPrimaryKey..user, err:", user, err)
     
-    user, err = model_bak.UsersMgr(db).FetchUniqueByCardNo("1")
+    user, err = model.UsersMgr(db).FetchUniqueByCardNo("1")
     fmt.Println("FetchUniqueByCardNo..user, err:", user, err)
     
-    user, err = model_bak.UsersMgr(db).FetchUniqueIndexByUnqNameCard("name01", "1")
+    user, err = model.UsersMgr(db).FetchUniqueIndexByUnqNameCard("name01", "1")
     fmt.Println("FetchUniqueIndexByUnqNameCard..user, err:", user, err)
     
-    users, err = model_bak.UsersMgr(db).FetchIndexByAge(12)
+    users, err = model.UsersMgr(db).FetchIndexByAge(12)
     for _, i2 := range users {
         fmt.Printf("FetchIndexByAge..err:%v, users:%+v \n", err, *i2)
     }
+}
+
+func TestModelReset(t *testing.T) {
+    db := GetGorm()
+    
+    var user model.Users
+    var err error
+    
+    userMgr := model.UsersMgr(db.Where("id = ?", 1))
+    fmt.Println("user, err:", user, err)
+    
+    user, err = userMgr.Get()
+    fmt.Println("user, err:", user, err)
+    user, err = userMgr.Reset().Get()
+    fmt.Println("user, err:", user, err)
+    user, err = userMgr.Reset().Get()
+    fmt.Println("user, err:", user, err)
+    user, err = model.UsersMgr(userMgr.Reset().DB).Get()
+    fmt.Println("user, err:", user, err)
+    
+    fmt.Println("---------------")
+    userMgr = model.UsersMgr(db.Where("id = ?", 2))
+    fmt.Println("user, err:", user, err)
+    
+    user, err = userMgr.Get()
+    fmt.Println("user, err:", user, err)
+    user, err = userMgr.Reset().Get()
+    fmt.Println("user, err:", user, err)
+    user, err = userMgr.Get()
+    fmt.Println("user, err:", user, err)
+    user, err = userMgr.Reset().Get()
+    fmt.Println("user, err:", user, err)
 }

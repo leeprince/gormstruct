@@ -4,6 +4,7 @@ import (
     "bytes"
     "fmt"
     "github.com/leeprince/gormstruct/internal/app"
+    "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/genfunc"
     "github.com/leeprince/gormstruct/internal/genstruct"
@@ -103,7 +104,7 @@ func (g *GenDBInfo) getStructTag(isPrimary bool, clolumnName string) string {
 }
 
 func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
-    // 生成操作数据库的基本方法
+    // --- 生成操作数据库的基本方法
     tmpl, err := template.New("GetGenBaseTemp").
         Funcs(template.FuncMap{"GetVV": func() string { return "`%v`" }}).
         Parse(genfunc.GetGenBaseTemp())
@@ -119,13 +120,14 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
         FileName: constants.FILE_BASE_NAME,
         FileCtx:  baseBuff.String(),
     })
-    // 生成操作数据库的基本方法--end
+    // --- 生成操作数据库的基本方法-end
     
-    // 生成操作数据表的方法
+    // --- 生成操作数据表的方法
     var pkg genstruct.GenPackage
     pkg.SetPackage(g.info.PackageName)
+    // 添加 import 信息
     pkg.AddImport(`"fmt"`)
-    pkg.AddImport(`"context"`) // 添加import信息
+    pkg.AddImport(`"context"`)
     pkg.AddImport(constants.ImportFile["gorm.Model"])
     
     var data funDef
@@ -142,8 +144,8 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
         // 构建索引（包含主键）的方法需要的信息
         if strings.EqualFold(el.Type, constants.GormModelWord) {
             data.Em = append(data.Em, getGormModelElement()...)
-            pkg.AddImport("time")
-            buildFList(&primary, ColumnsKeyPrimary, "", "int64", "id")
+            pkg.AddImport("\"time\"")
+            buildFList(&primary, ColumnsKeyPrimary, "", config.GetPrimaryIdType(), "id")
         } else {
             typeName := getTypeName(el.Type, el.IsNull)
             // 该字段值在表中可重复
@@ -172,7 +174,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
                 ColNameEx:     fmt.Sprintf("`%v`", el.Name),
                 ColStructName: utils.GetCamelName(el.Name),
             })
-            if v2, ok := app.GetSelfTypeDefine()[typeName]; ok {
+            if v2, ok := constants.SelfTypeDefine[typeName]; ok {
                 if len(v2) > 0 {
                     pkg.AddImport(v2)
                 }
@@ -183,7 +185,6 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
     data.Primary = append(data.Primary, primary...)
     data.Primary = append(data.Primary, unique...)
     data.Primary = append(data.Primary, uniqueIndex...)
-    // TODO: [index 的内容异常] - prince_todo 2021/12/4 下午11:39
     data.Index = append(data.Index, index...)
     
     logicTmpl, err := template.New("GetGenLogic").
@@ -202,7 +203,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
         FileName: fmt.Sprintf(g.info.DbName+".gen.%v.go", g.info.Table.Name),
         FileCtx:  pkg.GenFileCtx(),
     })
-    // 生成操作数据表的方法---end
+    // --- 生成操作数据表的方法-end
     
     return
 }

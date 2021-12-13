@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1f43c498-2f53-44aa-baf8-c7f9f44d7eae" name="Default Changelist" comment="" />
+    <list default="true" id="1f43c498-2f53-44aa-baf8-c7f9f44d7eae" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/config/def.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/constants/template_gen_base.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/constants/template_gen_logic.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/generate.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/cmd/cmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/cmd/cmd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/constants/generate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/constants/generate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/constants/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/constants/template_struct.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/genfunc/genfunc.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/genfunc/genfunc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/common.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/common.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/def.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/def.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/common.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/common.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/def.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/def.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/genmysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/genmysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model.bak/gen.base.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model.bak/tmp.gen.users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model.bak/users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model/gen.base.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model/tmp.gen.users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model/users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/out/model_test.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,7 +47,11 @@
     </option>
   </component>
   <component name="GOROOT" path="$USER_HOME$/.g/versions/1.16.8" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="20DQSt6JHSZrO1vVsNki27TJi7H" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -27,17 +60,13 @@
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="go.import.settings.migrated" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/internal/genfunc" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/internal/constants" />
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/internal/genfunc" />
-      <recent name="$PROJECT_DIR$/infra/config" />
-      <recent name="$PROJECT_DIR$/infra" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/config" />
       <recent name="$PROJECT_DIR$/out/model" />
@@ -45,28 +74,24 @@
       <recent name="$PROJECT_DIR$/internal/generate" />
       <recent name="$PROJECT_DIR$/infra/cmd" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/constants" />
+      <recent name="$PROJECT_DIR$/out/model_v1" />
+      <recent name="$PROJECT_DIR$/out/model.bak" />
+      <recent name="$PROJECT_DIR$/out/model" />
+      <recent name="$PROJECT_DIR$/internal/genfunc" />
+    </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestModelFetch in github.com/leeprince/gormstruct/out">
-    <configuration name="TestModelCout in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.TestModelWith in github.com/leeprince/gormstruct/out">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="gormstruct" />
-      <working_directory value="$PROJECT_DIR$/out" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/leeprince/gormstruct/out" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <parameters value="-t=users" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="github.com/leeprince/gormstruct" />
       <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestModelCout$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestModelFetch in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="gormstruct" />
-      <working_directory value="$PROJECT_DIR$/out" />
-      <framework value="gotest" />
-      <kind value="PACKAGE" />
-      <package value="github.com/leeprince/gormstruct/out" />
-      <directory value="$PROJECT_DIR$/" />
-      <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestModelFetch$" />
       <method v="2" />
     </configuration>
     <configuration name="TestModelFrom in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -80,7 +105,18 @@
       <pattern value="^TestModelFrom$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestModelGets in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestModelGet in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gormstruct" />
+      <working_directory value="$PROJECT_DIR$/out" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/leeprince/gormstruct/out" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestModelGet$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestModelGets in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
       <module name="gormstruct" />
       <working_directory value="$PROJECT_DIR$/out" />
       <framework value="gotest" />
@@ -91,7 +127,7 @@
       <pattern value="^TestModelGets$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestWith in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestModelWith in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="gormstruct" />
       <working_directory value="$PROJECT_DIR$/out" />
       <framework value="gotest" />
@@ -99,23 +135,34 @@
       <package value="github.com/leeprince/gormstruct/out" />
       <directory value="$PROJECT_DIR$/" />
       <filePath value="$PROJECT_DIR$/" />
-      <pattern value="^TestWith$" />
+      <pattern value="^TestModelWith$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestWithPaginate in github.com/leeprince/gormstruct/out" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gormstruct" />
+      <working_directory value="$PROJECT_DIR$/out" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/leeprince/gormstruct/out" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestWithPaginate$" />
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Go Build.go build main.go" />
       <item itemvalue="Go Test.TestModelGets in github.com/leeprince/gormstruct/out" />
-      <item itemvalue="Go Test.TestModelCout in github.com/leeprince/gormstruct/out" />
-      <item itemvalue="Go Test.TestWith in github.com/leeprince/gormstruct/out" />
+      <item itemvalue="Go Test.TestModelWith in github.com/leeprince/gormstruct/out" />
+      <item itemvalue="Go Test.TestWithPaginate in github.com/leeprince/gormstruct/out" />
       <item itemvalue="Go Test.TestModelFrom in github.com/leeprince/gormstruct/out" />
-      <item itemvalue="Go Test.TestModelFetch in github.com/leeprince/gormstruct/out" />
+      <item itemvalue="Go Test.TestModelGet in github.com/leeprince/gormstruct/out" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestModelFetch in github.com/leeprince/gormstruct/out" />
+        <item itemvalue="Go Test.TestModelWith in github.com/leeprince/gormstruct/out" />
         <item itemvalue="Go Test.TestModelFrom in github.com/leeprince/gormstruct/out" />
-        <item itemvalue="Go Test.TestWith in github.com/leeprince/gormstruct/out" />
-        <item itemvalue="Go Test.TestModelCout in github.com/leeprince/gormstruct/out" />
-        <item itemvalue="Go Test.TestModelGets in github.com/leeprince/gormstruct/out" />
+        <item itemvalue="Go Test.TestModelGet in github.com/leeprince/gormstruct/out" />
+        <item itemvalue="Go Test.TestWithPaginate in github.com/leeprince/gormstruct/out" />
       </list>
     </recent_temporary>
   </component>
@@ -128,98 +175,98 @@
     <proxy>https://goproxy.cn,direct</proxy>
   </component>
   <component name="WindowStateProjectService">
-    <state x="176" y="257" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1638802658014">
+    <state x="176" y="257" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1639064499204">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="176" y="257" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1638802658014" />
-    <state width="1259" height="363" key="GridCell.Tab.0.bottom" timestamp="1638802665247">
+    <state x="176" y="257" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1639064499204" />
+    <state width="1638" height="356" key="GridCell.Tab.0.bottom" timestamp="1639413800070">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665247" />
+    <state width="1638" height="356" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800070" />
     <state width="915" height="363" key="GridCell.Tab.0.bottom/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514985" />
     <state width="879" height="295" key="GridCell.Tab.0.bottom/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538248" />
     <state width="883" height="363" key="GridCell.Tab.0.bottom/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428281" />
-    <state width="1259" height="363" key="GridCell.Tab.0.center" timestamp="1638802665245">
+    <state width="1638" height="356" key="GridCell.Tab.0.center" timestamp="1639413800069">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665245" />
+    <state width="1638" height="356" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800069" />
     <state width="915" height="363" key="GridCell.Tab.0.center/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514984" />
     <state width="879" height="295" key="GridCell.Tab.0.center/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538246" />
     <state width="883" height="363" key="GridCell.Tab.0.center/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428280" />
-    <state width="1259" height="363" key="GridCell.Tab.0.left" timestamp="1638802665243">
+    <state width="1638" height="356" key="GridCell.Tab.0.left" timestamp="1639413800069">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665243" />
+    <state width="1638" height="356" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800069" />
     <state width="915" height="363" key="GridCell.Tab.0.left/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514983" />
     <state width="879" height="295" key="GridCell.Tab.0.left/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538235" />
     <state width="883" height="363" key="GridCell.Tab.0.left/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428278" />
-    <state width="1259" height="363" key="GridCell.Tab.0.right" timestamp="1638802665246">
+    <state width="1638" height="356" key="GridCell.Tab.0.right" timestamp="1639413800070">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665246" />
+    <state width="1638" height="356" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800070" />
     <state width="915" height="363" key="GridCell.Tab.0.right/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514984" />
     <state width="879" height="295" key="GridCell.Tab.0.right/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538247" />
     <state width="883" height="363" key="GridCell.Tab.0.right/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428281" />
-    <state width="1259" height="363" key="GridCell.Tab.1.bottom" timestamp="1638802665249">
+    <state width="1638" height="356" key="GridCell.Tab.1.bottom" timestamp="1639413799957">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665249" />
+    <state width="1638" height="356" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799957" />
     <state width="915" height="363" key="GridCell.Tab.1.bottom/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515653" />
     <state width="883" height="363" key="GridCell.Tab.1.bottom/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428284" />
-    <state width="1259" height="363" key="GridCell.Tab.1.center" timestamp="1638802665248">
+    <state width="1638" height="356" key="GridCell.Tab.1.center" timestamp="1639413799956">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665248" />
+    <state width="1638" height="356" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799956" />
     <state width="915" height="363" key="GridCell.Tab.1.center/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515651" />
     <state width="883" height="363" key="GridCell.Tab.1.center/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428283" />
-    <state width="1259" height="363" key="GridCell.Tab.1.left" timestamp="1638802665247">
+    <state width="1638" height="356" key="GridCell.Tab.1.left" timestamp="1639413799955">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665247" />
+    <state width="1638" height="356" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799955" />
     <state width="915" height="363" key="GridCell.Tab.1.left/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515651" />
     <state width="883" height="363" key="GridCell.Tab.1.left/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428282" />
-    <state width="1259" height="363" key="GridCell.Tab.1.right" timestamp="1638802665249">
+    <state width="1638" height="356" key="GridCell.Tab.1.right" timestamp="1639413799957">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1259" height="363" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1638802665249" />
+    <state width="1638" height="356" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799957" />
     <state width="915" height="363" key="GridCell.Tab.1.right/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515652" />
     <state width="883" height="363" key="GridCell.Tab.1.right/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428283" />
     <state x="349" y="161" key="SettingsEditor" timestamp="1637403728885">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="349" y="161" key="SettingsEditor/0.0.1680.1050@0.0.1680.1050" timestamp="1637403728885" />
-    <state x="208" y="275" width="540" height="524" key="StructurePopup" timestamp="1638718465166">
+    <state x="208" y="275" width="540" height="524" key="StructurePopup" timestamp="1639413140916">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="208" y="275" width="540" height="524" key="StructurePopup/0.0.1680.1050@0.0.1680.1050" timestamp="1638718465166" />
+    <state x="208" y="275" width="540" height="524" key="StructurePopup/0.0.1680.1050@0.0.1680.1050" timestamp="1639413140916" />
     <state width="603" height="445" key="SwitcherDM" timestamp="1638642208568">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state width="603" height="445" key="SwitcherDM/0.0.1680.1050@0.0.1680.1050" timestamp="1638642208568" />
-    <state width="520" height="525" key="XDebugger.FullValuePopup" timestamp="1638641917571">
+    <state width="520" height="525" key="XDebugger.FullValuePopup" timestamp="1639143960117">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="520" height="525" key="XDebugger.FullValuePopup/0.0.1680.1050@0.0.1680.1050" timestamp="1638641917571" />
-    <state x="96" y="144" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1638606131794">
+    <state width="520" height="525" key="XDebugger.FullValuePopup/0.0.1680.1050@0.0.1680.1050" timestamp="1639143960117" />
+    <state x="96" y="144" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1639066191828">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="96" y="144" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1638606131794" />
-    <state x="152" y="265" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1638706748690">
+    <state x="96" y="144" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1639066191828" />
+    <state x="152" y="265" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1639303002085">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="152" y="265" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1680.1050@0.0.1680.1050" timestamp="1638706748690" />
-    <state x="153" y="282" width="827" height="486" key="find.popup" timestamp="1638792933629">
+    <state x="152" y="265" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1680.1050@0.0.1680.1050" timestamp="1639303002085" />
+    <state x="153" y="282" width="827" height="486" key="find.popup" timestamp="1639413125912">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="153" y="282" width="827" height="486" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1638792933629" />
+    <state x="153" y="282" width="827" height="486" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1639413125912" />
     <state x="126" y="259" width="700" height="530" key="recent.locations.popup" timestamp="1638603258667">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="126" y="259" width="700" height="530" key="recent.locations.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1638603258667" />
-    <state x="145" y="233" width="670" height="676" key="search.everywhere.popup" timestamp="1638807469208">
+    <state x="145" y="233" width="670" height="676" key="search.everywhere.popup" timestamp="1639282907257">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="145" y="233" width="670" height="676" key="search.everywhere.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1638807469208" />
+    <state x="145" y="233" width="670" height="676" key="search.everywhere.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1639282907257" />
     <state x="235" y="441" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1636302047096">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -230,13 +277,8 @@
       <breakpoints>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>31</line>
+          <line>32</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/model/genmysql/genmysql.go</url>
-          <line>107</line>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/genstruct/common.go</url>
@@ -255,7 +297,7 @@
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>42</line>
+          <line>43</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
@@ -265,48 +307,50 @@
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>32</line>
+          <line>33</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>37</line>
+          <line>38</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>206</line>
+          <line>207</line>
           <option name="timeStamp" value="24" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>114</line>
+          <line>115</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/main.go</url>
-          <line>15</line>
+          <line>14</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>200</line>
+          <line>201</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/model/model.go</url>
-          <line>195</line>
+          <line>196</line>
           <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/model/genmysql/genmysql.go</url>
-          <line>173</line>
-          <option name="timeStamp" value="43" />
+          <url>file://$PROJECT_DIR$/out/model_test.go</url>
+          <line>247</line>
+          <option name="timeStamp" value="49" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/gormstruct$TestModelGets_in_github_com_leeprince_gormstruct_out.out" NAME="TestModelGets in github.com/leeprince/gormstruct/out Coverage Results" MODIFIED="1638792469845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/gormstruct$TestWithPaginate_in_github_com_leeprince_gormstruct_out.out" NAME="TestWithPaginate in github.com/leeprince/gormstruct/out Coverage Results" MODIFIED="1639279996383" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/gormstruct$TestModelWith_in_github_com_leeprince_gormstruct_out.out" NAME="TestModelWith in github.com/leeprince/gormstruct/out Coverage Results" MODIFIED="1639409519850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

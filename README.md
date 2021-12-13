@@ -2,18 +2,42 @@
 ---
 
 # 包含功能点
-1. yaml 配置文件。包含数据库连接，表前缀
-2. go run main.go ...支持指定表名、包名、表名对应结构体
-3. 生成表的 gorm 结构体(对应文件名：{表名}.go)
-4. 生成操作表的基本方法(对应文件名：gen.base.go)
-5. 根据字段获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录(对应文件名：{数据库名}.gen.{表名}.go)
-    
-### 指定表
-```
-go run main.go -t=users
-```
+1. yaml 配置文件。
+    > 包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
+2. 支持指定表名、包名、表名对应结构体
+    > go run main.go -t={表名} [-p=包名] [-s=表名结构体]
+3. 生成表的 gorm 结构体
+    > 对应文件名：{表名}.go
+4. 生成操作表的基本方法
+    > 对应文件名：gen.base.go
+5. 根据字段获取单条或者多条记录根据主键、唯一、非唯一索引，获取单条或多条记录
+    > 对应文件名：{数据库名}.gen.{表名}.go)
+6. 重置 gorm 会话; 
+    > 要求配置：gen_logic_func_version >= V2
+7. 支持表中的字段或者字段切片作为 option 条件
+    > 要求配置：gen_logic_func_version >= V2
+8. 支持分页
+    > 要求配置：gen_logic_func_version >= V2
+    > 支持分页的方法通过 `函数选项模式` 设置 option, 最后通过 `GetByOptions` 方法实现    
 
 # 快速使用
+## 配置 ./config/config.yaml
+```
+dbinfo:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: leeprince
+  database: tmp
+  type: 0 # 数据库类型:0:mysql
+
+# 生成的基本方法版本:V1,V2
+gen_base_func_version: V2
+# 生成的逻辑方法版本:V1,V2
+gen_logic_func_version: V2
+```
+
+## 运行指令
 > 表名参数必填！
 ```
 go run main.go -t=users [-p=model] [-s=Users]
@@ -22,8 +46,6 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
     -p/--packageName: 包名
     -s/--structName: 表名对应结构体
 ```
-
-
 
 # 包含sql查询
 ```

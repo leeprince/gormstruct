@@ -1,4 +1,4 @@
-package model_bak
+package model_bv2_lv2
 
 import (
 	"context"
@@ -16,21 +16,19 @@ func UsersMgr(db *gorm.DB) *_UsersMgr {
 		panic(fmt.Errorf("UsersMgr need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	// return &_UsersMgr{_BaseMgr: &_BaseMgr{DB: db.Table("users"), ctx:ctx, cancel:cancel, timeout:-1}}
-	// return &_UsersMgr{_BaseMgr: &_BaseMgr{DB: db.Table("users"), ctx:ctx, cancel:cancel, timeout:-1}}
-	// return &_UsersMgr{_BaseMgr: &_BaseMgr{DB: db.Model(Users{}), ctx:ctx, cancel:cancel, timeout:-1}}
 	return &_UsersMgr{_BaseMgr: &_BaseMgr{DB: db.Model(Users{}), ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
 // GetTableName get sql table name.获取数据库名字
 func (obj *_UsersMgr) GetTableName() string {
-	return "users"
+	users := Users{}
+	return users.TableName()
 }
 
 // Reset 重置gorm会话
 func (obj *_UsersMgr) Reset() *_UsersMgr {
 	obj.New()
-	return obj
+	return UsersMgr(obj.DB)
 }
 
 // Get 获取
@@ -57,6 +55,11 @@ func (obj *_UsersMgr) Count(count *int64) (tx *gorm.DB) {
 // WithID id获取 主键
 func (obj *_UsersMgr) WithID(id int) Option {
 	return optionFunc(func(o *options) { o.query["id"] = id })
+}
+
+// WithID id获取 主键
+func (obj *_UsersMgr) WithBatchID(ids []int) Option {
+	return optionFunc(func(o *options) { o.query["id"] = ids })
 }
 
 // WithName name获取 名称

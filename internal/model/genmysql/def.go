@@ -28,7 +28,7 @@ const (
     GORM_MODEL_FIELD_ID = "id"
     GORM_MODEL_FIELD_CREATE = "created_at"
     GORM_MODEL_FIELD_UPDATE = "updated_at"
-    GORM_MODEL_FIELD_DELETE = "deleed_at"
+    GORM_MODEL_FIELD_DELETE = "deleted_at"
 )
 
 const (

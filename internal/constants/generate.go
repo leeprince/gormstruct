@@ -25,8 +25,8 @@ const GormModelWord = "gorm.Model"
 
 const (
     FilePackage = "package"
-    FileImport = "import"
-    FileStruct = "struct"
+    FileImport  = "import"
+    FileStruct  = "struct"
 )
 
 var ImportFile = map[string]string{
@@ -47,10 +47,8 @@ var SelfTypeDefine = map[string]string{
     "time":     "time.Time",
 }
 
-var IsNullToPoint = true
-
 const (
-    NullTypeUint    = "uint"
+    NullTypeUint  = "uint"
     NullTypeInt   = "int"
     NullTypeFloat = "float"
 )

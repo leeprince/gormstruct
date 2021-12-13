@@ -1,6 +1,9 @@
 package genmysql
 
-import "strings"
+import (
+    "github.com/leeprince/gormstruct/internal/config"
+    "strings"
+)
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
@@ -9,10 +12,13 @@ import "strings"
  */
 
 func checkGormModel(columns *[]genColumns) bool {
+    if ! config.GetIsGormModelTag() {
+        return false
+    }
     var gormFieldCount int
     var tmpNotGormFields []genColumns
     for _, i2 := range *columns {
-        if strings.EqualFold(i2.Field, GORM_MODEL_FIELD_ID)  ||
+        if strings.EqualFold(i2.Field, GORM_MODEL_FIELD_ID) ||
             strings.EqualFold(i2.Field, GORM_MODEL_FIELD_CREATE) ||
             strings.EqualFold(i2.Field, GORM_MODEL_FIELD_UPDATE) ||
             strings.EqualFold(i2.Field, GORM_MODEL_FIELD_DELETE) {
@@ -23,7 +29,7 @@ func checkGormModel(columns *[]genColumns) bool {
     }
     
     if gormFieldCount >= 4 {
-        columns = &tmpNotGormFields
+        *columns = tmpNotGormFields
         return true
     }
     return false

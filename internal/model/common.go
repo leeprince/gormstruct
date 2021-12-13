@@ -4,7 +4,6 @@ import (
     "fmt"
     "github.com/leeprince/gopublic/mybigcamel"
     "github.com/leeprince/gopublic/tools"
-    "github.com/leeprince/gormstruct/internal/app"
     "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/utils"
@@ -22,7 +21,7 @@ import (
 // getTypeName Type acquisition filtering.类型获取过滤
 func getTypeName(name string, isNull bool) string {
     // 优先匹配自定义类型
-    selfDefineTypeMqlDicMap := app.GetSelfTypeDefine()
+    selfDefineTypeMqlDicMap := constants.SelfTypeDefine
     if v, ok := selfDefineTypeMqlDicMap[name]; ok {
         return fixNullToPoint(v, isNull)
     }
@@ -43,7 +42,7 @@ func getTypeName(name string, isNull bool) string {
 }
 
 func fixNullToPoint(value string, isNull bool) string {
-    if isNull && app.GetIsNullToPoint() {
+    if isNull && config.GetIsNullToPoint() {
         if
             strings.HasPrefix(value, constants.NullTypeUint) ||
             strings.HasPrefix(value, constants.NullTypeInt) ||
@@ -63,7 +62,7 @@ func getGormModelElement() []EmInfo {
     result = append(result, EmInfo{
         IsMulti:       false,
         Notes:         "主键",
-        Type:          "int64", // Type.类型标记
+        Type:          config.GetPrimaryIdType(), // Type.类型标记
         ColName:       "id",
         ColNameEx:     "id",
         ColStructName: "ID",
@@ -199,17 +198,6 @@ func FilterKeywords(src string) string {
     return src
 }
 
-// GetTablePrefixName 获取带表前缀名字的tablename
-func GetTablePrefixName(name string) string { //
-	tablePrefix := config.GetTablePrefix()
-	//如果设置了表前缀
-	if tablePrefix != "" {
-		name = tablePrefix + name
-	}
-
-	return name
-}
-
 // 已表名定义的结构体
 func GetTableStructName(name string) string {
     return name + "{}"
@@ -220,7 +208,6 @@ func GenLogicTemplateFuncs() template.FuncMap {
     return template.FuncMap{
         "GenFListIndex":      GenFListIndex,
         "CapLowercase":       CapLowercase,
-        "GetTablePrefixName": GetTablePrefixName,
         "GetTableStructName": GetTableStructName,
     }
 }

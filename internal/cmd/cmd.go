@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/leeprince/gopublic/tools"
     "github.com/leeprince/gormstruct/internal/app"
+    "github.com/leeprince/gormstruct/internal/config"
     _ "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/logger"
@@ -64,10 +65,10 @@ func generateGoTag(c *cobra.Command, _ []string) error {
     packageName, _ := c.PersistentFlags().GetString("packageName")
     structName, _ := c.PersistentFlags().GetString("structName")
     app.InitFlags(table, packageName, structName)
-    logger.Infof("generateGoTag...table=%s;packageName=%s;structName=%s;", table, packageName, structName)
+    logger.Infof("generateGoTag...table=%s;packageName=%s;structName=%s;", table, packageName, stre)
     
     var modeldb model.IModel
-    switch app.GetConfigDBType() {
+    switch config.GetConfigDBType() {
     case constants.DB_TYPE_MYSQL:
         modeldb = genmysql.NewMySQLModel()
     default:
@@ -82,7 +83,7 @@ func generateGoTag(c *cobra.Command, _ []string) error {
     fmt.Printf("所有输出的信息。generateGoTag.genOutInfo:\n%+v\n", genOutInfo)
     
     for _, i2 := range genOutInfo {
-        path := app.GetOutputFileOfPath(i2.FileName)
+        path := fmt.Sprintf("%s%s", constants.OuputDir, i2.FileName)
         tools.WriteFile(path, []string{i2.FileCtx}, true)
         
         goImportByte, _ := exec.Command("goimports", "-l", "-w", path).Output()

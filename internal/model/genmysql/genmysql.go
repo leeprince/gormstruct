@@ -5,6 +5,7 @@ import (
     "fmt"
     "github.com/leeprince/gopublic/mysqldb"
     "github.com/leeprince/gormstruct/internal/app"
+    "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/logger"
     "github.com/leeprince/gormstruct/internal/model"
@@ -29,7 +30,7 @@ func NewMySQLModel() model.IModel {
 
 // GenModel get model.DBInfo info.获取数据库相关属性
 func (m *mysqlModel) GenModel() model.DBInfo {
-    orm := mysqldb.OnInitDBOrm(app.GetConfigDBOfMysqlConStr())
+    orm := mysqldb.OnInitDBOrm(config.GetConfigDBOfMysqlConStr())
     defer orm.OnDestoryDB()
     
     var dbInfo model.DBInfo
@@ -44,7 +45,7 @@ func (m *mysqlModel) GenModel() model.DBInfo {
 
 // 获取数据库名字
 func (m *mysqlModel) GetDbName() string {
-    return app.GetConfigDBDatabase()
+    return config.GetConfigDBDatabase()
 }
 
 // 获取包名
@@ -101,7 +102,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
     // 判断数据库设计是否符合 gorm.Model， 符合则定义表存在 gorm.Model
     if checkGormModel(&columns) {
         columnsElement = append(columnsElement, model.ColumnsElementInfo{
-            Type: "gorm.Model",
+            Type: constants.GormModelWord,
         })
     }
     // 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
