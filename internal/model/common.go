@@ -10,6 +10,7 @@ import (
     "regexp"
     "strings"
     "text/template"
+    "time"
 )
 
 /**
@@ -203,11 +204,17 @@ func GetTableStructName(name string) string {
     return name + "{}"
 }
 
+// 已表名定义的结构体
+func GetCurrentDateTime() string {
+    return time.Now().Format("2006-01-02 15:04:05")
+}
+
 // 逻辑方法的模版需要的解析的方法
 func GenLogicTemplateFuncs() template.FuncMap {
     return template.FuncMap{
         "GenFListIndex":      GenFListIndex,
         "CapLowercase":       CapLowercase,
         "GetTableStructName": GetTableStructName,
+        "GetCurrentDateTime": GetCurrentDateTime,
     }
 }

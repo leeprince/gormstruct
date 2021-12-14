@@ -6,14 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
+/**
+ * @Author: prince.lee <leeprince@foxmail.com>
+ * @Date:   2021-12-14 21:38:10
+ * @Desc:
+ */
+
 type UsersModel struct {
 	*_BaseMgr
 }
 
-// 初始化 UsersMgr
+// 初始化 UsersModel
 func NewUsersModel(db *gorm.DB) *UsersModel {
 	if db == nil {
-		panic(fmt.Errorf("UsersMgr need init by db"))
+		panic(fmt.Errorf("UsersModel need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	return &UsersModel{_BaseMgr: &_BaseMgr{DB: db.Model(Users{}), ctx: ctx, cancel: cancel, timeout: -1}}
@@ -103,22 +109,22 @@ func (obj *UsersModel) WithBatchHeadImg(headImgs []string) Option {
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
-func (obj *UsersModel) WithCreatedAt(createdAt *int) Option {
+func (obj *UsersModel) WithCreatedAt(createdAt int) Option {
 	return queryOptionFunc(func(o *options) { o.query["created_at"] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
-func (obj *UsersModel) WithBatchCreatedAt(createdAts []*int) Option {
+func (obj *UsersModel) WithBatchCreatedAt(createdAts []int) Option {
 	return queryOptionFunc(func(o *options) { o.query["created_at"] = createdAts })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
-func (obj *UsersModel) WithUpdatedAt(updatedAt *int) Option {
+func (obj *UsersModel) WithUpdatedAt(updatedAt int) Option {
 	return queryOptionFunc(func(o *options) { o.query["updated_at"] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
-func (obj *UsersModel) WithBatchUpdatedAt(updatedAts []*int) Option {
+func (obj *UsersModel) WithBatchUpdatedAt(updatedAts []int) Option {
 	return queryOptionFunc(func(o *options) { o.query["updated_at"] = updatedAts })
 }
 
@@ -233,25 +239,25 @@ func (obj *UsersModel) GetBatchFromHeadImg(headImgs []string) (results []*Users,
 }
 
 // 通过 created_at(创建时间) 获取内容
-func (obj *UsersModel) GetFromCreatedAt(createdAt *int) (results []*Users, err error) {
+func (obj *UsersModel) GetFromCreatedAt(createdAt int) (results []*Users, err error) {
 	err = obj.DB.WithContext(obj.ctx).Where("`created_at` = ?", createdAt).Find(&results).Error
 	return
 }
 
 // 通过 created_at(创建时间) 获取多条记录
-func (obj *UsersModel) GetBatchFromCreatedAt(createdAts []*int) (results []*Users, err error) {
+func (obj *UsersModel) GetBatchFromCreatedAt(createdAts []int) (results []*Users, err error) {
 	err = obj.DB.WithContext(obj.ctx).Where("`created_at` IN (?)", createdAts).Find(&results).Error
 	return
 }
 
 // 通过 updated_at(更新时间) 获取内容
-func (obj *UsersModel) GetFromUpdatedAt(updatedAt *int) (results []*Users, err error) {
+func (obj *UsersModel) GetFromUpdatedAt(updatedAt int) (results []*Users, err error) {
 	err = obj.DB.WithContext(obj.ctx).Where("`updated_at` = ?", updatedAt).Find(&results).Error
 	return
 }
 
 // 通过 updated_at(更新时间) 获取多条记录
-func (obj *UsersModel) GetBatchFromUpdatedAt(updatedAts []*int) (results []*Users, err error) {
+func (obj *UsersModel) GetBatchFromUpdatedAt(updatedAts []int) (results []*Users, err error) {
 	err = obj.DB.WithContext(obj.ctx).Where("`updated_at` IN (?)", updatedAts).Find(&results).Error
 	return
 }

@@ -15,7 +15,7 @@ type {{$obj.StructName}}Model struct {
 // {{$obj.StructName}}Model open func
 func New{{$obj.StructName}}Model (db *gorm.DB) *{{$obj.StructName}}Model {
 	if db == nil {
-		panic(fmt.Errorf("{{$obj.StructName}}Mgr need init by db"))
+		panic(fmt.Errorf("{{$obj.StructName}}Model need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	return &{{$obj.StructName}}Model{_BaseMgr: &_BaseMgr{DB: db.Model({{GetTableStructName $obj.StructName}}), ctx:ctx, cancel:cancel, timeout:-1}}
@@ -124,15 +124,22 @@ func (obj *{{$obj.StructName}}Model) {{GenFListIndex $ofm 1}}({{GenFListIndex $o
 
 `
     
-    TEMP_GENLOGIC_V2 = `{{$obj := .}}{{$list := $obj.Em}}
+    TEMP_GENLOGIC_V2 = `
+/**
+ * @Author: prince.lee <leeprince@foxmail.com>
+ * @Date:   {{GetCurrentDateTime}}
+ * @Desc:
+ */
+
+{{$obj := .}}{{$list := $obj.Em}}
 type {{$obj.StructName}}Model struct {
     *_BaseMgr
 }
 
-// 初始化 {{$obj.StructName}}Mgr
+// 初始化 {{$obj.StructName}}Model
 func New{{$obj.StructName}}Model(db *gorm.DB) *{{$obj.StructName}}Model {
     if db == nil {
-        panic(fmt.Errorf("{{$obj.StructName}}Mgr need init by db"))
+        panic(fmt.Errorf("{{$obj.StructName}}Model need init by db"))
     }
     ctx, cancel := context.WithCancel(context.Background())
     return &{{$obj.StructName}}Model{_BaseMgr: &_BaseMgr{DB: db.Model({{GetTableStructName $obj.StructName}}), ctx:ctx, cancel:cancel, timeout:-1}}
