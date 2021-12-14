@@ -46,13 +46,13 @@ func TestModelGet(t *testing.T) {
     var user model.Users
     var err error
     
-    user, err = model.UsersMgr(db).Get()
+    user, err = model.NewUsersModel(db).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model.UsersMgr(db.Where("id = ?", 1)).Get()
+    user, err = model.NewUsersModel(db.Where("id = ?", 1)).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model.UsersMgr(db.Where("id = ?", 2)).Get()
+    user, err = model.NewUsersModel(db.Where("id = ?", 2)).Get()
     fmt.Println("user, err:", user, err)
 }
 
@@ -62,12 +62,12 @@ func TestModelGets(t *testing.T) {
     var users []*model.Users
     var err error
     
-    users, err = model.UsersMgr(db.Where("id = ?", 1)).Gets()
+    users, err = model.NewUsersModel(db.Where("id = ?", 1)).Gets()
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
     
-    users, err = model.UsersMgr(db.Where("name = ?", "name01")).Gets()
+    users, err = model.NewUsersModel(db.Where("name = ?", "name01")).Gets()
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
@@ -78,10 +78,10 @@ func TestModelCount(t *testing.T) {
     
     var count int64
     
-    db1 := model.UsersMgr(db.Where("id = ?", 11)).Count(&count)
+    db1 := model.NewUsersModel(db.Where("id = ?", 11)).Count(&count)
     fmt.Printf("count:%+v, db.err:%v \n", count, db1.Error)
     
-    db2 := model.UsersMgr(db.Where("id in (?)", []int64{1, 2})).Count(&count)
+    db2 := model.NewUsersModel(db.Where("id in (?)", []int64{1, 2})).Count(&count)
     fmt.Printf("count:%+v, db.err:%v \n", count, db2.Error)
 }
 
@@ -103,7 +103,7 @@ func TestModelCount(t *testing.T) {
 //     condition.And("age", "=", 13)
 //     where, args = condition.Get()
 //     fmt.Println(where, args)
-//     users, err = model.UsersMgr(db.Where(where, args...)).Gets()
+//     users, err = model.NewUsersModel(db.Where(where, args...)).Gets()
 //     for _, i2 := range users {
 //         fmt.Printf("err:%v, users:%+v \n", err, *i2)
 //     }
@@ -124,7 +124,7 @@ func TestModelCount(t *testing.T) {
 //     where = fmt.Sprintf("(%s) AND %s", whereTmp, where)
 //     argsTmp = append(argsTmp, args...)
 //     fmt.Println(where, argsTmp)
-//     users, err = model.UsersMgr(db.Where(where, argsTmp...)).Gets()
+//     users, err = model.NewUsersModel(db.Where(where, argsTmp...)).Gets()
 //     for _, i2 := range users {
 //         fmt.Printf("err:%v, users:%+v \n", err, *i2)
 //     }
@@ -137,12 +137,12 @@ func TestModelWith(t *testing.T) {
     var users []*model.Users
     var err error
     
-    usersMgr := model.UsersMgr(db)
+    usersMgr := model.NewUsersModel(db)
     
     user, err = usersMgr.GetByOption(usersMgr.WithID(1))
     fmt.Println("user, err:", user, err)
 
-    usersMgr = model.UsersMgr(db)
+    usersMgr = model.NewUsersModel(db)
     users, err = usersMgr.GetByOptions(usersMgr.WithBatchID([]int{1, 2}))
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
@@ -185,29 +185,29 @@ func TestModelFrom(t *testing.T) {
     var users []*model.Users
     var err error
     
-    user, err = model.UsersMgr(db).GetFromID(1)
+    user, err = model.NewUsersModel(db).GetFromID(1)
     fmt.Println("GetFromID..user, err:", user, err)
     
-    user, err = model.UsersMgr(db).GetFromID(10000)
+    user, err = model.NewUsersModel(db).GetFromID(10000)
     fmt.Println("GetFromID..user, err:", user, err)
     
-    users, err = model.UsersMgr(db).GetBatchFromID([]int{1, 2})
+    users, err = model.NewUsersModel(db).GetBatchFromID([]int{1, 2})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, *i2)
     }
     
-    users, err = model.UsersMgr(db).GetFromName("name01")
+    users, err = model.NewUsersModel(db).GetFromName("name01")
     fmt.Println("GetFromName..user, err:", user, err)
     
-    users, err = model.UsersMgr(db).GetBatchFromID([]int{1, 2})
+    users, err = model.NewUsersModel(db).GetBatchFromID([]int{1, 2})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, *i2)
     }
     
-    user, err = model.UsersMgr(db).GetFromCardNo("1")
+    user, err = model.NewUsersModel(db).GetFromCardNo("1")
     fmt.Println("GetFromCardNo..user, err:", user, err)
     
-    users, err = model.UsersMgr(db).GetBatchFromCardNo([]string{"1", "2"})
+    users, err = model.NewUsersModel(db).GetBatchFromCardNo([]string{"1", "2"})
     for _, i2 := range users {
         fmt.Printf("GetBatchFromCardNo..err:%v, users:%+v \n", err, *i2)
     }
@@ -221,16 +221,16 @@ func TestModelFetch(t *testing.T) {
     var users []*model.Users
     var err error
     
-    user, err = model.UsersMgr(db).FetchByPrimaryKey(1)
+    user, err = model.NewUsersModel(db).FetchByPrimaryKey(1)
     fmt.Println("FetchByPrimaryKey..user, err:", user, err)
     
-    user, err = model.UsersMgr(db).FetchUniqueByCardNo("1")
+    user, err = model.NewUsersModel(db).FetchUniqueByCardNo("1")
     fmt.Println("FetchUniqueByCardNo..user, err:", user, err)
     
-    user, err = model.UsersMgr(db).FetchUniqueIndexByUnqNameCard("name01", "1")
+    user, err = model.NewUsersModel(db).FetchUniqueIndexByUnqNameCard("name01", "1")
     fmt.Println("FetchUniqueIndexByUnqNameCard..user, err:", user, err)
     
-    users, err = model.UsersMgr(db).FetchIndexByAge(12)
+    users, err = model.NewUsersModel(db).FetchIndexByAge(12)
     for _, i2 := range users {
         fmt.Printf("FetchIndexByAge..err:%v, users:%+v \n", err, *i2)
     }
@@ -242,28 +242,28 @@ func TestModelReset(t *testing.T) {
     var user model.Users
     var err error
     
-    userMgr := model.UsersMgr(db.Where("id = ?", 1))
+    userModel := model.NewUsersModel(db.Where("id = ?", 1))
     fmt.Println("user, err:", user, err)
     
-    user, err = userMgr.Get()
+    user, err = userModel.Get()
     fmt.Println("user, err:", user, err)
-    user, err = userMgr.Reset().Get()
+    user, err = userModel.Reset().Get()
     fmt.Println("user, err:", user, err)
-    user, err = userMgr.Reset().Get()
+    user, err = userModel.Reset().Get()
     fmt.Println("user, err:", user, err)
-    user, err = model.UsersMgr(userMgr.Reset().DB).Get()
+    user, err = model.NewUsersModel(userModel.Reset().DB).Get()
     fmt.Println("user, err:", user, err)
     
     fmt.Println("---------------")
-    userMgr = model.UsersMgr(db.Where("id = ?", 2))
+    userModel = model.NewUsersModel(db.Where("id = ?", 2))
     fmt.Println("user, err:", user, err)
     
-    user, err = userMgr.Get()
+    user, err = userModel.Get()
     fmt.Println("user, err:", user, err)
-    user, err = userMgr.Reset().Get()
+    user, err = userModel.Reset().Get()
     fmt.Println("user, err:", user, err)
-    user, err = userMgr.Get()
+    user, err = userModel.Get()
     fmt.Println("user, err:", user, err)
-    user, err = userMgr.Reset().Get()
-    fmt.Println("user, err:", user, err)
+    user, err = userModel.Reset().Get()
+    fmt.Println("user, err:", user, *user.CreatedAt, err)
 }

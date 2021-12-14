@@ -72,17 +72,21 @@ CREATE TABLE `users` (
   `age` int(11) NOT NULL DEFAULT '18' COMMENT '年龄',
   `card_no` varchar(18) NOT NULL DEFAULT '' COMMENT '身份证',
   `head_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '头像',
+  `created_at` int(11) NOT NULL COMMENT '创建时间',
+  `updated_at` int(11) NOT NULL COMMENT '更新时间',
+  `deleted_at` int(11) DEFAULT NULL COMMENT '删除 时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `card_no` (`card_no`),
   UNIQUE KEY `unq_name_card` (`name`,`card_no`),
   KEY `age` (`age`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表';
 ```
 ```
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`) VALUES (1, 'name01', 12, '1', '');
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`) VALUES (2, 'name02', 12, '2', '');
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`) VALUES (3, 'name01', 13, '3', '');
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`) VALUES (4, 'name01', 12, '4', '');
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 'name01', 12, '1', '', 1639411296, 1639411296, 1639411296);
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (2, 'name02', 12, '2', '', 1639411296, 1639411296, 0);
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (3, 'name01', 13, '3', '', 1639411296, 1639411296, 0);
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (4, 'name01', 12, '4', '', 1639411296, 1639411296, 0);
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (6, 'name03', 18, '5', '', 1639411296, 1639411296, 0);
 ```
 ## 测试运行的生成指令
 生成的文件路径：out/model/*.go
