@@ -226,6 +226,23 @@ func (obj *{{$obj.StructName}}Model) GetByOptions(opts ...Option) (results []*{{
 	err = obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
     return
 }
+
+// 函数选项模式获取多条记录：支持统计记录总数
+func (obj *{{$obj.StructName}}Model) GetCountByOptions(opts ...Option) (count int64) {
+    options := options{
+        query: make(map[string]interface{}, len(opts)),
+		page: struct {
+			offset int
+			limit  int
+		}{offset: 0, limit: 0},
+    }
+    for _, o := range opts {
+        o.apply(&options)
+    }
+
+	obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
+    return
+}
 // -------------------- 通过存在索引的单个字段作为查询条件
 
 {{range $oem := $obj.Em}}

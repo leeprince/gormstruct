@@ -136,6 +136,7 @@ func TestModelWith(t *testing.T) {
     var user model.Users
     var users []*model.Users
     var err error
+    var count int64
     
     usersMgr := model.NewUsersModel(db)
     
@@ -176,6 +177,18 @@ func TestModelWith(t *testing.T) {
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, *i2)
     }
+    
+    // 根据 option 条件统计数量
+    count = usersMgr.GetCountByOptions(
+        usersMgr.WithName("name01"),
+    )
+    fmt.Println("count, err", count, err)
+    
+    // 根据 option 条件统计数量
+    count = usersMgr.GetCountByOptions(
+        usersMgr.WithName("name010000"),
+    )
+    fmt.Println("count, err", count, err)
 }
 
 func TestModelFrom(t *testing.T) {
@@ -265,5 +278,6 @@ func TestModelReset(t *testing.T) {
     user, err = userModel.Get()
     fmt.Println("user, err:", user, err)
     user, err = userModel.Reset().Get()
-    fmt.Println("user, err:", user, *user.CreatedAt, err)
+    fmt.Println("user, err:", user, err)
+    fmt.Println("user.CreatedAt, *user.DeletedAt", user.CreatedAt, *user.DeletedAt)
 }

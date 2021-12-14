@@ -16,7 +16,7 @@
     > 要求配置：gen_logic_func_version >= V2
 7. 支持表中的字段或者字段切片作为 option 条件
     > 要求配置：gen_logic_func_version >= V2
-8. 支持分页
+8. option 条件查询支持分页、支持统计记录总数
     > 要求配置：gen_logic_func_version >= V2
     > 支持分页的方法通过 `函数选项模式` 设置 option, 最后通过 `GetByOptions` 方法实现    
 

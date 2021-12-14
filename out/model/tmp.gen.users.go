@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2021-12-14 21:38:10
+ * @Date:   2021-12-14 21:57:49
  * @Desc:
  */
 
@@ -173,6 +173,23 @@ func (obj *UsersModel) GetByOptions(opts ...Option) (results []*Users, err error
 	}
 
 	err = obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
+	return
+}
+
+// 函数选项模式获取多条记录：支持统计记录总数
+func (obj *UsersModel) GetCountByOptions(opts ...Option) (count int64) {
+	options := options{
+		query: make(map[string]interface{}, len(opts)),
+		page: struct {
+			offset int
+			limit  int
+		}{offset: 0, limit: 0},
+	}
+	for _, o := range opts {
+		o.apply(&options)
+	}
+
+	obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
 	return
 }
 
