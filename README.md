@@ -46,6 +46,13 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
     -p/--packageName: 包名
     -s/--structName: 表名对应结构体
 ```
+```
+./gormstruc -t=users [-p=model] [-s=Users]
+./gormstruc --table=users [--packageName=model] [--structName=Users]
+    -t/--table: 表名。表名必填！
+    -p/--packageName: 包名
+    -s/--structName: 表名对应结构体
+```
 
 # 包含sql查询
 ```

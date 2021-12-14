@@ -65,7 +65,7 @@ func generateGoTag(c *cobra.Command, _ []string) error {
     packageName, _ := c.PersistentFlags().GetString("packageName")
     structName, _ := c.PersistentFlags().GetString("structName")
     app.InitFlags(table, packageName, structName)
-    logger.Infof("generateGoTag...table=%s;packageName=%s;structName=%s;", table, packageName, stre)
+    logger.Infof("generateGoTag...table=%s;packageName=%s;structName=%s;", table, packageName, structName)
     
     var modeldb model.IModel
     switch config.GetConfigDBType() {

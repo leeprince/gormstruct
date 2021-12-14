@@ -2,34 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f43c498-2f53-44aa-baf8-c7f9f44d7eae" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/config/def.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/constants/template_gen_base.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/constants/template_gen_logic.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/generate.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/cmd/cmd.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/cmd/cmd.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/constants/generate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/constants/generate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/constants/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/constants/template_struct.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/genfunc/genfunc.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/genfunc/genfunc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/common.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/common.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/def.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/def.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/common.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/common.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/def.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/def.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/genmysql/genmysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/genmysql/genmysql.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model.bak/gen.base.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model.bak/tmp.gen.users.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model.bak/users.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model/gen.base.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model/tmp.gen.users.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model/users.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/model_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/out/model_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model_bv2_lv2/gen.base.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model_bv2_lv2/tmp.gen.users.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/model_bv2_lv2/users.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,56 +157,60 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="176" y="257" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1639064499204" />
-    <state width="1638" height="356" key="GridCell.Tab.0.bottom" timestamp="1639413800070">
+    <state x="100" y="100" width="1480" height="850" key="DiffContextDialog" timestamp="1639487309699">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800070" />
+    <state x="100" y="100" width="1480" height="850" key="DiffContextDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1639487309699" />
+    <state width="1638" height="356" key="GridCell.Tab.0.bottom" timestamp="1639487218082">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="356" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218082" />
     <state width="915" height="363" key="GridCell.Tab.0.bottom/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514985" />
     <state width="879" height="295" key="GridCell.Tab.0.bottom/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538248" />
     <state width="883" height="363" key="GridCell.Tab.0.bottom/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428281" />
-    <state width="1638" height="356" key="GridCell.Tab.0.center" timestamp="1639413800069">
+    <state width="1638" height="356" key="GridCell.Tab.0.center" timestamp="1639487218080">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800069" />
+    <state width="1638" height="356" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218080" />
     <state width="915" height="363" key="GridCell.Tab.0.center/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514984" />
     <state width="879" height="295" key="GridCell.Tab.0.center/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538246" />
     <state width="883" height="363" key="GridCell.Tab.0.center/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428280" />
-    <state width="1638" height="356" key="GridCell.Tab.0.left" timestamp="1639413800069">
+    <state width="1638" height="356" key="GridCell.Tab.0.left" timestamp="1639487218079">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800069" />
+    <state width="1638" height="356" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218079" />
     <state width="915" height="363" key="GridCell.Tab.0.left/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514983" />
     <state width="879" height="295" key="GridCell.Tab.0.left/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538235" />
     <state width="883" height="363" key="GridCell.Tab.0.left/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428278" />
-    <state width="1638" height="356" key="GridCell.Tab.0.right" timestamp="1639413800070">
+    <state width="1638" height="356" key="GridCell.Tab.0.right" timestamp="1639487218082">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639413800070" />
+    <state width="1638" height="356" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218082" />
     <state width="915" height="363" key="GridCell.Tab.0.right/0.25.1630.1025@0.25.1630.1025" timestamp="1638707514984" />
     <state width="879" height="295" key="GridCell.Tab.0.right/0.25.1631.1025@0.25.1631.1025" timestamp="1636544538247" />
     <state width="883" height="363" key="GridCell.Tab.0.right/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428281" />
-    <state width="1638" height="356" key="GridCell.Tab.1.bottom" timestamp="1639413799957">
+    <state width="1638" height="356" key="GridCell.Tab.1.bottom" timestamp="1639487218085">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799957" />
+    <state width="1638" height="356" key="GridCell.Tab.1.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218085" />
     <state width="915" height="363" key="GridCell.Tab.1.bottom/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515653" />
     <state width="883" height="363" key="GridCell.Tab.1.bottom/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428284" />
-    <state width="1638" height="356" key="GridCell.Tab.1.center" timestamp="1639413799956">
+    <state width="1638" height="356" key="GridCell.Tab.1.center" timestamp="1639487218084">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799956" />
+    <state width="1638" height="356" key="GridCell.Tab.1.center/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218084" />
     <state width="915" height="363" key="GridCell.Tab.1.center/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515651" />
     <state width="883" height="363" key="GridCell.Tab.1.center/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428283" />
-    <state width="1638" height="356" key="GridCell.Tab.1.left" timestamp="1639413799955">
+    <state width="1638" height="356" key="GridCell.Tab.1.left" timestamp="1639487218083">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799955" />
+    <state width="1638" height="356" key="GridCell.Tab.1.left/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218083" />
     <state width="915" height="363" key="GridCell.Tab.1.left/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515651" />
     <state width="883" height="363" key="GridCell.Tab.1.left/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428282" />
-    <state width="1638" height="356" key="GridCell.Tab.1.right" timestamp="1639413799957">
+    <state width="1638" height="356" key="GridCell.Tab.1.right" timestamp="1639487218084">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state width="1638" height="356" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639413799957" />
+    <state width="1638" height="356" key="GridCell.Tab.1.right/0.0.1680.1050@0.0.1680.1050" timestamp="1639487218084" />
     <state width="915" height="363" key="GridCell.Tab.1.right/0.25.1630.1025@0.25.1630.1025" timestamp="1638707515652" />
     <state width="883" height="363" key="GridCell.Tab.1.right/0.25.1632.1025@0.25.1632.1025" timestamp="1637750428283" />
     <state x="349" y="161" key="SettingsEditor" timestamp="1637403728885">
@@ -243,6 +225,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state width="603" height="445" key="SwitcherDM/0.0.1680.1050@0.0.1680.1050" timestamp="1638642208568" />
+    <state x="602" y="233" key="VCS.ChangeListViewerDialog" timestamp="1639486997224">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="602" y="233" key="VCS.ChangeListViewerDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1639486997224" />
     <state width="520" height="525" key="XDebugger.FullValuePopup" timestamp="1639143960117">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
