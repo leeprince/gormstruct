@@ -1,11 +1,9 @@
-package cmd
+package app
 
 import (
     "fmt"
     "github.com/leeprince/gopublic/tools"
-    "github.com/leeprince/gormstruct/internal/app"
     "github.com/leeprince/gormstruct/internal/config"
-    _ "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/logger"
     "github.com/leeprince/gormstruct/internal/model"
@@ -50,22 +48,14 @@ func (r RootCmd) Execute() {
 }
 
 func init() {
-    rootCmd.cmd.PersistentFlags().StringP("table", "t", "", "Table Name")
-    // rootCmd.cmd.MarkFlagRequired("table")
-    
-    rootCmd.cmd.PersistentFlags().StringP("packageName", "p", "", "Package Name")
-    // rootCmd.cmd.MarkFlagRequired("packageName")
-    
-    rootCmd.cmd.PersistentFlags().StringP("structName", "s", "", "Struct Name")
-    // rootCmd.cmd.MarkFlagRequired("structName")
+    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定的连接的数据库名")
+    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfTable, "t", "", "指定的表名")
+    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfPackageName, "p", "", "生成的包名")
+    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfStructName, "s", "", "表名对应结构体，默认是表名的大驼峰命名")
 }
 
 func generateGoTag(c *cobra.Command, _ []string) error {
-    table, _ := c.PersistentFlags().GetString("table")
-    packageName, _ := c.PersistentFlags().GetString("packageName")
-    structName, _ := c.PersistentFlags().GetString("structName")
-    app.InitFlags(table, packageName, structName)
-    logger.Infof("generateGoTag...table=%s;packageName=%s;structName=%s;", table, packageName, structName)
+    config.InitFlags(c)
     
     var modeldb model.IModel
     switch config.GetConfigDBType() {
@@ -83,7 +73,7 @@ func generateGoTag(c *cobra.Command, _ []string) error {
     fmt.Printf("所有输出的信息。generateGoTag.genOutInfo:\n%+v\n", genOutInfo)
     
     for _, i2 := range genOutInfo {
-        path := fmt.Sprintf("%s%s", constants.OuputDir, i2.FileName)
+        path := fmt.Sprintf("%s%s", config.GetOuputDir(), i2.FileName)
         tools.WriteFile(path, []string{i2.FileCtx}, true)
         
         goImportByte, _ := exec.Command("goimports", "-l", "-w", path).Output()

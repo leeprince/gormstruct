@@ -13,12 +13,15 @@ import (
 // Config custom config struct
 type configDef struct {
     // 使用全小写
-    DBInfo              DBInfo `yaml:"dbinfo"`
-    GenBaseFuncVersion  string `yaml:"gen_base_func_version"`
-    GenLogicFuncVersion string `yaml:"gen_logic_func_version"`
-    PrimaryIdType       string `yaml:"primary_id_type"`
-    IsGormModelTag      bool   `yaml:"is_gorm_model_tag"`
-    IsNullToPoint       bool   `yaml:"is_null_to_point"`
+    DBInfo              DBInfo            `yaml:"dbinfo"`
+    SelfTypeDefine      map[string]string `yaml:"self_type_define"`
+    PackageName         string            `yaml:"packagename"`
+    OuputDir            string            `yaml:"ouput_dir"`
+    GenBaseFuncVersion  string            `yaml:"gen_base_func_version"`
+    GenLogicFuncVersion string            `yaml:"gen_logic_func_version"`
+    PrimaryIdType       string            `yaml:"primary_id_type"`
+    IsGormModelTag      bool              `yaml:"is_gorm_model_tag"`
+    IsNullToPoint       bool              `yaml:"is_null_to_point"`
 }
 
 // DBInfo mysql database information. mysql 数据库信息

@@ -7,10 +7,6 @@ package constants
  */
 
 const (
-    ToPkgname = "model"
-)
-
-const (
     TagDb   = "gorm"
     TagJson = "json"
 )
@@ -35,16 +31,6 @@ var ImportFile = map[string]string{
     "fmt":            `"fmt"`,
     "datatypes.JSON": `"gorm.io/datatypes"`,
     "datatypes.Date": `"gorm.io/datatypes"`,
-}
-
-const (
-    OuputDir = "./out/model/"
-)
-
-// 自定义数据类型映射
-var SelfTypeDefine = map[string]string{
-    "datetime": "time.Time",
-    "time":     "time.Time",
 }
 
 const (

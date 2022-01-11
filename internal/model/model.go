@@ -3,7 +3,6 @@ package model
 import (
     "bytes"
     "fmt"
-    "github.com/leeprince/gormstruct/internal/app"
     "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/genfunc"
@@ -132,8 +131,8 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
     
     var data funDef
     data.TableName = g.info.Table.Name
-    if app.GetStructName() != "" {
-        data.StructName = app.GetStructName()
+    if config.GetStructName() != "" {
+        data.StructName = config.GetStructName()
     } else {
         data.StructName = utils.GetCamelName(g.info.Table.Name)
     }
@@ -174,7 +173,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
                 ColNameEx:     fmt.Sprintf("`%v`", el.Name),
                 ColStructName: utils.GetCamelName(el.Name),
             })
-            if v2, ok := constants.SelfTypeDefine[typeName]; ok {
+            if v2, ok := constants.ImportFile[typeName]; ok {
                 if len(v2) > 0 {
                     pkg.AddImport(v2)
                 }

@@ -4,7 +4,6 @@ import (
     "encoding/json"
     "fmt"
     "github.com/leeprince/gopublic/mysqldb"
-    "github.com/leeprince/gormstruct/internal/app"
     "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/logger"
@@ -50,23 +49,20 @@ func (m *mysqlModel) GetDbName() string {
 
 // 获取包名
 func (m *mysqlModel) GetPkgName() string {
-    if app.GetPackageName() != "" {
-        return app.GetPackageName()
-    }
-    return constants.ToPkgname
+    return config.GetPackageName()
 }
 
 // 获取表信息
 func (m *mysqlModel) getTableInfo(orm *mysqldb.MySqlDB, info *model.DBInfo) {
     // 获取表注释
-    tableComment, err := m.getTableComment(orm, app.GetTable())
+    tableComment, err := m.getTableComment(orm, config.GetTable())
     if err != nil {
         logger.Error("获取表注释错误：", err)
     }
-    logger.Info(fmt.Sprintf("获取表信息。表：%s; 表注释：%s", app.GetTable(), tableComment))
+    logger.Info(fmt.Sprintf("获取表信息。config：%s; 表注释：%s", config.GetTable(), tableComment))
     
     // 获取字段信息
-    info.Table.Name = app.GetTable()
+    info.Table.Name = config.GetTable()
     info.Table.Comment = tableComment
     info.Table.ColumnsElement, err = m.getTableColumns(orm, info.Table.Name)
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/leeprince/gormstruct/internal/cmd"
+    "github.com/leeprince/gormstruct/internal/app"
     "github.com/leeprince/gormstruct/internal/config"
 )
 
@@ -14,5 +14,5 @@ import (
 func main() {
     config.InitConfig()
     
-    cmd.NewRootCmd().Execute()
+    app.NewRootCmd().Execute()
 }
