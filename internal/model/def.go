@@ -86,9 +86,10 @@ type EmInfo struct {
 
 // FList index of list
 type FList struct {
-    Key       ColumnsKey // 索引的类型
-    KeyName   string     // 索引名（键名）。一个键名可能包含多个字段组成复合索引
-    KeyNameEl []KeyInfo  // 索引名（键名）包含的多个字段信息列表
+    TableStructName string     // 表名的结构体
+    Key             ColumnsKey // 索引的类型
+    KeyName         string     // 索引名（键名）。一个键名可能包含多个字段组成复合索引
+    KeyNameEl       []KeyInfo  // 索引名（键名）包含的多个字段信息列表
 }
 
 // 索引字段信息

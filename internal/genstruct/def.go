@@ -16,17 +16,17 @@ type GenPackage struct {
 
 // GenStruct struct of IStruct .结构体
 type GenStruct struct {
-    TableName string       // table_name.表名
-    Name      string       // name.名字
-    Comment   string       // notes.注释
-    Elments   []GenElement // em.元素组合
+    Name      string       // 名字（结构体名）
+    TableName string       // 表名
+    Comment   string       // 表注释
+    Elments   []GenElement // 元素组合
 }
 
 // GenElement element of sturct.元素类
 type GenElement struct {
-    Name       string // Name.元素名
-    ColumnName string // table name.表名
-    Type       string // Type.类型标记
-    Comment    string // Notes.注释
-    TagString  string // tages.标记
+    Name       string // 元素名（结构体名）
+    ColumnName string // 字段名
+    Type       string // 字段类型标记
+    Comment    string // 字段注释
+    TagString  string // 标记
 }

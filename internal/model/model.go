@@ -28,11 +28,11 @@ func Generate(info DBInfo) (out []GenOutInfo, g GenDBInfo) {
         info: info,
     }
     
-    // 设置生成表结构体的数据
+    // 设置生成表结构体
     outByTable := g.GenerateByTableName()
     out = append(out, outByTable...)
     
-    // 添加生成获取表数据的基本方法的文件及内容
+    // 设置生成操作数据库的基本方法&生成操作数据表的方法
     out = append(out, g.generateFunc()...)
     
     return
@@ -46,7 +46,13 @@ func (g *GenDBInfo) GenerateByTableName() (out []GenOutInfo) {
         pkg.SetPackage(g.info.PackageName)
         
         var sct genstruct.GenStruct
-        sct.SetStructName(utils.GetCamelName(tab.Name))
+        var structName string
+        if config.GetStructName() != "" {
+            structName = config.GetStructName()
+        } else {
+            structName = utils.GetCamelName(tab.Name)
+        }
+        sct.SetStructName(structName)
         sct.SetStructTableName(tab.Name)
         sct.SetStructComment(tab.Comment)
         sct.SetStructElments(g.genTableElement(tab.ColumnsElement)...)
@@ -105,7 +111,7 @@ func (g *GenDBInfo) getStructTag(isPrimary bool, clolumnName string) string {
 func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
     // --- 生成操作数据库的基本方法
     tmpl, err := template.New("GetGenBaseTemp").
-        Funcs(template.FuncMap{"GetVV": func() string { return "`%v`" }}).
+        Funcs(GenBaseTemplateFuncs()).
         Parse(genfunc.GetGenBaseTemp())
     if err != nil {
         panic(err)
@@ -116,7 +122,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
         panic(err)
     }
     genOut = append(genOut, GenOutInfo{
-        FileName: constants.FILE_BASE_NAME,
+        FileName: constants.FileBaseName,
         FileCtx:  baseBuff.String(),
     })
     // --- 生成操作数据库的基本方法-end
@@ -144,7 +150,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
         if strings.EqualFold(el.Type, constants.GormModelWord) {
             data.Em = append(data.Em, getGormModelElement()...)
             pkg.AddImport("\"time\"")
-            buildFList(&primary, ColumnsKeyPrimary, "", config.GetPrimaryIdType(), "id")
+            buildFList(&primary, data.StructName, ColumnsKeyPrimary, "", config.GetPrimaryIdType(), "id")
         } else {
             typeName := getTypeName(el.Type, el.IsNull)
             // 该字段值在表中可重复
@@ -154,14 +160,14 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
                 switch key.Key {
                 case ColumnsKeyPrimary:
                     isMulti = false
-                    buildFList(&primary, ColumnsKeyPrimary, key.KeyName, typeName, el.Name)
+                    buildFList(&primary, data.StructName, ColumnsKeyPrimary, key.KeyName, typeName, el.Name)
                 case ColumnsKeyUnique:
                     isMulti = false
-                    buildFList(&unique, ColumnsKeyUnique, key.KeyName, typeName, el.Name)
+                    buildFList(&unique, data.StructName, ColumnsKeyUnique, key.KeyName, typeName, el.Name)
                 case ColumnsKeyUniqueIndex:
-                    buildFList(&uniqueIndex, ColumnsKeyUniqueIndex, key.KeyName, typeName, el.Name)
+                    buildFList(&uniqueIndex, data.StructName, ColumnsKeyUniqueIndex, key.KeyName, typeName, el.Name)
                 case ColumnsKeyIndex:
-                    buildFList(&index, ColumnsKeyIndex, key.KeyName, typeName, el.Name)
+                    buildFList(&index, data.StructName, ColumnsKeyIndex, key.KeyName, typeName, el.Name)
                 }
             }
             
@@ -199,7 +205,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
     }
     pkg.AddFuncStr(funcBuf.String())
     genOut = append(genOut, GenOutInfo{
-        FileName: fmt.Sprintf(g.info.DbName+".gen.%v.go", g.info.Table.Name),
+        FileName: fmt.Sprintf("%v_dao.go", g.info.Table.Name),
         FileCtx:  pkg.GenFileCtx(),
     })
     // --- 生成操作数据表的方法-end

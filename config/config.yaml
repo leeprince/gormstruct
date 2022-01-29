@@ -9,6 +9,7 @@ dbinfo:
 
 # 自定义数据库字段的数据类型映射 golang 的数据类型
 self_type_define:
+  int(11):             int64
   smallint:            int16
   smallint unsigned:   uint16
   int:                 int64
@@ -51,11 +52,11 @@ packagename: model
 # 输出的文件路径
 ouput_dir: ./out/model/
 
-# 生成的基本方法版本:V1,V2
-gen_base_func_version: V2
+# 生成的基本方法版本:V1,V2,V3,V4
+gen_base_func_version: V4
 
-# 生成的逻辑方法版本:V1,V2
-gen_logic_func_version: V2
+# 生成的逻辑方法版本:V1,V2,V3,V4
+gen_logic_func_version: V4
 
 # 主键ID的数据类型
 primary_id_type: int

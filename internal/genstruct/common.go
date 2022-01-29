@@ -48,6 +48,7 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
     
     // 生成表的结构体
     if p.Struct.TableName != "" {
+        // 生成表的结构体
         for _, i2 := range p.Struct.Genrates() {
             pa.Add(i2)
         }
@@ -57,6 +58,9 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
         pa.Add(p.Struct.GenerateTableName())
         logger.Infof("定义单个表的结构体。GenFileCtx.添加表结构体对应的表名方法: %+v", pa.Generates())
         
+        // 生成表字段映射结构体
+        pa.Add(p.Struct.GenerateTableField())
+        logger.Infof("定义单个表的结构体。GenFileCtx.生成表字段映射结构体: %+v", pa.Generates())
     }
     
     // 添加获取表数据的方法
@@ -115,6 +119,7 @@ func (s *GenStruct) Genrates() []string {
     pa.Add("}")
     return pa.Generates()
 }
+// 生成数据库表名方法
 func (s *GenStruct) GenerateTableName() string {
     templ, err := template.New("TEMP_GENTNF").Parse(genfunc.GetGenTableNameTemp())
     if err != nil {
@@ -129,6 +134,16 @@ func (s *GenStruct) GenerateTableName() string {
     }
     var buf bytes.Buffer
     templ.Execute(&buf, data)
+    return buf.String()
+}
+// 生成表字段映射结构体
+func (s *GenStruct) GenerateTableField() string {
+    templ, err := template.New("TEMP_GENTNF").Parse(genfunc.GetGenTableFieldTemp())
+    if err != nil {
+        logger.Error("GenerateTableName err:", err)
+    }
+    var buf bytes.Buffer
+    templ.Execute(&buf, s)
     return buf.String()
 }
 

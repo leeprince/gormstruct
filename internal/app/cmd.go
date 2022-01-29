@@ -48,7 +48,7 @@ func (r RootCmd) Execute() {
 }
 
 func init() {
-    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定的连接的数据库名")
+    rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定连接的数据库名")
     rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfTable, "t", "", "指定的表名")
     rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfPackageName, "p", "", "生成的包名")
     rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfStructName, "s", "", "表名对应结构体，默认是表名的大驼峰命名")

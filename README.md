@@ -2,23 +2,24 @@
 ---
 
 # 包含功能点
-1. yaml 配置文件。
-    > 包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
-2. 支持指定表名、包名、表名对应结构体
-    > go run main.go -t={表名} [-p=包名] [-s=表名结构体]
-3. 生成表的 gorm 结构体
-    > 对应文件名：{表名}.go
-4. 生成操作表的基本方法
-    > 对应文件名：gen.base.go
-5. 根据字段获取单条或者多条记录根据主键、唯一、非唯一索引，获取单条或多条记录
-    > 对应文件名：{数据库名}.gen.{表名}.go)
-6. 重置 gorm 会话; 
-    > 要求配置：gen_logic_func_version >= V2
-7. 支持表中的字段或者字段切片作为 option 条件
-    > 要求配置：gen_logic_func_version >= V2
-8. option 条件查询支持分页、支持统计记录总数
-    > 要求配置：gen_logic_func_version >= V2
-    > 支持分页的方法通过 `函数选项模式` 设置 option, 最后通过 `GetByOptions` 方法实现    
+1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
+2. 命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
+3. 生成表的 gorm 结构体，对应文件名：{表名}.go
+4. 生成操作表的基本方法，对应文件名：base_dao.go
+5. 根据结合 `WithXxxx` 指定值作为 option 条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_dao.go)
+6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`/`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新   
+7. 指定字段 `WithSelect`: 设置 option 条件作为查询指定字段或者更新指定字段的值
+8. 排序 `WithOrderBy`: 设置 option 条件作为排序条件
+9. 分组 `WithGroupBy`: 设置 option 条件作为分组条件
+10. 分组筛选 `WithHaving`: 设置 option 条件作为分组筛选
+11. SQL `OR` 条件 `WithOrOption`: 设置 option 条件组作为 sql `OR` 条件
+12. 分页器 `WithPage`: 设置 option 条件作为 sql `offset`、`limit` 条件
+13. 查找单条记录 `GetByOption`
+14. 查找多条记录 `GetByOptions`
+15. 统计 `Count`
+16. 条件统计 `GetCountByOptions`: 设置 option 条件并统计
+17. 插入 `Create`
+18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 WithSelect 更新
 
 # 快速使用
 ## 配置 ./config/config.yaml
@@ -53,6 +54,11 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
     -p/--packageName: 包名
     -s/--structName: 表名对应结构体
 ```
+
+# 注意
+1. 当通过 struct 结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
+2. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
+3. 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
 
 # 包含sql查询
 ```

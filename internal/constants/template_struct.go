@@ -7,14 +7,24 @@ package constants
  */
 
 const (
-    FILE_BASE_NAME = "gen.base.go"
+    FileBaseName = "base_dao.go"
 )
 
 const (
-    TEMP_GENTABLENAME = `
-// TableName get sql table name.获取数据库表名
+    TempGenTableName = `
+// 获取结构体对应的表名方法
 func (m *{{.StructName}}) TableName() string {
 	return "{{.TableName}}"
+}
+`
+    TempGenTableField = `
+// 表字段的映射
+var {{.Name}}Columns = struct {
+{{range $genElement := .Elments}}{{$genElement.Name}} string
+{{end}}
+} {
+{{range $genElement := .Elments}}{{$genElement.Name}}: "{{$genElement.ColumnName}}",
+{{end}}
 }
 `
 )

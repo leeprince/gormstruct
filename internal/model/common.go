@@ -45,7 +45,7 @@ func getTypeName(name string, isNull bool) string {
 func fixNullToPoint(value string, isNull bool) string {
     if isNull && config.GetIsNullToPoint() {
         if
-            strings.HasPrefix(value, constants.NullTypeUint) ||
+        strings.HasPrefix(value, constants.NullTypeUint) ||
             strings.HasPrefix(value, constants.NullTypeInt) ||
             strings.HasPrefix(value, constants.NullTypeFloat) {
             return pointType(value)
@@ -99,7 +99,7 @@ func getGormModelElement() []EmInfo {
 }
 
 // 构建方法
-func buildFList(list *[]FList, key ColumnsKey, keyName string, tp string, columnName string) {
+func buildFList(list *[]FList, tableStructName string, key ColumnsKey, keyName string, tp string, columnName string) {
     for i := 0; i < len(*list); i++ {
         if (*list)[i].KeyName == keyName {
             (*list)[i].KeyNameEl = append((*list)[i].KeyNameEl, KeyInfo{
@@ -112,8 +112,9 @@ func buildFList(list *[]FList, key ColumnsKey, keyName string, tp string, column
     }
     // 还未添加过,则添加
     *list = append(*list, FList{
-        Key:     key,
-        KeyName: keyName,
+        TableStructName: tableStructName,
+        Key:             key,
+        KeyName:         keyName,
         KeyNameEl: []KeyInfo{KeyInfo{
             Type:          tp,
             ColName:       columnName,
@@ -127,37 +128,37 @@ func fixNotes(str string) string {
     return strings.Replace(str, "\n", "\n//", -1)
 }
 
+// 过滤 golang 关键字：转换名称
+func FilterKeywords(src string) string {
+    if tools.IsKeywords(src) {
+        return "_" + src
+    }
+    return src
+}
+
 // GenFListIndex 生成list status(1:获取函数名,2:获取参数列表,3:获取sql case,4:值列表)
 func GenFListIndex(info FList, status int) string {
     switch status {
     case 1: // 1:获取函数名
-        {
-            return widthFunctionName(info)
-        }
+        return widthFunctionName(info)
     case 2: // 2:获取参数列表
-        {
-            var strs []string
-            for _, v := range info.KeyNameEl {
-                strs = append(strs, fmt.Sprintf("%v %v ", CapLowercase(v.ColStructName), v.Type))
-            }
-            return strings.Join(strs, ",")
+        var strs []string
+        for _, v := range info.KeyNameEl {
+            strs = append(strs, fmt.Sprintf("%v %v ", CapLowercase(v.ColStructName), v.Type))
         }
-    case 3: // 3:获取sql case,
-        {
-            var strs []string
-            for _, v := range info.KeyNameEl {
-                strs = append(strs, fmt.Sprintf("`%v` = ?", v.ColName))
-            }
-            return strings.Join(strs, " AND ")
+        return strings.Join(strs, ",")
+    case 3: // 3:获取sql case
+        var sturctStr string
+        for _, v := range info.KeyNameEl {
+            sturctStr = fmt.Sprintf("%s %s: %s,", sturctStr, v.ColStructName, CapLowercase(v.ColStructName))
         }
+        return fmt.Sprintf("%s{ %s }", info.TableStructName, sturctStr)
     case 4: // 4:值列表
-        {
-            var strs []string
-            for _, v := range info.KeyNameEl {
-                strs = append(strs, CapLowercase(v.ColStructName))
-            }
-            return strings.Join(strs, " , ")
+        var strs []string
+        for _, v := range info.KeyNameEl {
+            strs = append(strs, CapLowercase(v.ColStructName))
         }
+        return strings.Join(strs, " , ")
     }
     
     return ""
@@ -191,14 +192,6 @@ func CapLowercase(name string) string { // IDAPIID == > idAPIID
     return FilterKeywords(re)
 }
 
-// 过滤 golang 关键字：转换名称
-func FilterKeywords(src string) string {
-    if tools.IsKeywords(src) {
-        return "_" + src
-    }
-    return src
-}
-
 // 已表名定义的结构体
 func GetTableStructName(name string) string {
     return name + "{}"
@@ -207,6 +200,19 @@ func GetTableStructName(name string) string {
 // 已表名定义的结构体
 func GetCurrentDateTime() string {
     return time.Now().Format("2006-01-02 15:04:05")
+}
+
+// 生成格式需要的引用格式
+func GetQuoteFormatValue() string {
+    return "`%v`"
+}
+
+// 基础方法的模版需要的解析的方法
+func GenBaseTemplateFuncs() template.FuncMap {
+    return template.FuncMap{
+        "GetVV": GetQuoteFormatValue,
+        "GetCurrentDateTime": GetCurrentDateTime,
+    }
 }
 
 // 逻辑方法的模版需要的解析的方法
