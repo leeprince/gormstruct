@@ -103,3 +103,8 @@ go run main.go -t=users
 ```
 out/model_test.go
 ```
+
+# 待优化
+1. 可配置是否生成所有字段的Getxxx方法
+2. 表的 xxxColumns 放在 dao 层
+3. 去除 base_dao.go 的 updateOptionFunc 方法

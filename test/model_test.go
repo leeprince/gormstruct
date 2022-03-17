@@ -189,54 +189,53 @@ func TestModelWith(t *testing.T) {
     db := GetGorm()
     
     // var user model.Users
-    // var users []*model.Users
-    // var err error
+    var users []*model.Users
+    var err error
     // var count int64
     
     usersMgr := model.NewUsersDao(db)
-    /*
-       // or 条件查询
-       userCol := model.UsersColumns
-       users, err = usersMgr.GetByOptions(
-           usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-           usersMgr.WithID(1),
-           usersMgr.WithOrOption(
-               usersMgr.WithAge(18),
-               usersMgr.WithName("name01"),
-           ),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-    */
+    
+    // or 条件查询
+    userCol := model.UsersColumns
+    users, err = usersMgr.GetByOptions(
+        usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
+        usersMgr.WithID(1),
+        usersMgr.WithOrOption(
+            usersMgr.WithAge(18),
+            usersMgr.WithName("name01"),
+        ),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
     
     /*
-       // 查询指定字段
-       userCol := model.UsersColumns
-       user, err = usersMgr.GetByOption(
-           usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
-           // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
-           // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
-           usersMgr.WithID(1),
-       )
-       fmt.Println("user, err:", user, err)
-       users, err = usersMgr.GetByOptions(
-           // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
-           // usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
-           // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
-           // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
-           // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
-           usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
-           usersMgr.WithBatchID([]int{1, 2}),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
+    // 查询指定字段
+    userCol = model.UsersColumns
+    user, err = usersMgr.GetByOption(
+        usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
+        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
+        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
+        usersMgr.WithID(1),
+    )
+    fmt.Println("user, err:", user, err)
+    users, err = usersMgr.GetByOptions(
+        // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
+        // usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
+        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
+        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
+        // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
+        usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
+        usersMgr.WithBatchID([]int64{1, 2}),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
     */
     
     /*
@@ -270,63 +269,63 @@ func TestModelWith(t *testing.T) {
     */
     
     /*
-    // 分组+筛选
-    users, err = usersMgr.GetByOptions(
-        usersMgr.WithHaveUpdateName("name01"),
-        usersMgr.WithName("name01"),
-        usersMgr.WithAge(12),
-        usersMgr.WithOrOption(
-            usersMgr.WithAge(18),
-            usersMgr.WithName("name02"),
-        ),
-        usersMgr.WithOrderBy(fmt.Sprintf("%s desc", model.UsersColumns.Name)),
-        usersMgr.WithGroupBy(model.UsersColumns.Age),
-        usersMgr.WithHaving(fmt.Sprintf("%s > ?", model.UsersColumns.Age), 15),
-    )
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
+       // 分组+筛选
+       users, err = usersMgr.GetByOptions(
+           usersMgr.WithHaveUpdateName("name01"),
+           usersMgr.WithName("name01"),
+           usersMgr.WithAge(12),
+           usersMgr.WithOrOption(
+               usersMgr.WithAge(18),
+               usersMgr.WithName("name02"),
+           ),
+           usersMgr.WithOrderBy(fmt.Sprintf("%s desc", model.UsersColumns.Name)),
+           usersMgr.WithGroupBy(model.UsersColumns.Age),
+           usersMgr.WithHaving(fmt.Sprintf("%s > ?", model.UsersColumns.Age), 15),
+       )
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
     */
     
     /*
-    // option 条件查询
-    user, err := usersMgr.GetByOption(usersMgr.WithID(1))
-    fmt.Println("user, err:", user, err)
-    usersMgr = model.NewUsersDao(db)
-    users, err := usersMgr.GetByOptions(usersMgr.WithBatchID([]int{1, 2}))
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
-    users, err = usersMgr.GetByOptions(usersMgr.WithID(1))
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
-    users, err = usersMgr.GetByOptions(
-        usersMgr.WithName("name01"),
-    )
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
-    users, err = usersMgr.GetByOptions(
-        usersMgr.WithName("name01"),
-        usersMgr.WithAge(12),
-    )
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
+       // option 条件查询
+       user, err := usersMgr.GetByOption(usersMgr.WithID(1))
+       fmt.Println("user, err:", user, err)
+       usersMgr = model.NewUsersDao(db)
+       users, err := usersMgr.GetByOptions(usersMgr.WithBatchID([]int{1, 2}))
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
+       users, err = usersMgr.GetByOptions(usersMgr.WithID(1))
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
+       users, err = usersMgr.GetByOptions(
+           usersMgr.WithName("name01"),
+       )
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
+       users, err = usersMgr.GetByOptions(
+           usersMgr.WithName("name01"),
+           usersMgr.WithAge(12),
+       )
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
     */
     
     /*
-    // 分页
-    users, err := usersMgr.GetByOptions(
-        usersMgr.WithName("name01"),
-        // usersMgr.WithName("name01"),
-        // usersMgr.WithPage(0, 2),
-        usersMgr.WithPage(1, 2),
-    )
-    for _, i2 := range users {
-        fmt.Printf("err:%v, users:%+v \n", err, i2)
-    }
+       // 分页
+       users, err := usersMgr.GetByOptions(
+           usersMgr.WithName("name01"),
+           // usersMgr.WithName("name01"),
+           // usersMgr.WithPage(0, 2),
+           usersMgr.WithPage(1, 2),
+       )
+       for _, i2 := range users {
+           fmt.Printf("err:%v, users:%+v \n", err, i2)
+       }
     */
     
     // 根据 option 条件统计数量
