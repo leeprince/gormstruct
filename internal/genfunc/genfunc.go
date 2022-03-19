@@ -30,8 +30,6 @@ func GetGenBaseTemp() string {
         return constants.TempGenBaseV2
     case "V3":
         return constants.TempGenBaseV3
-    case "V4":
-        return constants.TempGenBaseV4
     }
     return constants.TempGenBaseV4
 }
@@ -45,8 +43,6 @@ func GetGenLogic() string {
         return constants.TempGenLogicV2
     case "V3":
         return constants.TempGenLogicV3
-    case "V4":
-        return constants.TempGenLogicV4
     }
     return constants.TempGenLogicV4
 }

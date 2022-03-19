@@ -19,7 +19,12 @@
 15. 统计 `Count`
 16. 条件统计 `GetCountByOptions`: 设置 option 条件并统计
 17. 插入 `Create`
-18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 WithSelect 更新
+18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
+
+# 注意
+1. 当通过 struct 结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
+2. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
+3. 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
 
 # 快速使用
 ## 配置 ./config/config.yaml
@@ -54,11 +59,6 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
     -p/--packageName: 包名
     -s/--structName: 表名对应结构体
 ```
-
-# 注意
-1. 当通过 struct 结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
-2. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
-3. 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
 
 # 包含sql查询
 ```
@@ -104,7 +104,15 @@ go run main.go -t=users
 out/model_test.go
 ```
 
-# 待优化
-1. 可配置是否生成所有字段的Getxxx方法
-2. 表的 xxxColumns 放在 dao 层
-3. 去除 base_dao.go 的 updateOptionFunc 方法
+# 修改记录
+- [x] 表的结构体的数据类型，根据表的数据类型、默认值、是否为 null、并根据配置是否使用指针类型，去最终设置为指针类型
+    - 保持当前设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
+    - WithXxxx() 方法使用 `map[string]interface{}` 的形式支持所有数据类型
+    - 更新数据通过更新结构体时，就算结构体的字段不是指针类型，想要更新为零值时，可配合 `WithSelect()` 更新
+- [x] 表的 xxxColumns 放在 `dao` 层
+- [x] 去除 `base_dao.go` 的 `updateOptionFunc` 方法
+- [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetByOptions()` 方法
+- [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
+    - 继续统一在 model 中，具体什么架构使用者自行移动即可，方便使用
+- [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
+- [ ] 基础服务的包使用自定义的包 leeprince/goinfra

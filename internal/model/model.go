@@ -73,7 +73,8 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
         genEl.Name = utils.GetCamelName(el.Name)
         genEl.ColumnName = el.Name
         genEl.Comment = el.Comment
-        // 字段类型
+        genEl.FieldType = el.Type // 字段类型(表的字段类型)
+        // 字段类型标记(输出结构体对应的字段类型)
         if strings.EqualFold(el.Type, constants.GormModelWord) { // gorm model
             genEl.Type = el.Type
         } else {
@@ -153,10 +154,9 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
             buildFList(&primary, data.StructName, ColumnsKeyPrimary, "", config.GetPrimaryIdType(), "id")
         } else {
             typeName := getTypeName(el.Type, el.IsNull)
-            // 该字段值在表中可重复
+            // 该字段值在表中是否可重复
             isMulti := true
             for _, key := range el.Keys {
-                
                 switch key.Key {
                 case ColumnsKeyPrimary:
                     isMulti = false

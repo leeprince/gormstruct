@@ -3,6 +3,7 @@ module github.com/leeprince/gormstruct
 go 1.16
 
 require (
+	github.com/leeprince/goinfra v0.0.0-20220319182038-3d1abf33fac8
 	github.com/leeprince/gopublic v0.0.0-20211031121100-201bb5abb745
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cast v1.3.0

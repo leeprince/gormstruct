@@ -44,10 +44,10 @@ func getTypeName(name string, isNull bool) string {
 
 func fixNullToPoint(value string, isNull bool) string {
     if isNull && config.GetIsNullToPoint() {
-        if
-        strings.HasPrefix(value, constants.NullTypeUint) ||
+        if  strings.HasPrefix(value, constants.NullTypeUint) ||
             strings.HasPrefix(value, constants.NullTypeInt) ||
-            strings.HasPrefix(value, constants.NullTypeFloat) {
+            strings.HasPrefix(value, constants.NullTypeFloat) ||
+            strings.HasPrefix(value, constants.NullTypeString) {
             return pointType(value)
         }
     }
@@ -70,7 +70,7 @@ func getGormModelElement() []EmInfo {
     })
     
     result = append(result, EmInfo{
-        IsMulti:       false,
+        IsMulti:       true,
         Notes:         "创建时间",
         Type:          "time.Time", // Type.类型标记
         ColName:       "created_at",
@@ -79,7 +79,7 @@ func getGormModelElement() []EmInfo {
     })
     
     result = append(result, EmInfo{
-        IsMulti:       false,
+        IsMulti:       true,
         Notes:         "更新时间",
         Type:          "time.Time", // Type.类型标记
         ColName:       "updated_at",
@@ -88,7 +88,7 @@ func getGormModelElement() []EmInfo {
     })
     
     result = append(result, EmInfo{
-        IsMulti:       false,
+        IsMulti:       true,
         Notes:         "删除时间",
         Type:          "time.Time", // Type.类型标记
         ColName:       "deleted_at",
@@ -123,7 +123,7 @@ func buildFList(list *[]FList, tableStructName string, key ColumnsKey, keyName s
     })
 }
 
-// 避免注释中剥哈换行符
+// 避免注释中包含换行符
 func fixNotes(str string) string {
     return strings.Replace(str, "\n", "\n//", -1)
 }
@@ -136,29 +136,46 @@ func FilterKeywords(src string) string {
     return src
 }
 
-// GenFListIndex 生成list status(1:获取函数名,2:获取参数列表,3:获取sql case,4:值列表)
+// GenFListIndex 生成list
+// status(1:获取函数名,2:获取参数列表,3:获取sql case,4:值列表,5:字段列表字符串,6:参数列表的对应obj的多个 WithXxx 方法)
 func GenFListIndex(info FList, status int) string {
     switch status {
     case 1: // 1:获取函数名
         return widthFunctionName(info)
-    case 2: // 2:获取参数列表
+    case 2: // 2:获取参数列表字符串
         var strs []string
         for _, v := range info.KeyNameEl {
             strs = append(strs, fmt.Sprintf("%v %v ", CapLowercase(v.ColStructName), v.Type))
         }
-        return strings.Join(strs, ",")
-    case 3: // 3:获取sql case
+        return strings.Join(strs, ", ")
+    case 3: // 3:获取表结构体赋值的定义格式
         var sturctStr string
         for _, v := range info.KeyNameEl {
             sturctStr = fmt.Sprintf("%s %s: %s,", sturctStr, v.ColStructName, CapLowercase(v.ColStructName))
         }
         return fmt.Sprintf("%s{ %s }", info.TableStructName, sturctStr)
-    case 4: // 4:值列表
+    case 4: // 4:值列表字符串
         var strs []string
         for _, v := range info.KeyNameEl {
             strs = append(strs, CapLowercase(v.ColStructName))
         }
-        return strings.Join(strs, " , ")
+        return strings.Join(strs, ", ")
+    case 5: // 5: 字段列表字符串
+        var strs []string
+        for _, v := range info.KeyNameEl {
+            strs = append(strs, CapLowercase(v.ColName))
+        }
+        return strings.Join(strs, ", ")
+    case 6: // 6: 参数列表的对应obj的多个 WithXxx 方法
+        var withFuncs []string
+        for _, v := range info.KeyNameEl {
+            withFuncs = append(withFuncs, fmt.Sprintf("obj.With%s(%s)", v.ColStructName, CapLowercase(v.ColStructName)))
+        }
+        if len(withFuncs) == 1 {
+            return strings.Join(withFuncs, ", ")
+        }
+        
+        return fmt.Sprintf("\n %s", strings.Join(withFuncs, ", \n"))
     }
     
     return ""
@@ -210,7 +227,7 @@ func GetQuoteFormatValue() string {
 // 基础方法的模版需要的解析的方法
 func GenBaseTemplateFuncs() template.FuncMap {
     return template.FuncMap{
-        "GetVV": GetQuoteFormatValue,
+        "GetVV":              GetQuoteFormatValue,
         "GetCurrentDateTime": GetCurrentDateTime,
     }
 }

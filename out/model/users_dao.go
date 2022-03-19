@@ -8,12 +8,33 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-01-29 23:00:37
+ * @Date:   2022-03-19 21:06:26
  * @Desc:   users 表的 dao 层
  */
 
 type UsersDao struct {
 	*_BaseDao
+}
+
+// 表字段的映射
+var UsersColumns = struct {
+	ID        string
+	Name      string
+	Age       string
+	CardNo    string
+	HeadImg   string
+	CreatedAt string
+	UpdatedAt string
+	DeletedAt string
+}{
+	ID:        "id",
+	Name:      "name",
+	Age:       "age",
+	CardNo:    "card_no",
+	HeadImg:   "head_img",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
+	DeletedAt: "deleted_at",
 }
 
 // 初始化 UsersDao
@@ -22,7 +43,7 @@ func NewUsersDao(db *gorm.DB) *UsersDao {
 		panic(fmt.Errorf("UsersDao need init by db"))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	return &UsersDao{_BaseDao: &_BaseDao{DB: db, ctx: ctx, cancel: cancel, timeout: -1}}
+	return &UsersDao{_BaseDao: &_BaseDao{DB: db.Model(Users{}), ctx: ctx, cancel: cancel, timeout: -1}}
 }
 
 // 获取表名称
@@ -72,12 +93,12 @@ func (obj *UsersDao) WithBatchID(ids []int64) Option {
 }
 
 // 设置 name(名称) 字段作为 option 条件
-func (obj *UsersDao) WithName(name string) Option {
+func (obj *UsersDao) WithName(name *string) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Name] = name })
 }
 
 // 设置 name(名称) 字段的切片作为 option 条件
-func (obj *UsersDao) WithBatchName(names []string) Option {
+func (obj *UsersDao) WithBatchName(names []*string) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Name] = names })
 }
 
@@ -172,129 +193,131 @@ func (obj *UsersDao) UpdateByOption(users Users, opts ...Option) (rowsAffected i
 
 // --- 表中的字段作为 option 条件 -END ---
 
-// --- 通过存在索引的单个字段作为查询条件 ---
+// --- 单个字段作为查询条件 ---
 
-// 通过 id(主键) 获取内容
+// 通过单个 id(主键) 字段值，获取单条记录
 func (obj *UsersDao) GetFromID(id int64) (result Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{ID: id}).Find(&result).Error
+	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
-// 通过 id(主键) 获取多条记录
+// 通过多个 id(主键) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromID(ids []int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.ID), ids).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchID(ids))
 	return
 }
 
-// 通过 name(名称) 获取内容
-func (obj *UsersDao) GetFromName(name string) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{Name: name}).Find(&results).Error
+// 通过单个 name(名称) 字段值，获取多条记录
+func (obj *UsersDao) GetFromName(name *string) (results []*Users, err error) {
+	results, err = obj.GetByOptions(obj.WithName(name))
 	return
 }
 
-// 通过 name(名称) 获取多条记录
-func (obj *UsersDao) GetBatchFromName(names []string) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.Name), names).Find(&results).Error
+// 通过多个 name(名称) 字段值，获取多条记录
+func (obj *UsersDao) GetBatchFromName(names []*string) (results []*Users, err error) {
+	results, err = obj.GetByOptions(obj.WithBatchName(names))
 	return
 }
 
-// 通过 age(年龄) 获取内容
+// 通过单个 age(年龄) 字段值，获取多条记录
 func (obj *UsersDao) GetFromAge(age int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{Age: age}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }
 
-// 通过 age(年龄) 获取多条记录
+// 通过多个 age(年龄) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromAge(ages []int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.Age), ages).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchAge(ages))
 	return
 }
 
-// 通过 card_no(身份证) 获取内容
+// 通过单个 card_no(身份证) 字段值，获取单条记录
 func (obj *UsersDao) GetFromCardNo(cardNo string) (result Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{CardNo: cardNo}).Find(&result).Error
+	result, err = obj.GetByOption(obj.WithCardNo(cardNo))
 	return
 }
 
-// 通过 card_no(身份证) 获取多条记录
+// 通过多个 card_no(身份证) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromCardNo(cardNos []string) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.CardNo), cardNos).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchCardNo(cardNos))
 	return
 }
 
-// 通过 head_img(头像) 获取内容
+// 通过单个 head_img(头像) 字段值，获取多条记录
 func (obj *UsersDao) GetFromHeadImg(headImg string) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{HeadImg: headImg}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithHeadImg(headImg))
 	return
 }
 
-// 通过 head_img(头像) 获取多条记录
+// 通过多个 head_img(头像) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromHeadImg(headImgs []string) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.HeadImg), headImgs).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchHeadImg(headImgs))
 	return
 }
 
-// 通过 created_at(创建时间) 获取内容
+// 通过单个 created_at(创建时间) 字段值，获取多条记录
 func (obj *UsersDao) GetFromCreatedAt(createdAt int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{CreatedAt: createdAt}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithCreatedAt(createdAt))
 	return
 }
 
-// 通过 created_at(创建时间) 获取多条记录
+// 通过多个 created_at(创建时间) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromCreatedAt(createdAts []int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.CreatedAt), createdAts).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchCreatedAt(createdAts))
 	return
 }
 
-// 通过 updated_at(更新时间) 获取内容
+// 通过单个 updated_at(更新时间) 字段值，获取多条记录
 func (obj *UsersDao) GetFromUpdatedAt(updatedAt int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{UpdatedAt: updatedAt}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithUpdatedAt(updatedAt))
 	return
 }
 
-// 通过 updated_at(更新时间) 获取多条记录
+// 通过多个 updated_at(更新时间) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromUpdatedAt(updatedAts []int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.UpdatedAt), updatedAts).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchUpdatedAt(updatedAts))
 	return
 }
 
-// 通过 deleted_at(删除 时间) 获取内容
+// 通过单个 deleted_at(删除 时间) 字段值，获取多条记录
 func (obj *UsersDao) GetFromDeletedAt(deletedAt int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{DeletedAt: deletedAt}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithDeletedAt(deletedAt))
 	return
 }
 
-// 通过 deleted_at(删除 时间) 获取多条记录
+// 通过多个 deleted_at(删除 时间) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromDeletedAt(deletedAts []int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN (?)", UsersColumns.DeletedAt), deletedAts).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithBatchDeletedAt(deletedAts))
 	return
 }
 
-// --- 通过存在索引的单个字段作为查询条件 -END ---
+// --- 单个字段作为查询条件 -END ---
 
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
-// 获取单条记录
+// 通过 id 字段值，获取单条记录
 func (obj *UsersDao) FetchByPrimaryKey(id int64) (result Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{ID: id}).Find(&result).Error
+	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
-// 获取单条记录
+// 通过 card_no 字段值，获取单条记录
 func (obj *UsersDao) FetchUniqueByCardNo(cardNo string) (result Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{CardNo: cardNo}).Find(&result).Error
+	result, err = obj.GetByOption(obj.WithCardNo(cardNo))
 	return
 }
 
-// 获取单条记录
-func (obj *UsersDao) FetchUniqueIndexByUnqNameCard(name string, cardNo string) (result Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{Name: name, CardNo: cardNo}).Find(&result).Error
+// 通过 name, card_no 字段值，获取单条记录
+func (obj *UsersDao) FetchUniqueIndexByUnqNameCard(name *string, cardNo string) (result Users, err error) {
+	result, err = obj.GetByOption(
+		obj.WithName(name),
+		obj.WithCardNo(cardNo))
 	return
 }
 
-// 获取多条记录
+// 通过 age 字段值，获取多条记录
 func (obj *UsersDao) FetchIndexByAge(age int64) (results []*Users, err error) {
-	err = obj.DB.WithContext(obj.ctx).Where(Users{Age: age}).Find(&results).Error
+	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }
 

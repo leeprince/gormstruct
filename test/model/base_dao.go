@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-01-29 23:00:37
+ * @Date:   2022-03-19 21:06:26
  * @Desc:   dao 的基本方法
  */
 
@@ -195,8 +195,6 @@ func (obj *_BaseDao) paginate(opt *options) func(*gorm.DB) *gorm.DB {
 			opt.page.limit = MaxLimit
 		}
 		return db.Offset(opt.page.offset).Limit(opt.page.limit)
-
-		return db
 	}
 }
 
@@ -253,13 +251,6 @@ func (f queryOrOptionFunc) apply(o *options) {
 type pageOptionFunc func(*options)
 
 func (f pageOptionFunc) apply(o *options) {
-	f(o)
-}
-
-// options.update 实现 Option 接口
-type updateOptionFunc func(*options)
-
-func (f updateOptionFunc) apply(o *options) {
 	f(o)
 }
 

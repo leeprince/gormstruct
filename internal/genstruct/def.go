@@ -24,9 +24,11 @@ type GenStruct struct {
 
 // GenElement element of sturct.元素类
 type GenElement struct {
-    Name       string // 元素名（结构体名）
-    ColumnName string // 字段名
-    Type       string // 字段类型标记
-    Comment    string // 字段注释
-    TagString  string // 标记
+    Name         string      // 元素名（结构体名）
+    ColumnName   string      // 字段名
+    Type         string      // 字段类型标记(输出结构体对应的字段类型)
+    FieldType    string      // 字段类型(表的字段类型)
+    DefaultValue interface{} // 字段的默认值
+    Comment      string      // 字段注释
+    TagString    string      // 标记
 }

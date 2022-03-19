@@ -34,9 +34,10 @@ var ImportFile = map[string]string{
 }
 
 const (
-    NullTypeUint  = "uint"
-    NullTypeInt   = "int"
-    NullTypeFloat = "float"
+    NullTypeUint   = "uint"
+    NullTypeInt    = "int"
+    NullTypeFloat  = "float"
+    NullTypeString = "string"
 )
 
 // 精确匹配类型

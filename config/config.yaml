@@ -7,6 +7,7 @@ dbinfo:
   database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
   type: 0 # 数据库类型:0:mysql
 
+# ------ 建议保留默认 ------
 # 自定义数据库字段的数据类型映射 golang 的数据类型
 self_type_define:
   int(11):             int64
@@ -45,7 +46,6 @@ self_type_define:
   longblob:            "[]byte"
   integer:             int64
 
-# ------ 建议保留默认 ------
 # 包名
 packagename: model
 
@@ -66,7 +66,8 @@ primary_id_type: int
 # false: 建议设置
 is_gorm_model_tag: false
 
-# 当字段允许空时，是否设置该字段的数据类型为指针。uint、int、float类型的字段允许为空时设置指针的好处是 gorm 的更新操作会更新字段为0或者NULL
+# 设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
+# 设置指针的好处是：通过 gorm 的模型结构体执行更新操作时会更新字段为设置的零值
 is_null_to_point: true
 
 # ------ 建议保留默认-end ------
