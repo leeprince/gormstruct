@@ -7,25 +7,25 @@ package genmysql
  */
 
 type keys struct {
-	NonUnique  int    `gorm:"column:Non_unique"`
-	KeyName    string `gorm:"column:Key_name"`
-	ColumnName string `gorm:"column:Column_name"`
-	IndexType  string `gorm:"column:Index_type"`
+    NonUnique  int    `gorm:"column:Non_unique"`
+    KeyName    string `gorm:"column:Key_name"`
+    ColumnName string `gorm:"column:Column_name"`
+    IndexType  string `gorm:"column:Index_type"`
 }
 
 // genColumns show full columns
 type genColumns struct {
-	Field   string  `gorm:"column:Field"`
-	Type    string  `gorm:"column:Type"`
-	Key     string  `gorm:"column:Key"`
-	Desc    string  `gorm:"column:Comment"`
-	Null    string  `gorm:"column:Null"`
-	Default *string `gorm:"column:Default"`
+    Field   string  `gorm:"column:Field"`
+    Type    string  `gorm:"column:Type"`
+    Key     string  `gorm:"column:Key"`
+    Desc    string  `gorm:"column:Comment"`
+    Extra   string  `gorm:"column:Extra"` // 主键时，是否为自动递增。自增：Extra==auto_increment
+    Null    string  `gorm:"column:Null"`
+    Default *string `gorm:"column:Default"`
 }
 
-
 const (
-    GORM_MODEL_FIELD_ID = "id"
+    GORM_MODEL_FIELD_ID     = "id"
     GORM_MODEL_FIELD_CREATE = "created_at"
     GORM_MODEL_FIELD_UPDATE = "updated_at"
     GORM_MODEL_FIELD_DELETE = "deleted_at"

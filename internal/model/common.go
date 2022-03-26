@@ -209,7 +209,7 @@ func CapLowercase(name string) string { // IDAPIID == > idAPIID
     return FilterKeywords(re)
 }
 
-// 已表名定义的结构体
+// 定义表名的结构体
 func GetTableStructName(name string) string {
     return name + "{}"
 }

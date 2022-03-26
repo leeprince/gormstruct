@@ -31,6 +31,7 @@ type ColumnsElementInfo struct {
     IsNull  bool      // 是否为空
     Type    string    // 字段的类型
     Default string    // 默认值
+    Extra   string    // 主键时，是否为自动递增。自增：Extra==auto_increment
     Keys    []KeyList // 包含该字段的索引列表
 }
 

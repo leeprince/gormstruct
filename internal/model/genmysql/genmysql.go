@@ -112,12 +112,15 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
         // 字段注释
         tmpColumns.Comment = i2.Desc
         
+        // 主键时，是否为自动递增。自增：Extra==auto_increment
+        tmpColumns.Extra = i2.Extra
+        
         // 默认值
         if i2.Default != nil {
             if *i2.Default == "" {
-                tmpColumns.Default = "default:''"
+                tmpColumns.Default = "DEFAULT ''"
             } else {
-                tmpColumns.Default = fmt.Sprintf("default:'%s'", *i2.Default)
+                tmpColumns.Default = fmt.Sprintf("DEFAULT '%s'", *i2.Default)
             }
         }
         

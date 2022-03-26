@@ -7,17 +7,21 @@ package constants
  */
 
 const (
-    TagDb   = "gorm"
-    TagJson = "json"
+    TagDb           = "gorm"
+    TagJson         = "json"
+    PrimaryKeyExtra = "auto_increment"
 )
 
 const (
-    GenGormtagPrimary = "%s:\"primaryKey;column:%s\""
-    GenGormtagColumun = "%s:\"column:%s\""
+    GenGormtagPrimary = "%s:\"column:%s;primaryKey;%s\"" // gorm:"primaryKey;column:字段名;是否自动递增"
+    GenGormtagColumun = "%s:\"column:%s;type:%s;%s;%s\"" // gorm:"column:字段名;type:字段类型;是否允许为空;default ''"
     GenJson           = "%s:\"%s\""
 )
 
-const GormModelWord = "gorm.Model"
+const (
+    GormAutoIncrement = "autoIncrement" // gorm 自动自增的标记
+    GormModelWord     = "gorm.Model"
+)
 
 const (
     FilePackage = "package"

@@ -447,7 +447,7 @@ func New{{$obj.StructName}}Dao(db *gorm.DB) *{{$obj.StructName}}Dao {
         panic(fmt.Errorf("{{$obj.StructName}}Dao need init by db"))
     }
     ctx, cancel := context.WithCancel(context.Background())
-    return &{{$obj.StructName}}Dao{_BaseDao: &_BaseDao{DB: db.Model({{$obj.StructName}}{}), ctx:ctx, cancel:cancel, timeout:-1}}
+    return &{{$obj.StructName}}Dao{_BaseDao: &_BaseDao{DB: db.Model({{GetTableStructName $obj.StructName}}), ctx:ctx, cancel:cancel, timeout:-1}}
 }
 
 // 获取表名称

@@ -73,7 +73,6 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
         genEl.Name = utils.GetCamelName(el.Name)
         genEl.ColumnName = el.Name
         genEl.Comment = el.Comment
-        genEl.FieldType = el.Type // 字段类型(表的字段类型)
         // 字段类型标记(输出结构体对应的字段类型)
         if strings.EqualFold(el.Type, constants.GormModelWord) { // gorm model
             genEl.Type = el.Type
@@ -88,22 +87,33 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
                 break
             }
         }
-        genEl.TagString = g.getStructTag(isPrimary, genEl.ColumnName)
+        genEl.TagString = g.getStructTag(isPrimary, el.IsNull, genEl.ColumnName, el.Type, el.Default, el.Extra)
         
         genEls = append(genEls, genEl)
     }
     return
 }
 
-func (g *GenDBInfo) getStructTag(isPrimary bool, clolumnName string) string {
+// 声明 model 时，tag 是可选的，GORM 支持以下 tag： tag 名大小写不敏感，但建议使用 camelCase 风格
+func (g *GenDBInfo) getStructTag(isPrimary, isNull bool, clolumnName, fieldType, fieldDefault, extra string) string {
     tagGorm := constants.TagDb
     tagJson := constants.TagJson
     
+    isNullText := "is null"
+    if !isNull {
+        isNullText = "not null"
+    }
+    
     var gormTag string
     if isPrimary {
-        gormTag = fmt.Sprintf(constants.GenGormtagPrimary, tagGorm, clolumnName)
+        if extra == constants.PrimaryKeyExtra {
+            extra = constants.GormAutoIncrement
+        } else {
+            extra = ""
+        }
+        gormTag = fmt.Sprintf(constants.GenGormtagPrimary, tagGorm, clolumnName, extra)
     } else {
-        gormTag = fmt.Sprintf(constants.GenGormtagColumun, tagGorm, clolumnName)
+        gormTag = fmt.Sprintf(constants.GenGormtagColumun, tagGorm, clolumnName, fieldType, isNullText, fieldDefault)
     }
     jsonTag := fmt.Sprintf(constants.GenJson, tagJson, clolumnName)
     return fmt.Sprintf("`%s %s`", gormTag, jsonTag)

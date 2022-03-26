@@ -115,4 +115,5 @@ out/model_test.go
 - [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
     - 继续统一在 model 中，具体什么架构使用者自行移动即可，方便使用
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
+- [x] 生成的表结构体包含：结构体字段、结构体类型、表字段、表数据类型、表字段是否允许为null,表字段默认值、json字段
 - [ ] 基础服务的包使用自定义的包 leeprince/goinfra
