@@ -14,6 +14,7 @@ import (
 type configDef struct {
     // 使用全小写
     DBInfo              DBInfo            `yaml:"dbinfo"`
+    GenDoc              bool              `yaml:"gendoc"`
     SelfTypeDefine      map[string]string `yaml:"self_type_define"`
     PackageName         string            `yaml:"packagename"`
     OuputDir            string            `yaml:"ouput_dir"`

@@ -80,7 +80,7 @@ CREATE TABLE `users` (
   `head_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '头像',
   `created_at` int(11) NOT NULL COMMENT '创建时间',
   `updated_at` int(11) NOT NULL COMMENT '更新时间',
-  `deleted_at` int(11) DEFAULT NULL COMMENT '删除 时间',
+  `deleted_at` int(11) DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `card_no` (`card_no`),
   UNIQUE KEY `unq_name_card` (`name`,`card_no`),
@@ -116,4 +116,5 @@ out/model_test.go
     - 继续统一在 model 中，具体什么架构使用者自行移动即可，方便使用
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
 - [x] 生成的表结构体包含：结构体字段、结构体类型、表字段、表数据类型、表字段是否允许为null,表字段默认值、json字段
+- [x] 支持配置生成数据库文档
 - [ ] 基础服务的包使用自定义的包 leeprince/goinfra

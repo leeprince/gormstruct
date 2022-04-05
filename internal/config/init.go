@@ -1,10 +1,9 @@
 package config
 
 import (
-    "fmt"
-    "gopkg.in/yaml.v3"
     "github.com/leeprince/gopublic/tools"
     "github.com/leeprince/gormstruct/internal/logger"
+    "gopkg.in/yaml.v3"
     "io/ioutil"
     "path"
 )
@@ -21,7 +20,7 @@ func InitConfig() {
         configPath = path.Join(tools.GetModelPath(), "config/config.yaml")
         logger.Info("configPath:", configPath)
         if !tools.CheckFileIsExist(configPath) {
-            logger.Error("config.yaml not exit. using default config")
+            logger.Panic("config.yaml not exit. using default config")
         }
         
         onInit()
@@ -32,7 +31,7 @@ func InitConfig() {
 func onInit() {
     err := initConfigFile(configPath)
     if err != nil {
-        fmt.Println("Load config file error: ", err.Error())
+        // fmt.Println("Load config file error: ", err.Error())
         return
     }
 }
@@ -45,7 +44,7 @@ func initConfigFile(filename string) error {
     }
     
     if err := yaml.Unmarshal(bs, &config); err != nil {
-        fmt.Println("read config file error: ", err.Error())
+        // fmt.Println("read config file error: ", err.Error())
         return err
     }
     

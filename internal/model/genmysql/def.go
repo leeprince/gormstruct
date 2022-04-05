@@ -13,6 +13,12 @@ type keys struct {
     IndexType  string `gorm:"column:Index_type"`
 }
 
+type docKey struct {
+    isUnique    bool     // 是否为唯一索引
+    KeyName     string   // 键名
+    ColumnNames []string // 键名包含的字段
+}
+
 // genColumns show full columns
 type genColumns struct {
     Field   string  `gorm:"column:Field"`

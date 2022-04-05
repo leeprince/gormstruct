@@ -9,7 +9,7 @@ type Users struct {
 	HeadImg   string  `gorm:"column:head_img;type:varchar(255);not null;DEFAULT ''" json:"head_img"` // 头像
 	CreatedAt int64   `gorm:"column:created_at;type:int(11);not null;" json:"created_at"`            // 创建时间
 	UpdatedAt int64   `gorm:"column:updated_at;type:int(11);not null;" json:"updated_at"`            // 更新时间
-	DeletedAt int64   `gorm:"column:deleted_at;type:int(11);not null;DEFAULT '0'" json:"deleted_at"` // 删除 时间
+	DeletedAt int64   `gorm:"column:deleted_at;type:int(11);not null;DEFAULT '0'" json:"deleted_at"` // 删除时间
 }
 
 // 获取结构体对应的表名方法

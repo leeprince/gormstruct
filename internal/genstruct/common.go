@@ -33,7 +33,7 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
     
     // 定义包名：package
     pa.Add(constants.FilePackage, p.PackageName)
-    logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.定义包名：package: %+v", pa.Generates())
+    // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.定义包名：package: %+v", pa.Generates())
     
     // 定义引入文件：import
     p.genImport()
@@ -44,7 +44,7 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
         }
         pa.Add(")")
     }
-    logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.定义引入文件：import: %+v", pa.Generates())
+    // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.定义引入文件：import: %+v", pa.Generates())
     
     // 生成表的结构体 与 添加获取表数据的方法获取表数据的方法 定义的p结构体不是共存的
     // 生成表的结构体
@@ -52,11 +52,11 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
         for _, i2 := range p.Struct.Genrates() {
             pa.Add(i2)
         }
-        logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.生成表的结构体: %+v", pa.Generates())
+        // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法.生成表的结构体: %+v", pa.Generates())
         
         // 添加表结构体对应的表名方法
         pa.Add(p.Struct.GenerateTableName())
-        logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法 添加表结构体对应的表名方法: %+v", pa.Generates())
+        // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法 添加表结构体对应的表名方法: %+v", pa.Generates())
         
         // 生成表字段映射结构体. 已放入相应表的 dao 层
         /*pa.Add(p.Struct.GenerateTableField())
@@ -67,14 +67,14 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
     for _, i2 := range p.FuncStrList {
         pa.Add(i2)
     }
-    logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法: %+v", pa.Generates())
+    // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法: %+v", pa.Generates())
     
     // 拼接所有输出行的信息，并使用换行符换行
-    logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法: %+v", pa.Generates())
+    // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法: %+v", pa.Generates())
     for _, v := range pa.Generates() {
         strOut += v + "\n"
     }
-    logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法:\n%+v", strOut)
+    // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法:\n%+v", strOut)
     
     return
 }

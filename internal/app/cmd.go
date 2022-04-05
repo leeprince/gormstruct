@@ -70,7 +70,7 @@ func generateGoTag(c *cobra.Command, _ []string) error {
     
     // 根据表相关的所有属性，生成用于输出到文件的格式
     genOutInfo, _ := model.Generate(dbInfo)
-    fmt.Printf("所有输出的信息。generateGoTag.genOutInfo:\n%+v\n", genOutInfo)
+    // fmt.Printf("所有输出的信息。generateGoTag.genOutInfo:\n%+v\n", genOutInfo)
     
     for _, i2 := range genOutInfo {
         path := fmt.Sprintf("%s%s", config.GetOuputDir(), i2.FileName)

@@ -78,3 +78,7 @@ func GetOuputDir() string {
 func GetSelfTypeDefine() map[string]string {
     return config.SelfTypeDefine
 }
+
+func GenDoc() bool {
+    return config.GenDoc
+}

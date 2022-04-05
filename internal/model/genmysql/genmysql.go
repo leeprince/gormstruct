@@ -1,11 +1,11 @@
 package genmysql
 
 import (
-    "encoding/json"
     "fmt"
     "github.com/leeprince/gopublic/mysqldb"
     "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
+    "github.com/leeprince/gormstruct/internal/gendoc"
     "github.com/leeprince/gormstruct/internal/logger"
     "github.com/leeprince/gormstruct/internal/model"
     "strings"
@@ -37,8 +37,8 @@ func (m *mysqlModel) GenModel() model.DBInfo {
     dbInfo.PackageName = m.GetPkgName()
     dbInfo.DbName = m.GetDbName()
     
-    debugInfo, _ := json.Marshal(dbInfo)
-    fmt.Printf("获取数据库相关属性:%s", string(debugInfo))
+    // debugInfo, _ := json.Marshal(dbInfo)
+    // fmt.Printf("获取数据库相关属性:%s", string(debugInfo))
     return dbInfo
 }
 
@@ -102,8 +102,10 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
         })
     }
     // 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
+    
     for _, i2 := range columns {
         var tmpColumns model.ColumnsElementInfo
+        
         // 字段名称
         tmpColumns.Name = i2.Field
         // 字段类型
@@ -126,6 +128,21 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
         
         // 是否允许null
         tmpColumns.IsNull = strings.EqualFold(i2.Null, FIELD_IS_NULL)
+        
+        // 生成格式化文档，用于文档编写
+        if config.GenDoc() {
+            var docDefault string
+            if i2.Default != nil {
+                if *i2.Default != "" {
+                    docDefault = *i2.Default
+                }
+            }
+            docComment := i2.Desc
+            if i2.Extra != "" {
+                docComment = fmt.Sprintf("%s,%s", docComment, i2.Extra)
+            }
+            gendoc.AddColumnLine(fmt.Sprintf("%s\\t%s\\t%t\\t%s\\t%s", i2.Field, i2.Type, tmpColumns.IsNull, docDefault, docComment))
+        }
         
         // 索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
         if keys, ok := keyMap[i2.Field]; ok {
@@ -170,6 +187,33 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
         }
         columnsElement = append(columnsElement, tmpColumns)
     }
+    
+    if config.GenDoc() {
+        docKeys := make(map[string]*docKey)
+        for _, key := range keys {
+            keyName := key.KeyName
+            columnName := key.ColumnName
+            if _, ok := docKeys[keyName]; ok {
+                docKeys[keyName].ColumnNames = append(docKeys[keyName].ColumnNames, columnName)
+                continue
+            }
+            isUnique := false
+            if key.NonUnique == 0 {
+                isUnique = true
+            }
+            docKey := docKey{
+                isUnique:    isUnique,
+                KeyName:     key.KeyName,
+                ColumnNames: []string{columnName},
+            }
+            docKeys[keyName] = &docKey
+        }
+        for _, i2 := range docKeys {
+            columnNamesString := strings.Join(i2.ColumnNames, ",")
+            gendoc.AddKeyLine(fmt.Sprintf("%t\\t%s\\t(%s)", i2.isUnique, i2.KeyName, columnNamesString))
+        }
+    }
+    gendoc.FmtGenDoc(table)
     
     return
 }

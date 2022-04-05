@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-03-26 13:49:00
+ * @Date:   2022-04-04 14:59:51
  * @Desc:   users 表的 dao 层
  */
 
@@ -152,12 +152,12 @@ func (obj *UsersDao) WithBatchUpdatedAt(updatedAts []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.UpdatedAt] = updatedAts })
 }
 
-// 设置 deleted_at(删除 时间) 字段作为 option 条件
+// 设置 deleted_at(删除时间) 字段作为 option 条件
 func (obj *UsersDao) WithDeletedAt(deletedAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAt })
 }
 
-// 设置 deleted_at(删除 时间) 字段的切片作为 option 条件
+// 设置 deleted_at(删除时间) 字段的切片作为 option 条件
 func (obj *UsersDao) WithBatchDeletedAt(deletedAts []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAts })
 }
@@ -279,13 +279,13 @@ func (obj *UsersDao) GetBatchFromUpdatedAt(updatedAts []int64) (results []*Users
 	return
 }
 
-// 通过单个 deleted_at(删除 时间) 字段值，获取多条记录
+// 通过单个 deleted_at(删除时间) 字段值，获取多条记录
 func (obj *UsersDao) GetFromDeletedAt(deletedAt int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithDeletedAt(deletedAt))
 	return
 }
 
-// 通过多个 deleted_at(删除 时间) 字段值，获取多条记录
+// 通过多个 deleted_at(删除时间) 字段值，获取多条记录
 func (obj *UsersDao) GetBatchFromDeletedAt(deletedAts []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithBatchDeletedAt(deletedAts))
 	return

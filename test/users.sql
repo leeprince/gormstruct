@@ -29,7 +29,7 @@ CREATE TABLE `users` (
   `head_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '头像',
   `created_at` int(11) NOT NULL COMMENT '创建时间',
   `updated_at` int(11) NOT NULL COMMENT '更新时间',
-  `deleted_at` int(11) NOT NULL DEFAULT '0' COMMENT '删除 时间',
+  `deleted_at` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `card_no` (`card_no`),
   UNIQUE KEY `unq_name_card` (`name`,`card_no`),
