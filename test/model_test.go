@@ -5,7 +5,7 @@ import (
     "fmt"
     "github.com/leeprince/goinfra/plog"
     "github.com/leeprince/goinfra/utils"
-    "github.com/leeprince/gormstruct/test/model"
+    "github.com/leeprince/gormstruct/out/model"
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
     "gorm.io/gorm/logger"
@@ -486,7 +486,6 @@ func TestTracsaction(t *testing.T) {
     ctx := context.Background()
     
     var user model.Users
-    var users []*model.Users
     var err error
     var rows int64
     
@@ -495,7 +494,7 @@ func TestTracsaction(t *testing.T) {
     user, err = usersDao.GetFromID(1)
     fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
     
-    user.Age = 20
+    user.Age = 10
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
     fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
     
@@ -512,7 +511,7 @@ func TestTracsaction(t *testing.T) {
     user, err = usersDao.GetFromID(1)
     fmt.Println("》model.NewUsersDao(ctx, db).GetFromID(1) tx:", user, err)
     
-    user.Age = 21
+    user.Age = 20
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
     fmt.Println("》usersDao.UpdateByOption(user, usersDao.WithID(1)) tx:", rows, err)
     if err != nil {
@@ -522,10 +521,10 @@ func TestTracsaction(t *testing.T) {
     }
     
     userBasseDao = model.NewUserBaseDao(ctx, tx)
-    rows, err = userBasseDao.Create(&model.UserBase{
-        Name: "tt-02",
+    rows, err = userBasseDao.UpdateByOption(model.UserBase{
+        Name: "tt-0101",
         Age:  10,
-    })
+    }, userBasseDao.WithName("tt-01"))
     fmt.Println("》 userBasseDao.Create(&model.UserBase) tx:", rows, err)
     // err = errors.New("》》》 userBasseDao.Create to err")
     if err != nil {
@@ -537,34 +536,16 @@ func TestTracsaction(t *testing.T) {
     tx.Commit()
     
     // 3. 再次查询，更新或插入
+    // usersDao = model.NewUsersDao(ctx, usersDao.NewDB()) // `sql: transaction has already been committed or rolled back`
+    // usersDao.New() // `sql: transaction has already been committed or rolled back`
     usersDao = model.NewUsersDao(ctx, db)
+    
     user, err = usersDao.GetFromID(1)
-    fmt.Println("- model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
+    fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
     
-    user, err = usersDao.GetByOption(usersDao.WithID(1))
-    fmt.Println("- usersDao.GetByOption(usersDao.WithID(1)):", user, err)
-    
-    name1 := "name01"
-    users, err = usersDao.GetByOptions(usersDao.WithName(&name1))
-    fmt.Println("- usersDao.GetByOptions(usersDao.WithName(&name1)):", users, err)
-    
-    name2 := "name03"
-    names := []*string{
-        &name1,
-        &name2,
-    }
-    users, err = usersDao.GetByOptions(usersDao.WithNames(names))
-    fmt.Println("- usersDao.GetByOptions(usersDao.WithNames(names)):", users, err)
-    
-    user.Age = 22
+    user.Age = 30
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
-    fmt.Println("- usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
+    fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
     
-    userBasseDao = model.NewUserBaseDao(ctx, db)
-    rows, err = userBasseDao.Create(&model.UserBase{
-        Name: "tt-03",
-        Age:  10,
-    })
-    fmt.Println("- userBasseDao.Create(&model.UserBase):", rows, err)
     
 }

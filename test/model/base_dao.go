@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-05-08 16:30:17
+ * @Date:   2022-05-08 23:13:47
  * @Desc:   dao 的基本方法
  */
 
@@ -62,17 +62,17 @@ func (obj *_BaseDao) UpdateDB(db *gorm.DB) {
 
 // 重置 gorm
 func (obj *_BaseDao) New() {
-	obj.DB = obj.NewDB()
+	obj.UpdateDB(obj.NewDB())
 }
 
 // 重置 gorm 会话
 func (obj *_BaseDao) NewDB() *gorm.DB {
-	return obj.DB.Session(&gorm.Session{NewDB: true, Context: obj.ctx})
+	return obj.GetDB().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
 }
 
 // 设置上下文获取 *grom.DB
 func (obj *_BaseDao) WithContext() (db *gorm.DB) {
-	return obj.DB.WithContext(obj.ctx)
+	return obj.GetDB().WithContext(obj.ctx)
 }
 
 // 设置 sql 语句是否会更新数据
