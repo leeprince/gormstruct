@@ -13,11 +13,12 @@ dbinfo:
 gendoc: true
 # 自定义数据库字段的数据类型映射 golang 的数据类型
 self_type_define:
-  int(11):             int64
+  int(11):             int32
+  int(11) unsigned:    uint32
   smallint:            int16
   smallint unsigned:   uint16
   int:                 int64
-  int unsigned:        uint
+  int unsigned:        int64
   bigint:              int64
   bigint unsigned:     uint64
   mediumint:           int32
@@ -29,8 +30,12 @@ self_type_define:
   bit(1):              "[]uint8"
   tinyint:             int8
   tinyint unsigned:    uint8
-  tinyint(1):          bool # tinyint(1) 默认设置成bool
-  tinyint(1) unsigned: bool # tinyint(1) 默认设置成bool
+  tinyint(1):          int8
+  tinyint(1) unsigned: uint8
+  tinyint(2):          int8
+  tinyint(2) unsigned: uint8
+  tinyint(3):          int8
+  tinyint(3) unsigned: uint8
   json:                datatypes.JSON
   text:                string
   timestamp:           time.Time

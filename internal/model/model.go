@@ -111,7 +111,7 @@ func (g *GenDBInfo) getStructTag(isPrimary, isNull bool, clolumnName, fieldType,
         } else {
             extra = ""
         }
-        gormTag = fmt.Sprintf(constants.GenGormtagPrimary, tagGorm, clolumnName, extra)
+        gormTag = fmt.Sprintf(constants.GenGormtagPrimary, tagGorm, clolumnName, fieldType, extra)
     } else {
         gormTag = fmt.Sprintf(constants.GenGormtagColumun, tagGorm, clolumnName, fieldType, isNullText, fieldDefault)
     }

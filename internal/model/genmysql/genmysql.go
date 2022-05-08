@@ -95,19 +95,21 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
     var columns []genColumns
     colSql := fmt.Sprintf("SHOW FULL COLUMNS FROM %s", table)
     orm.Raw(colSql).Scan(&columns)
+    
     // 判断数据库设计是否符合 gorm.Model， 符合则定义表存在 gorm.Model
     if checkGormModel(&columns) {
         columnsElement = append(columnsElement, model.ColumnsElementInfo{
             Type: constants.GormModelWord,
         })
     }
-    // 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
     
+    // 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
     for _, i2 := range columns {
         var tmpColumns model.ColumnsElementInfo
         
         // 字段名称
         tmpColumns.Name = i2.Field
+        
         // 字段类型
         tmpColumns.Type = i2.Type
         

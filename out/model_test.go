@@ -1,6 +1,7 @@
 package test
 
 import (
+    "context"
     "fmt"
     "github.com/leeprince/goinfra/plog"
     "github.com/leeprince/goinfra/utils"
@@ -19,18 +20,18 @@ var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=tr
 const IsDebug = true
 
 func InitLooger() {
+    // err := plog.SetOutputFile("./logs", "gorm.log", false)
     err := plog.SetOutputFile("./logs", "gorm.log", true)
     if err != nil {
         panic(fmt.Sprintf("plog.SetOutputFile err:%v", err))
     }
-    plog.SetReportCaller(true)
+    // plog.SetReportCaller(true)
     
     plog.Debugln("0001", "0002")
     plog.WithFiledLogID(utils.UniqidID()).WithField("key01", "v001").Debugln("0001", "0002")
 }
 
 var logWriterStdout = log.New(os.Stdout, "\r\n", log.LstdFlags) // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
-
 
 var DBLogger = logger.New(
     // logWriterStdout, // 标准输出
@@ -80,7 +81,7 @@ func GetGorm() *gorm.DB {
 func TestModelGetTableName(t *testing.T) {
     db := GetGorm()
     
-    userTableName := model.NewUsersDao(db).GetTableName()
+    userTableName := model.NewUsersDao(context.Background(), db).GetTableName()
     fmt.Println("userTableName:", userTableName)
 }
 
@@ -90,16 +91,16 @@ func TestModelGet(t *testing.T) {
     var user model.Users
     var err error
     
-    user, err = model.NewUsersDao(db).Get()
+    user, err = model.NewUsersDao(context.Background(), db).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model.NewUsersDao(db.Where("id = ?", 1)).Get()
+    user, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 1)).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model.NewUsersDao(db.Where("id = ?", 2)).Get()
+    user, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 2)).Get()
     fmt.Println("user, err:", user, err)
     
-    user, err = model.NewUsersDao(db.Where("id = ?", 20000)).Get()
+    user, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 20000)).Get()
     fmt.Println("user, err:", user, err)
 }
 
@@ -109,31 +110,31 @@ func TestModelGets(t *testing.T) {
     var users []*model.Users
     var err error
     
-    users, err = model.NewUsersDao(db.Where(model.Users{ID: 0})).Gets()
+    users, err = model.NewUsersDao(context.Background(), db.Where(model.Users{ID: 0})).Gets()
     fmt.Printf("err:%v, users:%+v \n", err, users)
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
     
-    users, err = model.NewUsersDao(db.Where("id = ?", 0)).Gets()
+    users, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 0)).Gets()
     fmt.Printf("err:%v, users:%+v \n", err, users)
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
     
-    users, err = model.NewUsersDao(db.Where("id = ?", 1)).Gets()
+    users, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 1)).Gets()
     fmt.Printf("err:%v, users:%+v \n", err, users)
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
     
-    users, err = model.NewUsersDao(db.Where("id = ?", 1000)).Gets()
+    users, err = model.NewUsersDao(context.Background(), db.Where("id = ?", 1000)).Gets()
     fmt.Printf("err:%v, users:%+v \n", err, users)
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
     
-    users, err = model.NewUsersDao(db.Where("name = ?", "name01")).Gets()
+    users, err = model.NewUsersDao(context.Background(), db.Where("name = ?", "name01")).Gets()
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
@@ -144,18 +145,28 @@ func TestModelCount(t *testing.T) {
     
     var count int64
     
-    db1 := model.NewUsersDao(db.Where("id = ?", 11)).Count(&count)
+    db1 := model.NewUsersDao(context.Background(), db).Count(&count)
     fmt.Printf("count:%+v, db.err:%v \n", count, db1.Error)
     
-    db2 := model.NewUsersDao(db.Where("id in ?", []int64{1, 2})).Count(&count)
-    fmt.Printf("count:%+v, db.err:%v \n", count, db2.Error)
+    // 根据 option 条件统计数量
+    usersDao := model.NewUsersDao(context.Background(), db)
+    name1 := "name01"
+    count = usersDao.GetCountByOptions(
+        usersDao.WithName(&name1),
+    )
+    fmt.Println("count", count)
+    name2 := "name010000"
+    count = usersDao.GetCountByOptions(
+        usersDao.WithName(&name2),
+    )
+    fmt.Println("count", count)
 }
 
 func TestModelCreate(t *testing.T) {
     db := GetGorm()
     
     // CreatedAt/UpdatedAt：设置值时覆盖，为0时会自动生成
-    deletedAt := int64(1)
+    deletedAt := int32(1)
     name := "insert-prince03"
     users := model.Users{
         // ID:        0,
@@ -168,79 +179,88 @@ func TestModelCreate(t *testing.T) {
         UpdatedAt: 0,
         DeletedAt: deletedAt,
     }
-    rowsAffected, err := model.NewUsersDao(db).Create(&users)
+    rowsAffected, err := model.NewUsersDao(context.Background(), db).Create(&users)
     fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
 }
 
-func TestModelWith(t *testing.T) {
+// or 条件查询
+func TestModelOr(t *testing.T) {
     db := GetGorm()
+    userDao := model.NewUsersDao(context.Background(), db)
     
-    // var user model.Users
-    // var users []*model.Users
-    // var err error
-    // var count int64
-    
-    usersMgr := model.NewUsersDao(db)
-    /*
-       // or 条件查询
-       userCol := model.UsersColumns
-       users, err = usersMgr.GetByOptions(
-           usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-           usersMgr.WithID(1),
-           usersMgr.WithOrOption(
-               usersMgr.WithAge(18),
-               usersMgr.WithName("name01"),
-           ),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-    */
-    
-    
-    // 查询指定字段
-    var user model.Users
     var users []*model.Users
     var err error
+    
+    name := "name01"
+    
     userCol := model.UsersColumns
-    user, err = usersMgr.GetByOption(
-        usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
-        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
-        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
-        usersMgr.WithID(1),
-    )
-    fmt.Println("user, err:", user, err)
-    users, err = usersMgr.GetByOptions(
-        // usersMgr.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
-        // usersMgr.WithSelect([]string{userCol.ID, userCol.Age}),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
-        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
-        // usersMgr.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
-        // usersMgr.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
-        usersMgr.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
-        usersMgr.WithBatchID([]int64{1, 2}),
+    users, err = userDao.GetByOptions(
+        userDao.WithSelect([]string{userCol.ID, userCol.Age}),
+        userDao.WithID(1),
+        userDao.WithOrOption(
+            userDao.WithAge(18),
+            userDao.WithName(&name),
+        ),
     )
     for _, i2 := range users {
         fmt.Printf("err:%v, users:%+v \n", err, i2)
     }
+}
+
+// 查询指定字段
+func TestModelSelect(t *testing.T) {
+    db := GetGorm()
+    userDao := model.NewUsersDao(context.Background(), db)
     
-    /*
-    // 更新方法
+    var user model.Users
+    var users []*model.Users
+    var err error
+    userCol := model.UsersColumns
+    // userAllCol := model.UsersAllColumns
+    user, err = userDao.GetByOption(
+        // userDao.WithSelect(userAllCol),
+        userDao.WithSelect([]string{userCol.ID, userCol.Age}),
+        // userDao.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
+        // userDao.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
+        // userDao.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
+        // userDao.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
+        // userDao.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
+        // userDao.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
+        userDao.WithID(1),
+    )
+    fmt.Println("user, err:", user, err)
+    users, err = userDao.GetByOptions(
+        // userDao.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
+        // userDao.WithSelect([]string{userCol.ID, userCol.Age}),
+        // userDao.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
+        // userDao.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
+        // userDao.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
+        // userDao.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
+        // userDao.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
+        userDao.WithIDs([]int32{1, 2}),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+}
+
+// 更新
+func TestModelUpdateByOption(t *testing.T) {
     var user model.Users
     var err error
     var count int64
-    user, err = usersMgr.GetByOption(
-        usersMgr.WithID(1),
+    
+    db := GetGorm()
+    userDao := model.NewUsersDao(context.Background(), db)
+    
+    user, err = userDao.GetByOption(
+        userDao.WithID(1),
     )
     fmt.Printf("err:%v, users:%+v \n", err, user)
     
     // dtime := 0
     name := ""
-    dtime := int64(1642337297)
+    dtime := int32(1642337297)
     usesUpdate := model.Users{
         // ID: 100,
         Name:      &name,
@@ -248,88 +268,101 @@ func TestModelWith(t *testing.T) {
         HeadImg:   "",
         DeletedAt: dtime,
     }
-    count, err = usersMgr.UpdateByOption(
+    count, err = userDao.UpdateByOption(
         usesUpdate,
-        usersMgr.WithID(1),
+        userDao.WithID(1),
     )
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+    
     userCol := model.UsersColumns
-    count, err = usersMgr.UpdateByOption(
+    count, err = userDao.UpdateByOption(
         usesUpdate,
-        usersMgr.WithSelect([]string{userCol.Name, userCol.Age, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
-        usersMgr.WithID(1),
+        userDao.WithSelect([]string{userCol.Name, userCol.Age, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
+        userDao.WithID(1),
     )
-    fmt.Printf("UpdateByOption count:%v, err:%+v \n", count, err)
-    */
-    /*
-       // 分组+筛选
-       users, err = usersMgr.GetByOptions(
-           usersMgr.WithHaveUpdateName("name01"),
-           usersMgr.WithName("name01"),
-           usersMgr.WithAge(12),
-           usersMgr.WithOrOption(
-               usersMgr.WithAge(18),
-               usersMgr.WithName("name02"),
-           ),
-           usersMgr.WithOrderBy(fmt.Sprintf("%s desc", model.UsersColumns.Name)),
-           usersMgr.WithGroupBy(model.UsersColumns.Age),
-           usersMgr.WithHaving(fmt.Sprintf("%s > ?", model.UsersColumns.Age), 15),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-    */
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+}
+
+// 分组+筛选
+func TestModelGetByOptionsOfGroup(t *testing.T) {
+    db := GetGorm()
     
-    /*
-       // option 条件查询
-       user, err := usersMgr.GetByOption(usersMgr.WithID(1))
-       fmt.Println("user, err:", user, err)
-       usersMgr = model.NewUsersDao(db)
-       users, err := usersMgr.GetByOptions(usersMgr.WithBatchID([]int{1, 2}))
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-       users, err = usersMgr.GetByOptions(usersMgr.WithID(1))
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-       users, err = usersMgr.GetByOptions(
-           usersMgr.WithName("name01"),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-       users, err = usersMgr.GetByOptions(
-           usersMgr.WithName("name01"),
-           usersMgr.WithAge(12),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-    */
+    var users []*model.Users
+    var err error
+    name := "name01"
     
-    /*
-       // 分页
-       users, err := usersMgr.GetByOptions(
-           usersMgr.WithName("name01"),
-           // usersMgr.WithName("name01"),
-           // usersMgr.WithPage(0, 2),
-           usersMgr.WithPage(1, 2),
-       )
-       for _, i2 := range users {
-           fmt.Printf("err:%v, users:%+v \n", err, i2)
-       }
-    */
+    userDao := model.NewUsersDao(context.Background(), db)
     
-    // 根据 option 条件统计数量
-    /*var count int64
-      count = usersMgr.GetCountByOptions(
-          usersMgr.WithName("name01"),
-      )
-      fmt.Println("count", count)
-      count = usersMgr.GetCountByOptions(
-          usersMgr.WithName("name010000"),
-      )
-      fmt.Println("count", count)*/
+    users, err = userDao.GetByOptions(
+        userDao.WithName(&name),
+        userDao.WithAge(12),
+        userDao.WithOrOption(
+            userDao.WithAge(18),
+            userDao.WithName(&name),
+        ),
+        userDao.WithOrderBy(fmt.Sprintf("%s desc", model.UsersColumns.Name)),
+        userDao.WithGroupBy(model.UsersColumns.Age),
+        userDao.WithHaving(fmt.Sprintf("%s > ?", model.UsersColumns.Age), 15),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+}
+
+// option 条件查询
+func TestModelGetByOptions(t *testing.T) {
+    db := GetGorm()
+    
+    var users []*model.Users
+    var err error
+    name := "name01"
+    
+    userDao := model.NewUsersDao(context.Background(), db)
+    
+    user, err := userDao.GetByOption(userDao.WithID(1))
+    fmt.Println("user, err:", user, err)
+    userDao = model.NewUsersDao(context.Background(), db)
+    users, err = userDao.GetByOptions(userDao.WithIDs([]int32{1, 2}))
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+    users, err = userDao.GetByOptions(userDao.WithID(1))
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+    users, err = userDao.GetByOptions(
+        userDao.WithName(&name),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+    users, err = userDao.GetByOptions(
+        userDao.WithName(&name),
+        userDao.WithAge(12),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
+}
+
+// 分页
+func TestModelPage(t *testing.T) {
+    db := GetGorm()
+    
+    var users []*model.Users
+    var err error
+    name := "name01"
+    
+    userDao := model.NewUsersDao(context.Background(), db)
+    users, err = userDao.GetByOptions(
+        userDao.WithName(&name),
+        // userDao.WithName("name01"),
+        // userDao.WithPage(0, 2),
+        userDao.WithPage(1, 2),
+    )
+    for _, i2 := range users {
+        fmt.Printf("err:%v, users:%+v \n", err, i2)
+    }
 }
 
 // GetFromXxx 返回单条记录时，传入的参数为空值（0，""，nil）时会忽略为查询条件
@@ -340,11 +373,11 @@ func TestModelFrom(t *testing.T) {
     var users []*model.Users
     var err error
     
-    user, err = model.NewUsersDao(db).GetFromID(1)
+    user, err = model.NewUsersDao(context.Background(), db).GetFromID(1)
     fmt.Println("GetFromID..user, err:", user, err)
     
     name := "ddd"
-    users, err = model.NewUsersDao(db).GetFromName(&name)
+    users, err = model.NewUsersDao(context.Background(), db).GetFromName(&name)
     fmt.Println("GetFromName..users, err:", users, err)
     for _, i2 := range users {
         fmt.Printf("GetFromName..err:%v, users:%+v \n", err, i2)
@@ -353,7 +386,7 @@ func TestModelFrom(t *testing.T) {
     var deletedAt int
     deletedAt = 0
     // deletedAt = 1
-    users, err = model.NewUsersDao(db).GetFromDeletedAt(int64(deletedAt))
+    users, err = model.NewUsersDao(context.Background(), db).GetFromDeletedAt(int32(deletedAt))
     for _, i2 := range users {
         fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, i2)
     }
@@ -361,44 +394,45 @@ func TestModelFrom(t *testing.T) {
     deletedAt1 := 1639411296
     deletedAt2 := 1639411297
     deletedAt3 := 0
-    deletedAts := []int64{
-        int64(deletedAt1),
-        int64(deletedAt2),
-        int64(deletedAt3),
+    deletedAts := []int32{
+        int32(deletedAt1),
+        int32(deletedAt2),
+        int32(deletedAt3),
     }
-    users, err = model.NewUsersDao(db).GetBatchFromDeletedAt(deletedAts)
+    users, err = model.NewUsersDao(context.Background(), db).GetsFromDeletedAt(deletedAts)
     fmt.Println("GetFromID..users, err:", users, err)
     
-    // user, err = model.NewUsersDao(db).GetFromID(10000)
-    // fmt.Println("GetFromID..user, err:", user, err)
-    //
-    // users, err = model.NewUsersDao(db).GetBatchFromID([]int{1, 2})
-    // for _, i2 := range users {
-    //     fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, i2)
-    // }
+    user, err = model.NewUsersDao(context.Background(), db).GetFromID(10000)
+    fmt.Println("GetFromID..user, err:", user, err)
+    
+    users, err = model.NewUsersDao(context.Background(), db).GetsFromID([]int32{1, 2})
+    for _, i2 := range users {
+        fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, i2)
+    }
     
     name01 := "name01"
     name02 := "name01"
-    users, err = model.NewUsersDao(db).GetFromName(&name01)
+    users, err = model.NewUsersDao(context.Background(), db).GetFromName(&name01)
     fmt.Println("GetFromName..user, err:", user, err)
-    users, err = model.NewUsersDao(db).GetBatchFromName([]*string{&name01, &name02})
+    users, err = model.NewUsersDao(context.Background(), db).GetsFromName([]*string{&name01, &name02})
     fmt.Println("GetFromName..user, err:", user, err)
     
-    // users, err = model.NewUsersDao(db).GetBatchFromID([]int{1, 2})
-    // for _, i2 := range users {
-    //     fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, i2)
-    // }
-    //
-    // user, err = model.NewUsersDao(db).GetFromCardNo("1")
-    // fmt.Println("GetFromCardNo..user, err:", user, err)
-    //
-    // users, err = model.NewUsersDao(db).GetBatchFromCardNo([]string{"1", "2"})
-    // for _, i2 := range users {
-    //     fmt.Printf("GetBatchFromCardNo..err:%v, users:%+v \n", err, i2)
-    // }
+    users, err = model.NewUsersDao(context.Background(), db).GetsFromID([]int32{1, 2})
+    for _, i2 := range users {
+        fmt.Printf("GetBatchFromID..err:%v, users:%+v \n", err, i2)
+    }
+    
+    user, err = model.NewUsersDao(context.Background(), db).GetFromCardNo("1")
+    fmt.Println("GetFromCardNo..user, err:", user, err)
+    
+    users, err = model.NewUsersDao(context.Background(), db).GetsFromCardNo([]string{"1", "2"})
+    for _, i2 := range users {
+        fmt.Printf("GetBatchFromCardNo..err:%v, users:%+v \n", err, i2)
+    }
     
 }
 
+// 通过索引获取数据
 func TestModelFetch(t *testing.T) {
     db := GetGorm()
     
@@ -406,38 +440,112 @@ func TestModelFetch(t *testing.T) {
     var users []*model.Users
     var err error
     
-    user, err = model.NewUsersDao(db).FetchByPrimaryKey(1)
+    user, err = model.NewUsersDao(context.Background(), db).FetchByPrimaryKey(1)
     fmt.Println("FetchByPrimaryKey..user, err:", user, err)
     
-    user, err = model.NewUsersDao(db).FetchUniqueByCardNo("1ooo")
+    user, err = model.NewUsersDao(context.Background(), db).FetchUniqueByCardNo("1ooo")
     fmt.Println("FetchUniqueByCardNo..user, err:", user, err)
     
     name01 := "name01"
-    user, err = model.NewUsersDao(db).FetchUniqueIndexByUnqNameCard(&name01, "1")
+    user, err = model.NewUsersDao(context.Background(), db).FetchUniqueIndexByUnqNameCard(&name01, "1")
     fmt.Println("FetchUniqueIndexByUnqNameCard..user, err:", user, err)
     
-    users, err = model.NewUsersDao(db).FetchIndexByAge(120)
+    users, err = model.NewUsersDao(context.Background(), db).FetchIndexByAge(120)
     for _, i2 := range users {
         fmt.Printf("FetchIndexByAge..err:%v, users:%+v \n", err, i2)
     }
 }
 
+// 重置连接
 func TestModelReset(t *testing.T) {
     db := GetGorm()
     
     var user model.Users
     var err error
     
-    userModel := model.NewUsersDao(db.Where("id = ?", 2))
-    user, err = userModel.Get()
-    fmt.Println("user, err:", user, err)
+    userDao := model.NewUsersDao(context.Background(), db)
     
-    fmt.Println("---------------")
-    userModel = model.NewUsersDao(db.Where("id = ?", 3))
-    user, err = userModel.Get()
-    fmt.Println("user006------, err:", user, err)
-    user, err = model.NewUsersDao(userModel.NewDB()).Get()
-    fmt.Println("user007------, err:", user, err)
-    user, err = userModel.Get()
-    fmt.Println("user008------, err:", user, err)
+    name01 := "name01"
+    name02 := "name02"
+    user, err = userDao.GetByOption(
+        // userDao.WithID(1),
+        userDao.WithName(&name01),
+        userDao.WithAge(18),
+    )
+    fmt.Println("userDao.GetByOption(userDao.WithID(1)):", user, err)
+    
+    user, err = userDao.GetByOption(userDao.WithName(&name02))
+    fmt.Println("userDao.GetByOption(userDao.WithID(2)):", user, err)
+    
+}
+
+// 支持事务便捷操作
+func TestTracsaction(t *testing.T) {
+    db := GetGorm()
+    
+    ctx := context.Background()
+    
+    var user model.Users
+    var err error
+    var rows int64
+    
+    // 1. 查询，更新；
+    usersDao := model.NewUsersDao(ctx, db)
+    user, err = usersDao.GetFromID(1)
+    fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
+    
+    user.Age = 10
+    rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
+    fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
+    
+    userBasseDao := model.NewUserBaseDao(ctx, db)
+    rows, err = userBasseDao.Create(&model.UserBase{
+        Name: "tt-01",
+        Age:  10,
+    })
+    fmt.Println("+ userBasseDao.Create(&model.UserBase):", rows, err)
+    
+    // 2. 开启事务，查询并更新，提交或者回滚事务；
+    tx := db.Begin()
+    usersDao = model.NewUsersDao(ctx, tx)
+    user, err = usersDao.GetFromID(1)
+    fmt.Println("》model.NewUsersDao(ctx, db).GetFromID(1) tx:", user, err)
+    
+    user.Age = 20
+    rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
+    fmt.Println("》usersDao.UpdateByOption(user, usersDao.WithID(1)) tx:", rows, err)
+    if err != nil {
+        tx.Rollback()
+        fmt.Println("》tx.Rollback()", err)
+        return
+    }
+    
+    userBasseDao = model.NewUserBaseDao(ctx, tx)
+    rows, err = userBasseDao.UpdateByOption(model.UserBase{
+        Name: "tt-0101",
+        Age:  10,
+    }, userBasseDao.WithName("tt-01"))
+    fmt.Println("》 userBasseDao.Create(&model.UserBase) tx:", rows, err)
+    // err = errors.New("》》》 userBasseDao.Create to err")
+    if err != nil {
+        tx.Rollback()
+        fmt.Println("》tx.Rollback()", err)
+        return
+    }
+    
+    tx.Commit()
+    
+    // 3. 再次查询，更新或插入
+    // usersDao = model.NewUsersDao(ctx, usersDao.NewDB()) // `sql: transaction has already been committed or rolled back`
+    // usersDao.New() // `sql: transaction has already been committed or rolled back`
+    usersDao = model.NewUsersDao(ctx, db)
+    
+    user, err = usersDao.GetFromID(1)
+    fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
+    
+    user.Age = 30
+    rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
+    fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
+    
+    
 }

@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-04-04 15:29:56
+ * @Date:   2022-05-08 17:14:49
  * @Desc:   dao 的基本方法
  */
 
@@ -20,9 +20,11 @@ const (
 // 初始化 gorm 实例的其他字段
 type _BaseDao struct {
 	*gorm.DB
-	ctx     context.Context
-	cancel  context.CancelFunc
-	timeout time.Duration
+	ctx         context.Context
+	cancel      context.CancelFunc
+	timeout     time.Duration
+	columns     []string
+	isUpdateSql bool
 }
 
 // 设置超时
@@ -60,12 +62,22 @@ func (obj *_BaseDao) UpdateDB(db *gorm.DB) {
 
 // 重置 gorm
 func (obj *_BaseDao) New() {
-	obj.DB = obj.NewDB()
+	obj.UpdateDB(obj.NewDB())
 }
 
 // 重置 gorm 会话
 func (obj *_BaseDao) NewDB() *gorm.DB {
-	return obj.DB.Session(&gorm.Session{NewDB: true, Context: obj.ctx})
+	return obj.GetDB().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
+}
+
+// 设置上下文获取 *grom.DB
+func (obj *_BaseDao) WithContext() (db *gorm.DB) {
+	return obj.GetDB().WithContext(obj.ctx)
+}
+
+// 设置 sql 语句是否会更新数据
+func (obj *_BaseDao) setIsUpdateSql(b bool) {
+	obj.isUpdateSql = b
 }
 
 // 查询指定字段
@@ -128,7 +140,7 @@ func (obj *_BaseDao) WithHaving(query interface{}, args ...interface{}) Option {
 func (obj *_BaseDao) prepare(opts ...Option) (tx *gorm.DB) {
 	options := initOption(opts...)
 
-	tx = obj.DB.WithContext(obj.ctx).
+	tx = obj.WithContext().
 		Scopes(obj.selectField(&options)).
 		Where(options.query).
 		Or(options.queryOr).
@@ -147,6 +159,8 @@ func (obj *_BaseDao) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 				return db.Select(opt.selectField.query, opt.selectField.arg)
 			}
 			return db.Select(opt.selectField.query)
+		} else if obj.isUpdateSql == false {
+			return db.Select(obj.columns)
 		}
 		return db
 	}

@@ -58,9 +58,9 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
         pa.Add(p.Struct.GenerateTableName())
         // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法 添加表结构体对应的表名方法: %+v", pa.Generates())
         
-        // 生成表字段映射结构体. 已放入相应表的 dao 层
-        /*pa.Add(p.Struct.GenerateTableField())
-        logger.Infof("定义单个表的结构体。GenFileCtx.生成表字段映射结构体: %+v", pa.Generates())*/
+        // 生成表字段映射结构体.
+        pa.Add(p.Struct.GenerateTableField())
+        // logger.Infof("定义单个表的结构体。GenFileCtx.生成表字段映射结构体: %+v", pa.Generates())
     }
     
     // 添加获取表数据的方法
@@ -136,11 +136,12 @@ func (s *GenStruct) GenerateTableName() string {
     templ.Execute(&buf, data)
     return buf.String()
 }
+
 // 生成表字段映射结构体
 func (s *GenStruct) GenerateTableField() string {
-    templ, err := template.New("TEMP_GENTNF").Parse(genfunc.GetGenTableFieldTemp())
+    templ, err := template.New("GenTableFieldTemp").Parse(genfunc.GetGenTableFieldTemp())
     if err != nil {
-        logger.Error("GenerateTableName err:", err)
+        logger.Error("GenerateTableField err:", err)
     }
     var buf bytes.Buffer
     templ.Execute(&buf, s)

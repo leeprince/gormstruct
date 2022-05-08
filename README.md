@@ -117,4 +117,12 @@ out/model_test.go
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
 - [x] 生成的表结构体包含：结构体字段、结构体类型、表字段、表数据类型、表字段是否允许为null,表字段默认值、json字段
 - [x] 支持配置是否控制台输出数据库表结构文档
-- [ ] 基础服务的包使用自定义的包 leeprince/goinfra
+- [x] 基础服务的包使用自定义的包 leeprince/goinfra
+    - 保持当前
+- [x] 支持事务便捷操作。
+        场景操作步骤：
+            1. 查询，更新或插入；
+            2. 开启事务，查询并更新更新或插入，提交或者回滚事务；
+            3. 再次查询，更新或插入。避免出现报错：`sql: transaction has already been committed or rolled back`
+- [x] select 不指定的情况下取已生成的所有字段代替 `select *`
+- [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置

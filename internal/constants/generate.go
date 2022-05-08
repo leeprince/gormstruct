@@ -13,7 +13,7 @@ const (
 )
 
 const (
-    GenGormtagPrimary = "%s:\"column:%s;primaryKey;%s\"" // gorm:"primaryKey;column:字段名;是否自动递增"
+    GenGormtagPrimary = "%s:\"column:%s;primaryKey;type:%s;%s\"" // gorm:"primaryKey;column:字段名;primaryKey;是否自动递增"
     GenGormtagColumun = "%s:\"column:%s;type:%s;%s;%s\"" // gorm:"column:字段名;type:字段类型;是否允许为空;default ''"
     GenJson           = "%s:\"%s\""
 )
