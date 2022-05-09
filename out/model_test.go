@@ -6,13 +6,17 @@ import (
     "github.com/leeprince/goinfra/plog"
     "github.com/leeprince/goinfra/utils"
     "github.com/leeprince/gormstruct/out/model"
-    "gorm.io/driver/mysql"
-    "gorm.io/gorm"
     "gorm.io/gorm/logger"
     "log"
     "os"
     "testing"
     "time"
+    
+    "gorm.io/driver/mysql"
+    "gorm.io/gorm"
+    
+    // "github.com/jinzhu/gorm"
+    // _ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
@@ -49,6 +53,9 @@ func GetGorm() *gorm.DB {
     
     mysqlConnDns := mysqlDns
     
+    // --- gorm.io/gorm
+    // 需 import  "gorm.io/driver/mysql","gorm.io/gorm"
+    
     db, err := gorm.Open(mysql.Open(mysqlConnDns), &gorm.Config{
         PrepareStmt: false,
         Logger:      DBLogger,
@@ -70,7 +77,36 @@ func GetGorm() *gorm.DB {
     if IsDebug {
         return db.Debug()
     }
+    // --- gorm.io/gorm -end
+    
+    // --- 	github.com/jinzhu/gorm
+    // > 注意：使用 github.com/jinzhu/gorm 替换 gorm.io/gorm 需先阅读：base_dao.go 文件的 @Desc 说明
+    // 连接需 import "github.com/jinzhu/gorm", _ "github.com/jinzhu/gorm/dialects/mysql"
+    
+    /*mysqlConnDns := mysqlDns
+    
+    db, err := gorm.Open("mysql", mysqlConnDns)
+    if err != nil {
+        panic("gorm open err:" + err.Error())
+    }
+    sqlDB := db.DB()
+
+    // SetMaxIdleConns 设置空闲连接池中连接的最大数量
+    sqlDB.SetMaxIdleConns(10)
+    // SetMaxOpenConns 设置打开数据库连接的最大数量。
+    sqlDB.SetMaxOpenConns(100)
+    // SetConnMaxLifetime 设置了连接可复用的最大时间。
+    sqlDB.SetConnMaxLifetime(time.Hour)
+    */
+    // --- 	github.com/jinzhu/gorm -end
+    
+    
+    if IsDebug {
+        return db.Debug()
+    }
+    
     return db
+    
 }
 
 /**
@@ -162,27 +198,6 @@ func TestModelCount(t *testing.T) {
     fmt.Println("count", count)
 }
 
-func TestModelCreate(t *testing.T) {
-    db := GetGorm()
-    
-    // CreatedAt/UpdatedAt：设置值时覆盖，为0时会自动生成
-    deletedAt := int32(1)
-    name := "insert-prince03"
-    users := model.Users{
-        // ID:        0,
-        Name: &name,
-        // Age:       18,
-        Age:       0,
-        CardNo:    "46100001",
-        HeadImg:   "https://dd.xx",
-        CreatedAt: 1643399938,
-        UpdatedAt: 0,
-        DeletedAt: deletedAt,
-    }
-    rowsAffected, err := model.NewUsersDao(context.Background(), db).Create(&users)
-    fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
-}
-
 // or 条件查询
 func TestModelOr(t *testing.T) {
     db := GetGorm()
@@ -244,8 +259,76 @@ func TestModelSelect(t *testing.T) {
     }
 }
 
+func TestModelCreate(t *testing.T) {
+    db := GetGorm()
+    
+    userDao := model.NewUsersDao(context.Background(), db)
+    
+    // CreatedAt/UpdatedAt：设置值时覆盖，为0时会自动生成
+    deletedAt := int32(1)
+    name := "insert-prince003"
+    users := model.Users{
+        // ID:        0,
+        Name: &name,
+        // Age:       18,
+        Age:       0,
+        CardNo:    "461000010001",
+        HeadImg:   "https://dd.xx",
+        CreatedAt: 1643399938,
+        // UpdatedAt: 1643399938,
+        DeletedAt: deletedAt,
+    }
+    rowsAffected, err := userDao.Create(&users)
+    fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+    
+    name = "insert-prince004"
+    users = model.Users{
+        // ID:        0,
+        Name: &name,
+        // Age:       18,
+        Age:     0,
+        CardNo:  "461000010002",
+        HeadImg: "https://dd.xx",
+        // CreatedAt: 1643399938,
+        UpdatedAt: 1643399938,
+        DeletedAt: deletedAt,
+    }
+    rowsAffected, err = userDao.Create(&users)
+    fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+    
+    name = "insert-prince005"
+    users = model.Users{
+        // ID:        0,
+        Name: &name,
+        // Age:       18,
+        Age:     0,
+        CardNo:  "461000010003",
+        HeadImg: "https://dd.xx",
+        // CreatedAt: 1643399938,
+        // UpdatedAt: 1643399938,
+        DeletedAt: deletedAt,
+    }
+    rowsAffected, err = userDao.Create(&users)
+    fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+    
+    name = "insert-prince005"
+    users = model.Users{
+        // ID:        0,
+        Name: &name,
+        // Age:       18,
+        Age:     0,
+        CardNo:  "461000010004",
+        HeadImg: "https://dd.xx",
+        // CreatedAt: 1643399938,
+        // UpdatedAt: 1643399938,
+        // DeletedAt: deletedAt,
+    }
+    rowsAffected, err = userDao.Create(&users)
+    fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+}
+
 // 更新
-func TestModelUpdateByOption(t *testing.T) {
+func TestModelUpdate(t *testing.T) {
     var user model.Users
     var err error
     var count int64
@@ -278,7 +361,7 @@ func TestModelUpdateByOption(t *testing.T) {
     count, err = userDao.UpdateByOption(
         usesUpdate,
         userDao.WithSelect([]string{userCol.Name, userCol.Age, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
-        userDao.WithID(1),
+        userDao.WithID(2),
     )
     fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
 }
@@ -482,35 +565,35 @@ func TestModelReset(t *testing.T) {
 // 支持事务便捷操作
 func TestTracsaction(t *testing.T) {
     db := GetGorm()
-    
+
     ctx := context.Background()
-    
+
     var user model.Users
     var err error
     var rows int64
-    
+
     // 1. 查询，更新；
     usersDao := model.NewUsersDao(ctx, db)
     user, err = usersDao.GetFromID(1)
     fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
-    
+
     user.Age = 10
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
     fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
-    
+
     userBasseDao := model.NewUserBaseDao(ctx, db)
     rows, err = userBasseDao.Create(&model.UserBase{
         Name: "tt-01",
         Age:  10,
     })
     fmt.Println("+ userBasseDao.Create(&model.UserBase):", rows, err)
-    
+
     // 2. 开启事务，查询并更新，提交或者回滚事务；
     tx := db.Begin()
     usersDao = model.NewUsersDao(ctx, tx)
     user, err = usersDao.GetFromID(1)
     fmt.Println("》model.NewUsersDao(ctx, db).GetFromID(1) tx:", user, err)
-    
+
     user.Age = 20
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
     fmt.Println("》usersDao.UpdateByOption(user, usersDao.WithID(1)) tx:", rows, err)
@@ -519,7 +602,7 @@ func TestTracsaction(t *testing.T) {
         fmt.Println("》tx.Rollback()", err)
         return
     }
-    
+
     userBasseDao = model.NewUserBaseDao(ctx, tx)
     rows, err = userBasseDao.UpdateByOption(model.UserBase{
         Name: "tt-0101",
@@ -532,20 +615,19 @@ func TestTracsaction(t *testing.T) {
         fmt.Println("》tx.Rollback()", err)
         return
     }
-    
+
     tx.Commit()
-    
+
     // 3. 再次查询，更新或插入
     // usersDao = model.NewUsersDao(ctx, usersDao.NewDB()) // `sql: transaction has already been committed or rolled back`
     // usersDao.New() // `sql: transaction has already been committed or rolled back`
     usersDao = model.NewUsersDao(ctx, db)
-    
+
     user, err = usersDao.GetFromID(1)
     fmt.Println("+ model.NewUsersDao(ctx, db).GetFromID(1):", user, err)
-    
+
     user.Age = 30
     rows, err = usersDao.UpdateByOption(user, usersDao.WithID(1))
     fmt.Println("+ usersDao.UpdateByOption(user, usersDao.WithID(1)):", rows, err)
-    
-    
+
 }

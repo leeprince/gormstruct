@@ -106,10 +106,10 @@ func (obj *{{$obj.StructName}}Dao) GetCountByOptions(opts ...Option) (count int6
     return
 }
 
-// 更新数据：非指针的结构体字段更新为零值更新时需配合 WithSelect 更新
-// 参数说明：
-//    {{$lowerStructName}}: 要更新的数据
-//    opts: 更新的条件
+// 更新数据
+//  参数说明：
+//      users: 要更新的数据
+//      opts: 更新的条件
 func (obj *{{$obj.StructName}}Dao) UpdateByOption({{$lowerStructName}} {{$obj.StructName}}, opts ...Option) (rowsAffected int64, err error) {
     obj.setIsUpdateSql(true)
     tx := obj.prepare(opts...).Updates(&{{$lowerStructName}})

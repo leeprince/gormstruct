@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-05-08 23:13:47
+ * @Date:   2022-05-10 01:54:51
  * @Desc:   users 表的 dao 层
  */
 
@@ -170,10 +170,10 @@ func (obj *UsersDao) GetCountByOptions(opts ...Option) (count int64) {
 	return
 }
 
-// 更新数据：非指针的结构体字段更新为零值更新时需配合 WithSelect 更新
-// 参数说明：
-//    users: 要更新的数据
-//    opts: 更新的条件
+// 更新数据
+//  参数说明：
+//      users: 要更新的数据
+//      opts: 更新的条件
 func (obj *UsersDao) UpdateByOption(users Users, opts ...Option) (rowsAffected int64, err error) {
 	obj.setIsUpdateSql(true)
 	tx := obj.prepare(opts...).Updates(&users)

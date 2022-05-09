@@ -18,6 +18,15 @@ package {{.PackageName}}
  * @Author: prince.lee <leeprince@foxmail.com>
  * @Date:   {{GetCurrentDateTime}}
  * @Desc:   dao 的基本方法
+ *            gorm.io/gorm: "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
+ *            	存在 UpdatedAt 字段，并且 UpdatedAt 未传非零值时，会自动更新（默认：UpdatedAt==当前时间戳）。
+ *                	参考：gorm.io/gorm@v1.22.4/schema/field.go@ParseField
+ *            	取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+ *            github.com/jinzhu/gorm：更新零值，需配置字段为"指针"的数据类型。WithSelect 更新指定字段无效
+ *           		更新必须指定 db.Table("table") 或者 db.Molde(&tableStruce{})
+ *           		取消默认的 deleted_at IS NULL: db.Unscoped()...
+ *          		取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+ *            > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
  */
 
 import (

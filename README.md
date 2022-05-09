@@ -126,3 +126,4 @@ out/model_test.go
             3. 再次查询，更新或插入。避免出现报错：`sql: transaction has already been committed or rolled back`
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
+- [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库
