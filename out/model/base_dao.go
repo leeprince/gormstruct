@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-05-10 01:54:54
+ * @Date:   2022-06-09 15:48:37
  * @Desc:   dao 的基本方法
  *            gorm.io/gorm: "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
  *            	存在 UpdatedAt 字段，并且 UpdatedAt 未传非零值时，会自动更新（默认：UpdatedAt==当前时间戳）。
