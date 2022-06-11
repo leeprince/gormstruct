@@ -24,7 +24,9 @@
 # 二、注意
 1. 当通过 struct 结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
 2. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
-3. 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
+3. CreatedAt/UpdatedAt:
+    - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
+    - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 
 # 三、快速使用
 ## （一）配置 ./config/config.yaml
@@ -130,3 +132,18 @@ out/model_test.go
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
 - [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库
+     [gorm.io/gorm] 
+        - "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
+        - 存在 UpdatedAt 字段，并且 UpdatedAt 未传非零值时，会自动更新（默认：UpdatedAt==当前时间戳）。
+        - 参考：gorm.io/gorm@v1.22.4/schema/field.go@ParseField
+        - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+     [github.com/jinzhu/gorm]
+        - 更新零值，需配置字段为"指针"的数据类型。WithSelect 更新指定字段无效
+        - 更新必须指定 db.Table("table") 或者 db.Molde(&tableStruce{})
+        - 取消默认的 deleted_at IS NULL: db.Unscoped()...
+        - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+        - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
+     > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
+- [ ] 表的结构体对象统一使用指针
+    1. 更新/插入时传参
+    2. 返回时

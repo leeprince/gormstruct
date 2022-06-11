@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-05-10 01:54:54
+ * @Date:   2022-06-11 14:37:17
  * @Desc:   user_base 表的 dao 层
  */
 
@@ -24,11 +24,12 @@ func NewUserBaseDao(ctx context.Context, db *gorm.DB) *UserBaseDao {
 	ctx, cancel := context.WithCancel(ctx)
 	return &UserBaseDao{
 		_BaseDao: &_BaseDao{
-			DB:      db,
-			ctx:     ctx,
-			cancel:  cancel,
-			timeout: -1,
-			columns: UserBaseAllColumns,
+			DB:               db.Model(&UserBase{}),
+			ctx:              ctx,
+			cancel:           cancel,
+			timeout:          -1,
+			columns:          UserBaseAllColumns,
+			isDefaultColumns: true,
 		},
 	}
 }
@@ -39,33 +40,14 @@ func (obj *UserBaseDao) GetTableName() string {
 	return user_base.TableName()
 }
 
-// 获取单条记录
-func (obj *UserBaseDao) Get() (result UserBase, err error) {
-	err = obj.WithContext().Find(&result).Error
-	return
+// 存在则更新，否则插入：检查模型主键(默认是ID为字段的整型数据类型)存在则更新，否则插入
+func (obj *UserBaseDao) Save(userBase *UserBase) (rowsAffected int64, err error) {
+	if userBase.ID > 0 {
+		return obj.UpdateByOption(userBase, obj.WithID(userBase.ID))
+	}
+	tx := obj.WithContext().Save(userBase)
+	return tx.RowsAffected, tx.Error
 }
-
-// 获取多条记录
-func (obj *UserBaseDao) Gets() (results []*UserBase, err error) {
-	err = obj.WithContext().Find(&results).Error
-	return
-}
-
-// --- 替换 gorm 的方法 ---
-// 统计
-func (obj *UserBaseDao) Count(count *int64) (tx *gorm.DB) {
-	return obj.WithContext().Table(obj.GetTableName()).Count(count)
-}
-
-// 插入
-func (obj *UserBaseDao) Create(userBase *UserBase) (rowsAffected int64, err error) {
-	tx := obj.WithContext().Create(userBase)
-	rowsAffected = tx.RowsAffected
-	err = tx.Error
-	return
-}
-
-// --- 替换 gorm 的方法 -END ---
 
 // --- 表中的字段作为 option 条件 ---
 
@@ -100,23 +82,21 @@ func (obj *UserBaseDao) WithAges(ages []int32) Option {
 }
 
 // 函数选项模式获取单条记录
-func (obj *UserBaseDao) GetByOption(opts ...Option) (result UserBase, err error) {
-	obj.setIsUpdateSql(false)
+func (obj *UserBaseDao) GetByOption(opts ...Option) (result *UserBase, err error) {
 	err = obj.prepare(opts...).Find(&result).Error
 	return
 }
 
 // 函数选项模式获取多条记录：支持分页
 func (obj *UserBaseDao) GetByOptions(opts ...Option) (results []*UserBase, err error) {
-	obj.setIsUpdateSql(false)
 	err = obj.prepare(opts...).Find(&results).Error
 	return
 }
 
 // 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserBaseDao) GetCountByOptions(opts ...Option) (count int64) {
-	obj.setIsUpdateSql(false)
-	obj.prepare(opts...).Model(&UserBase{}).Count(&count)
+	obj.setIsDefaultColumns(false)
+	obj.prepare(opts...).Count(&count)
 	return
 }
 
@@ -124,12 +104,10 @@ func (obj *UserBaseDao) GetCountByOptions(opts ...Option) (count int64) {
 //  参数说明：
 //      users: 要更新的数据
 //      opts: 更新的条件
-func (obj *UserBaseDao) UpdateByOption(userBase UserBase, opts ...Option) (rowsAffected int64, err error) {
-	obj.setIsUpdateSql(true)
-	tx := obj.prepare(opts...).Updates(&userBase)
-	rowsAffected = tx.RowsAffected
-	err = tx.Error
-	return
+func (obj *UserBaseDao) UpdateByOption(userBase *UserBase, opts ...Option) (rowsAffected int64, err error) {
+	obj.setIsDefaultColumns(false)
+	tx := obj.prepare(opts...).Updates(userBase)
+	return tx.RowsAffected, tx.Error
 }
 
 // --- 表中的字段作为 option 条件 -END ---
@@ -137,7 +115,7 @@ func (obj *UserBaseDao) UpdateByOption(userBase UserBase, opts ...Option) (rowsA
 // --- 单个字段作为查询条件 ---
 
 // 通过单个 id() 字段值，获取单条记录
-func (obj *UserBaseDao) GetFromID(id int32) (result UserBase, err error) {
+func (obj *UserBaseDao) GetFromID(id int32) (result *UserBase, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
@@ -177,7 +155,7 @@ func (obj *UserBaseDao) GetsFromAge(ages []int32) (results []*UserBase, err erro
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
 // 通过 id 字段值，获取单条记录
-func (obj *UserBaseDao) FetchByPrimaryKey(id int32) (result UserBase, err error) {
+func (obj *UserBaseDao) FetchByPrimaryKey(id int32) (result *UserBase, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }

@@ -5,7 +5,7 @@ import (
     "fmt"
     "github.com/leeprince/goinfra/plog"
     "github.com/leeprince/goinfra/utils"
-    "github.com/leeprince/gormstruct/out/model"
+    "github.com/leeprince/gormstruct/test/model"
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
     "gorm.io/gorm/logger"
@@ -503,7 +503,7 @@ func TestTracsaction(t *testing.T) {
         Name: "tt-01",
         Age:  10,
     })
-    fmt.Println("+ userBasseDao.Create(&model.UserBase):", rows, err)
+    fmt.Println("+ userBasseDao.Save(&model.UserBase):", rows, err)
     
     // 2. 开启事务，查询并更新，提交或者回滚事务；
     tx := db.Begin()
@@ -525,8 +525,8 @@ func TestTracsaction(t *testing.T) {
         Name: "tt-0101",
         Age:  10,
     }, userBasseDao.WithName("tt-01"))
-    fmt.Println("》 userBasseDao.Create(&model.UserBase) tx:", rows, err)
-    // err = errors.New("》》》 userBasseDao.Create to err")
+    fmt.Println("》 userBasseDao.Save(&model.UserBase) tx:", rows, err)
+    // err = errors.New("》》》 userBasseDao.Save to err")
     if err != nil {
         tx.Rollback()
         fmt.Println("》tx.Rollback()", err)
