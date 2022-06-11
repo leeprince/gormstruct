@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-05-08 23:13:47
+ * @Date:   2022-06-11 14:37:17
  * @Desc:   dao 的基本方法
  */
 
@@ -20,11 +20,11 @@ const (
 // 初始化 gorm 实例的其他字段
 type _BaseDao struct {
 	*gorm.DB
-	ctx         context.Context
-	cancel      context.CancelFunc
-	timeout     time.Duration
-	columns     []string
-	isUpdateSql bool
+	ctx              context.Context
+	cancel           context.CancelFunc
+	timeout          time.Duration
+	columns          []string
+	isDefaultColumns bool
 }
 
 // 设置超时
@@ -75,9 +75,9 @@ func (obj *_BaseDao) WithContext() (db *gorm.DB) {
 	return obj.GetDB().WithContext(obj.ctx)
 }
 
-// 设置 sql 语句是否会更新数据
-func (obj *_BaseDao) setIsUpdateSql(b bool) {
-	obj.isUpdateSql = b
+// 设置 sql 语句是否默认选择表的所有字段：没有通过WithSelect指定字段时，是否默认选择表的所有字段。更新/统计（count）语句时设置为false。
+func (obj *_BaseDao) setIsDefaultColumns(b bool) {
+	obj.isDefaultColumns = b
 }
 
 // 查询指定字段
@@ -159,7 +159,7 @@ func (obj *_BaseDao) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 				return db.Select(opt.selectField.query, opt.selectField.arg)
 			}
 			return db.Select(opt.selectField.query)
-		} else if obj.isUpdateSql == false {
+		} else if obj.isDefaultColumns {
 			return db.Select(obj.columns)
 		}
 		return db

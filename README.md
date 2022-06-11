@@ -144,6 +144,6 @@ out/model_test.go
         - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
         - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
      > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
-- [ ] 表的结构体对象统一使用指针
+- [x] 表的结构体对象统一使用指针
     1. 更新/插入时传参
     2. 返回时
