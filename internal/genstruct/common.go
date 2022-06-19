@@ -58,9 +58,9 @@ func (p *GenPackage) GenFileCtx() (strOut string) {
         pa.Add(p.Struct.GenerateTableName())
         // logger.Infof("[GenFileCtx] 定义单个表的结构体 || 添加获取表数据的方法 添加表结构体对应的表名方法: %+v", pa.Generates())
         
-        // 生成表字段映射结构体.
+        // 生成表字段相关的方法。1.字段映射；2.主键相关
         pa.Add(p.Struct.GenerateTableField())
-        // logger.Infof("定义单个表的结构体。GenFileCtx.生成表字段映射结构体: %+v", pa.Generates())
+        // logger.Infof("定义单个表的结构体。GenFileCtx.生成表字段相关的方法。1.字段映射；2.主键相关: %+v", pa.Generates())
     }
     
     // 添加获取表数据的方法
@@ -119,11 +119,12 @@ func (s *GenStruct) Genrates() []string {
     pa.Add("}")
     return pa.Generates()
 }
+
 // 生成数据库表名方法
 func (s *GenStruct) GenerateTableName() string {
     templ, err := template.New("TEMP_GENTNF").Parse(genfunc.GetGenTableNameTemp())
     if err != nil {
-        logger.Error("GenerateTableName err:", err)
+        logger.Error("GenerateTableName.template.New err:", err)
     }
     data := struct {
         StructName string
@@ -133,18 +134,45 @@ func (s *GenStruct) GenerateTableName() string {
         TableName:  s.TableName,
     }
     var buf bytes.Buffer
-    templ.Execute(&buf, data)
+    err = templ.Execute(&buf, data)
+    if err != nil {
+        logger.Error("GenerateTableName.templ.Execute(&buf, data) err:", err)
+    }
     return buf.String()
 }
 
-// 生成表字段映射结构体
+// 生成数据库表名方法
+func (s *GenStruct) GeneratePrimaryKey() string {
+    templ, err := template.New("TEMP_GENTNF").Parse(genfunc.GetGenTableNameTemp())
+    if err != nil {
+        logger.Error("GenerateTableName.template.New err:", err)
+    }
+    data := struct {
+        StructName string
+        TableName  string
+    }{
+        StructName: s.Name,
+        TableName:  s.TableName,
+    }
+    var buf bytes.Buffer
+    err = templ.Execute(&buf, data)
+    if err != nil {
+        logger.Error("GenerateTableName.templ.Execute(&buf, data) err:", err)
+    }
+    return buf.String()
+}
+
+// 生成表字段相关的方法。1.字段映射；2.主键相关
 func (s *GenStruct) GenerateTableField() string {
     templ, err := template.New("GenTableFieldTemp").Parse(genfunc.GetGenTableFieldTemp())
     if err != nil {
         logger.Error("GenerateTableField err:", err)
     }
     var buf bytes.Buffer
-    templ.Execute(&buf, s)
+    err = templ.Execute(&buf, s)
+    if err != nil {
+        logger.Error("GenerateTableField.templ.Execute(&buf, s) err:", err)
+    }
     return buf.String()
 }
 

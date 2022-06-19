@@ -118,7 +118,7 @@ out/model_test.go
 - [x] 去除 `base_dao.go` 的 `updateOptionFunc` 方法
 - [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetByOptions()` 方法
 - [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
-    - 继续统一在 model 中，具体什么架构使用者自行移动即可，方便使用
+    - 继续统一在 model 中，通用性更强。具体什么架构，使用者自行移动即可
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
 - [x] 生成的表结构体包含：结构体字段、结构体类型、表字段、表数据类型、表字段是否允许为null,表字段默认值、json字段
 - [x] 支持配置是否控制台输出数据库表结构文档
@@ -147,3 +147,7 @@ out/model_test.go
 - [x] 表的结构体对象统一使用指针
     1. 更新/插入时传参
     2. 返回时
+- [x] 生成的模型中包含获取主键的字段及方法 `PrimaryKey()` 及 `PrimaryKeyValue()`
+- [x] 支持批量插入 `Create()`
+- [x] 添加 `Save()` 方法：存在则更新，否则插入
+    - 通过`PrimaryKeyValue()`检查模型主键(如果非整型需要调整下，大部分数据库设计的主键都为整型，`Save()`方法不使用反射降低性能)存在则更新

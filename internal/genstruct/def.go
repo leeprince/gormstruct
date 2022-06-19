@@ -28,5 +28,6 @@ type GenElement struct {
     ColumnName   string // 字段名
     Type         string // 字段类型标记(输出结构体对应的字段类型)
     Comment      string // 字段注释
+    IsPrimaryKey bool // 该字段是否为主键
     TagString    string // 标记
 }

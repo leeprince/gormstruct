@@ -20,6 +20,25 @@ func New{{.StructName}}() *{{.StructName}} {
 `
     TempGenTableField = `
 {{$obj := .}}
+
+{{$primaryKey := ""}}
+{{$primaryKeyType := ""}}
+{{range $genElement := $obj.Elments}}
+{{if $genElement.IsPrimaryKey}}
+{{$primaryKey = $genElement.Name}}
+{{$primaryKeyType = $genElement.Type}}
+{{end}}
+{{end}}
+// 获取主键的对应字段
+func (m *{{$obj.Name}}) PrimaryKey() string {
+	return {{$obj.Name}}Columns.{{$primaryKey}}
+}
+
+// 获取主键值
+func (m *{{$obj.Name}}) PrimaryKeyValue() {{$primaryKeyType}} {
+	return m.{{$primaryKey}}
+}
+
 // 表字段的映射
 var {{$obj.Name}}Columns = struct {
 {{range $genElement := $obj.Elments}}{{$genElement.Name}} string
@@ -36,8 +55,15 @@ var {{$obj.Name}}AllColumns = []string{
 }
 
 {{range $genElement := $obj.Elments}}
-// 设置：{{$genElement.Comment}}
+// 设置值：{{$genElement.Comment}}
 func (m *{{$obj.Name}}) Set{{$genElement.Name}}(v {{$genElement.Type}}) {
+	m.{{$genElement.Name}} = v
+}
+{{end}}
+
+{{range $genElement := $obj.Elments}}
+// 获取值：{{$genElement.Comment}}
+func (m *{{$obj.Name}}) Get{{$genElement.Name}}(v {{$genElement.Type}}) {
 	m.{{$genElement.Name}} = v
 }
 {{end}}

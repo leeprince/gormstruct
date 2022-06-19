@@ -87,6 +87,7 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
                 break
             }
         }
+        genEl.IsPrimaryKey = isPrimary
         genEl.TagString = g.getStructTag(isPrimary, el.IsNull, genEl.ColumnName, el.Type, el.Default, el.Extra)
         
         genEls = append(genEls, genEl)

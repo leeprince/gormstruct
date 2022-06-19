@@ -22,6 +22,16 @@ func NewUsers() *Users {
 	return &Users{}
 }
 
+// 获取主键的对应字段
+func (m *Users) PrimaryKey() string {
+	return UsersColumns.ID
+}
+
+// 获取主键值
+func (m *Users) PrimaryKeyValue() int32 {
+	return m.ID
+}
+
 // 表字段的映射
 var UsersColumns = struct {
 	ID        string
@@ -56,42 +66,82 @@ var UsersAllColumns = []string{
 
 }
 
-// 设置：主键
+// 设置值：主键
 func (m *Users) SetID(v int32) {
 	m.ID = v
 }
 
-// 设置：名称
+// 设置值：名称
 func (m *Users) SetName(v *string) {
 	m.Name = v
 }
 
-// 设置：年龄
+// 设置值：年龄
 func (m *Users) SetAge(v int32) {
 	m.Age = v
 }
 
-// 设置：身份证
+// 设置值：身份证
 func (m *Users) SetCardNo(v string) {
 	m.CardNo = v
 }
 
-// 设置：头像
+// 设置值：头像
 func (m *Users) SetHeadImg(v string) {
 	m.HeadImg = v
 }
 
-// 设置：创建时间
+// 设置值：创建时间
 func (m *Users) SetCreatedAt(v int32) {
 	m.CreatedAt = v
 }
 
-// 设置：更新时间
+// 设置值：更新时间
 func (m *Users) SetUpdatedAt(v int32) {
 	m.UpdatedAt = v
 }
 
-// 设置：删除时间
+// 设置值：删除时间
 func (m *Users) SetDeletedAt(v int32) {
+	m.DeletedAt = v
+}
+
+// 获取值：主键
+func (m *Users) GetID(v int32) {
+	m.ID = v
+}
+
+// 获取值：名称
+func (m *Users) GetName(v *string) {
+	m.Name = v
+}
+
+// 获取值：年龄
+func (m *Users) GetAge(v int32) {
+	m.Age = v
+}
+
+// 获取值：身份证
+func (m *Users) GetCardNo(v string) {
+	m.CardNo = v
+}
+
+// 获取值：头像
+func (m *Users) GetHeadImg(v string) {
+	m.HeadImg = v
+}
+
+// 获取值：创建时间
+func (m *Users) GetCreatedAt(v int32) {
+	m.CreatedAt = v
+}
+
+// 获取值：更新时间
+func (m *Users) GetUpdatedAt(v int32) {
+	m.UpdatedAt = v
+}
+
+// 获取值：删除时间
+func (m *Users) GetDeletedAt(v int32) {
 	m.DeletedAt = v
 }

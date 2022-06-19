@@ -16,7 +16,7 @@ func GetGenTableNameTemp() string {
     return constants.TempGenTableName
 }
 
-// 生成表字段映射结构体
+// 生成表字段相关的方法。1.字段映射；2.主键相关
 func GetGenTableFieldTemp() string {
     return constants.TempGenTableField
 }

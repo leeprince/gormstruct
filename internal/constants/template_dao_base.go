@@ -17,7 +17,7 @@ package {{.PackageName}}
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
  * @Date:   {{GetCurrentDateTime}}
- * @Desc:   dao 的基本方法
+ * @Desc:   DAO 的基本方法
  */
 
 import (
@@ -32,7 +32,7 @@ const (
 )
 
 // 初始化 gorm 实例的其他字段
-type _BaseDao struct {
+type _BaseDAO struct {
     *gorm.DB
     ctx     context.Context
     cancel  context.CancelFunc
@@ -42,60 +42,60 @@ type _BaseDao struct {
 }
 
 // 设置超时
-func (obj *_BaseDao) SetTimeOut(timeout time.Duration) {
+func (obj *_BaseDAO) SetTimeOut(timeout time.Duration) {
     obj.ctx, obj.cancel = context.WithTimeout(context.Background(), timeout)
     obj.timeout = timeout
 }
 
 // 设置上下文
-func (obj *_BaseDao) SetCtx(c context.Context) {
+func (obj *_BaseDAO) SetCtx(c context.Context) {
     if c != nil {
         obj.ctx = c
     }
 }
 
 // 获取上下文
-func (obj *_BaseDao) GetCtx() context.Context {
+func (obj *_BaseDAO) GetCtx() context.Context {
     return obj.ctx
 }
 
 // 取消上下文
-func (obj *_BaseDao) Cancel(c context.Context) {
+func (obj *_BaseDAO) Cancel(c context.Context) {
     obj.cancel()
 }
 
 // 获取 DB 实例
-func (obj *_BaseDao) GetDB() *gorm.DB {
+func (obj *_BaseDAO) GetDB() *gorm.DB {
     return obj.DB
 }
 
 // 更新 DB 实例
-func (obj *_BaseDao) UpdateDB(db *gorm.DB) {
+func (obj *_BaseDAO) UpdateDB(db *gorm.DB) {
     obj.DB = db
 }
 
 // 重置 gorm
-func (obj *_BaseDao) New() {
+func (obj *_BaseDAO) New() {
     obj.UpdateDB(obj.NewDB())
 }
 
 // 重置 gorm 会话
-func (obj *_BaseDao) NewDB() *gorm.DB {
+func (obj *_BaseDAO) NewDB() *gorm.DB {
     return obj.GetDB().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
 }
 
 // 设置上下文获取 *grom.DB
-func (obj *_BaseDao) WithContext() (db *gorm.DB) {
+func (obj *_BaseDAO) WithContext() (db *gorm.DB) {
 	return obj.GetDB().WithContext(obj.ctx)
 }
 
 // 设置 sql 语句是否默认选择表的所有字段：没有通过WithSelect指定字段时，是否默认选择表的所有字段。更新/统计（count）语句时设置为false。
-func (obj *_BaseDao) setIsDefaultColumns(b bool) {
+func (obj *_BaseDAO) setIsDefaultColumns(b bool) {
 	obj.isDefaultColumns = b
 }
 
 // 查询指定字段
-func (obj *_BaseDao) WithSelect(query interface{}, args ...interface{}) Option {
+func (obj *_BaseDAO) WithSelect(query interface{}, args ...interface{}) Option {
     return selectOptionFunc(func(o *options) {
         o.selectField = queryArg{
             query: query,
@@ -105,7 +105,7 @@ func (obj *_BaseDao) WithSelect(query interface{}, args ...interface{}) Option {
 }
 
 // Or 查询：将所有 Withxxx 的 options.query 作为 Or 的查询条件
-func (obj *_BaseDao) WithOrOption(opts ...Option) Option {
+func (obj *_BaseDAO) WithOrOption(opts ...Option) Option {
     optionOr := initOption(opts...)
     
     return queryOrOptionFunc(func(o *options) {
@@ -119,7 +119,7 @@ func (obj *_BaseDao) WithOrOption(opts ...Option) Option {
 }
 
 // 设置 offset、limit 作为 option 条件支持分页
-func (obj *_BaseDao) WithPage(offset int, limit int) Option {
+func (obj *_BaseDAO) WithPage(offset int, limit int) Option {
     return pageOptionFunc(func(o *options) {
         o.page.offset = offset
         o.page.limit = limit
@@ -127,21 +127,21 @@ func (obj *_BaseDao) WithPage(offset int, limit int) Option {
 }
 
 // 设置 offset、limit 作为 option 条件支持分页
-func (obj *_BaseDao) WithOrderBy(orderBy string) Option {
+func (obj *_BaseDAO) WithOrderBy(orderBy string) Option {
     return orderByOptionFunc(func(o *options) {
         o.orderBy = orderBy
     })
 }
 
 // 分组
-func (obj *_BaseDao) WithGroupBy(groupBy string) Option {
+func (obj *_BaseDAO) WithGroupBy(groupBy string) Option {
     return groupByOptionFunc(func(o *options) {
         o.groupBy = groupBy
     })
 }
 
 // 分组后筛选
-func (obj *_BaseDao) WithHaving(query interface{}, args ...interface{}) Option {
+func (obj *_BaseDAO) WithHaving(query interface{}, args ...interface{}) Option {
     return havingByOptionFunc(func(o *options) {
         o.having = queryArg{
             query: query,
@@ -151,7 +151,7 @@ func (obj *_BaseDao) WithHaving(query interface{}, args ...interface{}) Option {
 }
 
 // 执行 sql 前的准备
-func (obj *_BaseDao) prepare(opts ...Option) (tx *gorm.DB) {
+func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
     options := initOption(opts...)
     
     tx = obj.WithContext().
@@ -166,7 +166,7 @@ func (obj *_BaseDao) prepare(opts ...Option) (tx *gorm.DB) {
 }
 
 // 选择字段
-func (obj *_BaseDao) selectField(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
         if opt.selectField.query != nil && opt.selectField.query != "" {
             if opt.selectField.arg != nil && len(opt.selectField.arg) > 0 {
@@ -181,7 +181,7 @@ func (obj *_BaseDao) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 排序
-func (obj *_BaseDao) orderBy(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) orderBy(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
         if opt.orderBy != "" {
             return db.Order(opt.orderBy)
@@ -191,7 +191,7 @@ func (obj *_BaseDao) orderBy(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 分组
-func (obj *_BaseDao) groupBy(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) groupBy(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
         if opt.groupBy != "" {
             return db.Group(opt.groupBy)
@@ -201,7 +201,7 @@ func (obj *_BaseDao) groupBy(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 分组后筛选
-func (obj *_BaseDao) having(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) having(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
         if opt.having.query != nil && opt.having.query != "" {
             if opt.having.arg != nil && len(opt.having.arg) > 0 {
@@ -214,7 +214,7 @@ func (obj *_BaseDao) having(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 分页器
-func (obj *_BaseDao) paginate(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) paginate(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
         if opt.page.limit <= 0 {
             return db

@@ -17,6 +17,16 @@ func NewUserBase() *UserBase {
 	return &UserBase{}
 }
 
+// 获取主键的对应字段
+func (m *UserBase) PrimaryKey() string {
+	return UserBaseColumns.ID
+}
+
+// 获取主键值
+func (m *UserBase) PrimaryKeyValue() int32 {
+	return m.ID
+}
+
 // 表字段的映射
 var UserBaseColumns = struct {
 	ID   string
@@ -36,17 +46,32 @@ var UserBaseAllColumns = []string{
 
 }
 
-// 设置：
+// 设置值：
 func (m *UserBase) SetID(v int32) {
 	m.ID = v
 }
 
-// 设置：
+// 设置值：
 func (m *UserBase) SetName(v string) {
 	m.Name = v
 }
 
-// 设置：
+// 设置值：
 func (m *UserBase) SetAge(v int32) {
+	m.Age = v
+}
+
+// 获取值：
+func (m *UserBase) GetID(v int32) {
+	m.ID = v
+}
+
+// 获取值：
+func (m *UserBase) GetName(v string) {
+	m.Name = v
+}
+
+// 获取值：
+func (m *UserBase) GetAge(v int32) {
 	m.Age = v
 }
