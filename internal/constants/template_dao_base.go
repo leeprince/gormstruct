@@ -34,6 +34,7 @@ const (
 // 初始化 gorm 实例的其他字段
 type _BaseDAO struct {
     *gorm.DB
+    model     interface{}
     ctx     context.Context
     cancel  context.CancelFunc
     timeout time.Duration
@@ -66,17 +67,12 @@ func (obj *_BaseDAO) Cancel(c context.Context) {
 
 // 获取 DB 实例
 func (obj *_BaseDAO) GetDB() *gorm.DB {
-    return obj.DB
+    return obj.DB.Model(&obj.model)
 }
 
 // 更新 DB 实例
 func (obj *_BaseDAO) UpdateDB(db *gorm.DB) {
     obj.DB = db
-}
-
-// 重置 gorm
-func (obj *_BaseDAO) New() {
-    obj.UpdateDB(obj.NewDB())
 }
 
 // 重置 gorm 会话

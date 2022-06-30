@@ -125,10 +125,16 @@ out/model_test.go
 - [x] 基础服务的包使用自定义的包 leeprince/goinfra
     - 保持当前
 - [x] 支持事务便捷操作。
-        场景操作步骤：
+        问题场景操作步骤：
             1. 查询，更新或插入；
             2. 开启事务，查询并更新更新或插入，提交或者回滚事务；
-            3. 再次查询，更新或插入。避免出现报错：`sql: transaction has already been committed or rolled back`
+            3. 再次查询，更新或插入。出现报错：`sql: transaction has already been committed or rolled back`
+        原因：当前DAO层的DB已经提交事务，不允许再通过操作该DB
+        注意：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
+        解决：重新初始化DB
+            方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
+            方式二：DAO层直接更新DB`XXXDAO.UpdateDB(db)`
+            方式三：使用DAO层管理的事务：事务开启`xxxDAO.Begin()`、事务回滚`xxxDAO.Rollback()`、事务提交`xxxDAO.Commit()`
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
 - [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库
@@ -156,3 +162,9 @@ out/model_test.go
     - 无需项目支持，手动操作IDEA(goland)可实现目的.做法：
         - 1.从该项目拷贝生成的`模型文件（*.go）`及模型文件对应的`DAO文件（*_dao.go）`到业务项目的`model`目录下，
         - 2.手动迁移`DAO文件（*_dao.go）`，并利用IDEA(goland)的迁移`重构功能(Refactor)`，会自动补全model的包路径
+- [x] 支持多次更新同一个模型
+     - 问题场景操作步骤：
+        - 1.更新模型
+        - 2.再次按条件更新同一模型,出现条件错误：再次更新模型的条件会自动加上上一次模型的主键，如：`WHERE id = 2 AND id = 1`
+     - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
+     - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）

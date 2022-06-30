@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-06-20 00:30:01
+ * @Date:   2022-06-30 01:57:08
  * @Desc:   user_base 表的 DAO 层
  */
 
@@ -25,6 +25,7 @@ func NewUserBaseDAO(ctx context.Context, db *gorm.DB) *UserBaseDAO {
 	return &UserBaseDAO{
 		_BaseDAO: &_BaseDAO{
 			DB:               db.Model(&UserBase{}),
+			model:            UserBase{},
 			ctx:              ctx,
 			cancel:           cancel,
 			timeout:          -1,

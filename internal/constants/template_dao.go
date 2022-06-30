@@ -31,6 +31,7 @@ func New{{$obj.StructName}}DAO(ctx context.Context, db *gorm.DB) *{{$obj.StructN
     return &{{$obj.StructName}}DAO{
         _BaseDAO: &_BaseDAO{
             DB: db.Model(&{{GetTableStructName $obj.StructName}}),
+            model:{{GetTableStructName $obj.StructName}},
             ctx:ctx,
             cancel:cancel,
             timeout:-1,

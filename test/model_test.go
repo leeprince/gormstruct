@@ -1,11 +1,13 @@
-package test
+package model_test
 
 import (
     "context"
+    "database/sql"
+    "errors"
     "fmt"
     "github.com/leeprince/goinfra/plog"
     "github.com/leeprince/goinfra/utils"
-    "github.com/leeprince/gormstruct/test/model"
+    "github.com/leeprince/gormstruct/out/model"
     "gorm.io/gorm/logger"
     "log"
     "os"
@@ -59,6 +61,7 @@ func GetGorm() *gorm.DB {
     db, err := gorm.Open(mysql.Open(mysqlConnDns), &gorm.Config{
         PrepareStmt: false,
         Logger:      DBLogger,
+        DisableNestedTransaction: false,
     })
     if err != nil {
         panic("gorm open err:" + err.Error())
@@ -294,7 +297,6 @@ func TestModelUpdate(t *testing.T) {
     db := GetGorm()
     userDAO := model.NewUsersDAO(context.Background(), db)
     
-    // dtime := 0
     name := ""
     dtime := int32(1642337297)
     usesUpdate := &model.Users{
@@ -314,8 +316,67 @@ func TestModelUpdate(t *testing.T) {
     
     count, err = userDAO.UpdateByOption(
         usesUpdate,
-        userDAO.WithSelect([]string{userCol.Name, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
         userDAO.WithID(2),
+    )
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+    
+    count, err = userDAO.UpdateByOption(
+        usesUpdate,
+        userDAO.WithSelect([]string{userCol.Name, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
+        userDAO.WithID(3),
+    )
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+}
+
+// 多次更新
+func TestModelMoreUpdate(t *testing.T) {
+    var err error
+    var count int64
+    
+    db := GetGorm()
+    userDAO := model.NewUsersDAO(context.Background(), db)
+    
+    // usesUpdate, err := userDAO.GetFromID(1)
+    usesUpdate, err := userDAO.GetFromCardNo("46000")
+    if err != nil {
+        fmt.Println("000000000 err:", err)
+        return
+    }
+    fmt.Printf("= users:%+v \n", usesUpdate)
+    
+    fmt.Println(">>1 出现`WHERE `id` = 2 AND `id` = 1` 的问题")
+    count, err = userDAO.UpdateByOption(
+        usesUpdate,
+        // userDAO.WithID(2),
+        userDAO.WithCardNo("leeprince"),
+    )
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+    
+    fmt.Println(">>>2 出现`WHERE `id` = 2 AND `id` = 1` 的问题")
+    // usesUpdate, err = userDAO.GetFromID(2)
+    count, err = userDAO.UpdateByOption(
+        usesUpdate,
+        // userDAO.WithID(2),
+        userDAO.WithCardNo("leeprince"),
+    )
+    fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
+    
+    fmt.Println(">>>>>>> 解决：出现`WHERE `id` = 2 AND `id` = 1` 的问题")
+    // 分析：之前的查询条件查询之后，条件被保留在当前的userDAO中了
+    // 解决：重新初始化userDAO
+    //  但是这种解决方式需要每次都是重新初始化userDAO，有没有办法不需要重新初始化呢？
+    //      考虑：dao 层每次执行sql初始化DB对应的模型`DB=db.Model(&Users{})`的话，外部通过UpdateDB()的方式会不会被`DB=db.Model(&Users{})`覆盖了
+    //      最终解决：在`func (obj *_BaseDAO) GetDB() *gorm.DB {`每次初始化模型
+    // 下列是手动解决方式，最终解决：在`func (obj *_BaseDAO) GetDB() *gorm.DB {`每次初始化模型
+    // userDAO = model.NewUsersDAO(context.Background(), db) // 解决方式1
+    // userDAO = model.NewUsersDAO(context.Background(), userDAO.GetDB()) // 解决方式2
+    // userDAO.UpdateDB(userDAO.GetDB().Model(&model.Users{})) // 解决方式3
+    // userDAO = model.NewUsersDAO(context.Background(), userDAO.NewDB()) // 解决方式4
+    fmt.Printf("= users:%+v \n", usesUpdate)
+    count, err = userDAO.UpdateByOption(
+        usesUpdate,
+        // userDAO.WithID(2),
+        userDAO.WithCardNo("leeprince"),
     )
     fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
 }
@@ -496,59 +557,107 @@ func TestTracsaction(t *testing.T) {
     // 1. 查询，更新；
     usersDAO := model.NewUsersDAO(ctx, db)
     user, err = usersDAO.GetFromID(1)
-    fmt.Println("+ model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
     
     user.Age = 10
     rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("+ usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err)
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
     
-    userBasseDAO := model.NewUserBaseDAO(ctx, db)
-    rows, err = userBasseDAO.Save(&model.UserBase{
-        Name: "tt-01",
-        Age:  10,
-    })
-    fmt.Println("+ userBasseDAO.Save(&model.UserBase):", rows, err)
-    
-    // 2. 开启事务，查询并更新，提交或者回滚事务；
-    tx := db.Begin()
+    // // 2. 开启事务，查询并更新，提交或者回滚事务；
+    tx := db.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
     usersDAO = model.NewUsersDAO(ctx, tx)
     user, err = usersDAO.GetFromID(1)
-    fmt.Println("》model.NewUsersDAO(ctx, db).GetFromID(1) tx:", user, err)
-    
-    user.Age = 20
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("》usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err)
-    if err != nil {
-        tx.Rollback()
-        fmt.Println("》tx.Rollback()", err)
-        return
-    }
-    
-    userBasseDAO = model.NewUserBaseDAO(ctx, tx)
-    rows, err = userBasseDAO.UpdateByOption(&model.UserBase{
-        Name: "tt-0101",
-        Age:  10,
-    }, userBasseDAO.WithName("tt-01"))
-    fmt.Println("》 userBasseDAO.Save(&model.UserBase) tx:", rows, err)
-    // err = errors.New("》》》 userBasseDAO.Save to err")
-    if err != nil {
-        tx.Rollback()
-        fmt.Println("》tx.Rollback()", err)
-        return
-    }
-    
-    tx.Commit()
-    
-    // 3. 再次查询，更新或插入
-    // usersDAO = model.NewUsersDAO(ctx, usersDAO.NewDB()) // `sql: transaction has already been committed or rolled back`
-    // usersDAO.New() // `sql: transaction has already been committed or rolled back`
-    usersDAO = model.NewUsersDAO(ctx, db)
-    
-    user, err = usersDAO.GetFromID(1)
-    fmt.Println("+ model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1) tx:", user, err)
     
     user.Age = 30
     rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("+ usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err)
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    if err != nil {
+        fmt.Println("xxxxxxxxxxxxxx回滚事务")
+        tx.Rollback()
+        fmt.Println("》tx.Rollback()", err)
+        return
+    }
+    
+    // 验证sql正确性：user存在主键ID=1，必定执行错误并执行回滚
+    // user.Age = 30
+    // rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(2))
+    // fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    // if err != nil {
+    //     fmt.Println("xxxxxxxxxxxxxx回滚事务")
+    //     tx.Rollback()
+    //     fmt.Println("》tx.Rollback()", err)
+    //     return
+    // }
+    
+    fmt.Println("-----------------提交事务")
+    tx.Commit()
+    
+    // 3. 再次查询，更新或插入
+    fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxx不重新初始化DB会报错：`sql: transaction has already been committed or rolled back`xxxxxxxxxxxxxxxxxxxxxxxx")
+    // usersDAO = model.NewUsersDAO(ctx, usersDAO.NewDB()) // `sql: transaction has already been committed or rolled back`
+    usersDAO = model.NewUsersDAO(ctx, db) // 解决：方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
+    // usersDAO.UpdateDB(db) // 方式二：DAO层直接更新DB`XXXDAO..UpdateDB(db)`
+    
+    user, err = usersDAO.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    
+    user.Age = 40
+    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
+    //
+    fmt.Println("+++++++++++++++++++++++事务操作DAO层的DB解决事务结束后再次通过DAO执行sql报错：`sql: transaction has already been committed or rolled back`++++++++++++++++++++++++++++++")
+    usersDAO = model.NewUsersDAO(ctx, db) // 事务操作DAO层的DB,重新初始化
+    
+    // 2. 开启事务，查询并更新，提交或者回滚事务；
+    usersDAO.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
+    // usersDAO = model.NewUsersDAO(ctx, tx)
+    user, err = usersDAO.GetFromID(1)
+    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1) tx:", user, err)
+    
+    user.Age = 300
+    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    if err != nil {
+        fmt.Println("xxxxxxxxxxxxxx回滚事务")
+        usersDAO.Rollback()
+        fmt.Println("》tx.Rollback()", err)
+        return
+    }
+    
+    // 验证sql正确性：user存在主键，必定执行错误并执行回滚
+    /*user.Age = 300
+    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(2))
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    if err != nil {
+        fmt.Println("xxxxxxxxxxxxxx回滚事务")
+        usersDAO.Rollback()
+        fmt.Println("》tx.Rollback()", err)
+        return
+    }*/
+    
+    fmt.Println("-----------------提交事务")
+    usersDAO.Commit()
+    
+    // 3. 再次查询，更新或插入
+    // 不重新初始化DB会报错：`sql: transaction has already been committed or rolled back`
+    // usersDAO = model.NewUsersDAO(ctx, usersDAO.NewDB()) // `sql: transaction has already been committed or rolled back`
+    // usersDAO = model.NewUsersDAO(ctx, db) // 解决：方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
+    // usersDAO.UpdateDB(db) // 方式二：DAO层直接更新DB`XXXDAO..UpdateDB(db)`
+    
+    user, err = usersDAO.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    
+    user.Age = 40
+    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
+    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
     
 }
