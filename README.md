@@ -125,16 +125,94 @@ out/model_test.go
 - [x] 基础服务的包使用自定义的包 leeprince/goinfra
     - 保持当前
 - [x] 支持事务便捷操作。
-        问题场景操作步骤：
-            1. 查询，更新或插入；
-            2. 开启事务，查询并更新更新或插入，提交或者回滚事务；
-            3. 再次查询，更新或插入。出现报错：`sql: transaction has already been committed or rolled back`
-        原因：当前DAO层的DB已经提交事务，不允许再通过操作该DB
-        注意：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
-        解决：重新初始化DB
-            方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
-            方式二：DAO层直接更新DB`XXXDAO.UpdateDB(db)`
-            方式三：使用DAO层管理的事务：事务开启`xxxDAO.Begin()`、事务回滚`xxxDAO.Rollback()`、事务提交`xxxDAO.Commit()`
+    - 问题场景操作步骤：
+        1. 查询，更新或插入；
+        2. 开启事务，查询并更新更新或插入，提交或者回滚事务；
+        3. 再次查询，更新或插入。出现报错：`sql: transaction has already been committed or rolled back`
+    - 原因：当前DAO层的DB已经提交事务，不允许再通过操作该DB
+    - 注意：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
+    - 解决：!!!开始事务时，应基于**会话**的方式操作`*gorm.DB`。如：`tx := db.Begin()`开启事务后，必须使用tx而不是db操作事务中的sql!!!
+        - 在DAO层外开始事务
+            - 使用`tx := db.Begin()`开启事务，tx传入DAO层操作DAO层方法
+                ```
+                tx := db.Begin()
+                // 考虑：xxDAO 是否与事务外公用一个DAO服务？
+                //  - xxDAO 不与事务外公用一个DAO服务，写法`xxDAO := model.NewXXXDAO(ctx, tx) `
+                //  - xxDAO 与事务外公用一个DAO服务：因为该DAO服务是基于事务的会话开始的，事务结束后，当前会话（即：当前DAO服务的*gorm.DB）会失效
+                //      - 如果开始事务的DAO服务与外面公用一个变量会写成`xxDAO = model.NewXXXDAO(ctx, tx) `(没有赋值给新的变量)，就需要在事务结束后，重新恢复xxDAO的`*gorm.DB`，而不是使用会话tx的DB，具体的重新初始化方式如下：
+                //          - 重新初始化DAO层DB：`model.NewXXXDAO(ctx, db)`
+                //          - 直接更新DAO层DB：`XXXDAO.UpdateDB(db)`
+                //  > 推荐：xxDAO 不与事务外公用一个DAO服务,因为如果与外面公用一个变量，会使代码维护变得复杂
+                xxDAO := model.NewXXXDAO(ctx, tx) // xxDAO 不与事务外公用一个DAO服务
+                
+                xxDAO.XXX()
+                ...
+                tx.Rollback()
+                ...
+                
+                tx.Commit()
+                ```
+            - 使用DAO层的事务管理。// TODO: 并发操作xxDAO可能存在问题 - prince@todo 2022/7/1 下午10:55
+                ```
+                xxDAO.BeginTx()
+                
+                xxDAO.XXX()
+                ...
+                xxDAO.RollbackTx()
+                ...
+
+                xxDAO.CommitTx()
+                ```
+        - 在DAO层中开启事务
+            - 使用`tx := db.Begin()`开启事务
+                ```
+                func (obj *XXXDAO) XXXX() {
+                    // 考虑：该方法的DAO服务在外部是不是独立的（独立：重新初始化进来，并且不再外部公用该DAO服务）？
+                    //  - 独立的：则不是必须在该方法结束后重新初始化DOA层中的DB
+                    //  - 不独立的：则必须在该方法结束后重新初始化DOA层中的DB，以供外面该DAO服务使用。初始化的方式如下
+                    //      ```
+                    //      方式一
+                    //      initDB := obj.GetDB()
+                    //      defer func() {
+                    //          obj.UpdateDB(initDB)
+                    //      }()
+                    //      方式二
+                    //      defer func() {
+                    //          obj.UpdateDB(obj.db)
+                    //      }()
+                    //      ```
+                    //  > 考虑到使用便捷性：该方法结束后重新初始化DOA层中的DB
+                    defer func() {
+                        obj.UpdateDB(obj.db)
+                    }()
+                    tx := obj.Begin()
+              
+                    // 重新基于该事务的会话更新DAO服务的DB，保证DAO中DB使用事务的会话
+                    obj.UpdateDB(tx)
+                    
+                    obj.XXX()
+                    ...
+                    obj.Rollback()
+                    ...
+                    
+                    obj.Commit()
+                }
+                ```
+            - 使用DAO层的事务管理 // TODO: 并发操作xxDAO可能存在问题 - prince@todo 2022/7/1 下午10:55
+                ```
+                func (obj *XXXDAO) XXXX() {
+                    obj.BeginTx()
+                    
+                    obj.XXX()
+                    ...
+                    obj.RollbackTx()
+                    ...
+                    
+                    obj.CommitTx()
+                }
+                ```
+    - 注意点：并发场景时，请选择合适的方式！
+    
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
 - [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库

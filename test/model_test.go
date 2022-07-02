@@ -59,8 +59,8 @@ func GetGorm() *gorm.DB {
     // 需 import  "gorm.io/driver/mysql","gorm.io/gorm"
     
     db, err := gorm.Open(mysql.Open(mysqlConnDns), &gorm.Config{
-        PrepareStmt: false,
-        Logger:      DBLogger,
+        PrepareStmt:              false,
+        Logger:                   DBLogger,
         DisableNestedTransaction: false,
     })
     if err != nil {
@@ -554,110 +554,251 @@ func TestTracsaction(t *testing.T) {
     var err error
     var rows int64
     
-    // 1. 查询，更新；
+    fmt.Println()
+    fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxx不重新初始化DB会报错：`sql: transaction has already been committed or rolled back`xxxxxxxxxxxxxxxxxxxxxxxx")
     usersDAO := model.NewUsersDAO(ctx, db)
-    user, err = usersDAO.GetFromID(1)
-    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
-    
-    user.Age = 10
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
-    
-    // // 2. 开启事务，查询并更新，提交或者回滚事务；
-    tx := db.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    // 开启事务，查询并更新，提交或者回滚事务；
+    tx := db.Begin()
     fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
     usersDAO = model.NewUsersDAO(ctx, tx)
     user, err = usersDAO.GetFromID(1)
-    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1) tx:", user, err)
+    fmt.Println("GetFromID tx:", user, err)
     
-    user.Age = 30
+    user.Age = 1
     rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    fmt.Println("UpdateByOption:", rows, err, user)
     if err != nil {
-        fmt.Println("xxxxxxxxxxxxxx回滚事务")
+        fmt.Println("xxxxxxxxxxxxxx回滚事务1")
         tx.Rollback()
-        fmt.Println("》tx.Rollback()", err)
+        fmt.Println("Rollback", err)
         return
     }
-    
-    // 验证sql正确性：user存在主键ID=1，必定执行错误并执行回滚
-    // user.Age = 30
-    // rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(2))
-    // fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
-    // if err != nil {
-    //     fmt.Println("xxxxxxxxxxxxxx回滚事务")
-    //     tx.Rollback()
-    //     fmt.Println("》tx.Rollback()", err)
-    //     return
-    // }
     
     fmt.Println("-----------------提交事务")
     tx.Commit()
     
-    // 3. 再次查询，更新或插入
-    fmt.Println("xxxxxxxxxxxxxxxxxxxxxxxx不重新初始化DB会报错：`sql: transaction has already been committed or rolled back`xxxxxxxxxxxxxxxxxxxxxxxx")
-    // usersDAO = model.NewUsersDAO(ctx, usersDAO.NewDB()) // `sql: transaction has already been committed or rolled back`
-    usersDAO = model.NewUsersDAO(ctx, db) // 解决：方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
-    // usersDAO.UpdateDB(db) // 方式二：DAO层直接更新DB`XXXDAO..UpdateDB(db)`
-    
+    // 再次查询，更新或插入
     user, err = usersDAO.GetFromID(1)
     if errors.Is(err, sql.ErrTxDone) {
         fmt.Println("-=-=-=-=-=-=-=-err:", err)
     }
-    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    fmt.Println("GetFromID(1):", user, err)
     
-    user.Age = 40
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
-    //
-    fmt.Println("+++++++++++++++++++++++事务操作DAO层的DB解决事务结束后再次通过DAO执行sql报错：`sql: transaction has already been committed or rolled back`++++++++++++++++++++++++++++++")
-    usersDAO = model.NewUsersDAO(ctx, db) // 事务操作DAO层的DB,重新初始化
-    
-    // 2. 开启事务，查询并更新，提交或者回滚事务；
-    usersDAO.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    fmt.Println()
+    fmt.Println("++++++++++++++++++++++++++++++解决方式1：++++++++++++++++++++++++++++++")
+    fmt.Println("在DAO层外开始事务")
+    fmt.Println("使用`tx := db.Begin()`开启事务，tx传入DAO层操作DAO层方法：开始事务的DAO服务不与外面公用一个变量")
+    usersDAO1Init := model.NewUsersDAO(ctx, db)
+    // 开启事务，查询并更新，提交或者回滚事务；
+    tx1 := db.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
     fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
-    // usersDAO = model.NewUsersDAO(ctx, tx)
-    user, err = usersDAO.GetFromID(1)
-    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1) tx:", user, err)
+    usersDAO1 := model.NewUsersDAO(ctx, tx1) // 开始事务的DAO服务不与外面公用一个变量
+    // usersDAO1 = model.NewUsersDAO(ctx, tx1) // 开始事务的DAO服务与外面公用一个变量
+    user, err = usersDAO1.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
     
-    user.Age = 300
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
+    user.Age = 1
+    rows, err = usersDAO1.UpdateByOption(user, usersDAO1.WithID(1))
+    fmt.Println("UpdateByOption:", rows, err, user)
     if err != nil {
-        fmt.Println("xxxxxxxxxxxxxx回滚事务")
-        usersDAO.Rollback()
-        fmt.Println("》tx.Rollback()", err)
+        fmt.Println("xxxxxxxxxxxxxx回滚事务1")
+        tx1.Rollback()
+        fmt.Println("Rollback", err)
         return
     }
     
-    // 验证sql正确性：user存在主键，必定执行错误并执行回滚
-    /*user.Age = 300
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(2))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)) tx:", rows, err, user)
-    if err != nil {
-        fmt.Println("xxxxxxxxxxxxxx回滚事务")
-        usersDAO.Rollback()
-        fmt.Println("》tx.Rollback()", err)
-        return
-    }*/
+    // // 验证sql正确性：user存在主键ID=2，必定执行错误并执行回滚
+    // // 包括测试事务是否回滚成功
+    // user.ID = 2
+    // rows, err = usersDAO1.UpdateByOption(user, usersDAO1.WithID(1))
+    // fmt.Println("UpdateByOption:", rows, err, user)
+    // if err != nil {
+    //     fmt.Println("xxxxxxxxxxxxxx回滚事务2")
+    //     tx1.Rollback()
+    //     fmt.Println("Rollback", err)
+    //     return
+    // }
     
     fmt.Println("-----------------提交事务")
-    usersDAO.Commit()
+    tx1.Commit()
     
-    // 3. 再次查询，更新或插入
-    // 不重新初始化DB会报错：`sql: transaction has already been committed or rolled back`
-    // usersDAO = model.NewUsersDAO(ctx, usersDAO.NewDB()) // `sql: transaction has already been committed or rolled back`
-    // usersDAO = model.NewUsersDAO(ctx, db) // 解决：方式一：重新初始化DAO层`model.NewXXXDAO(ctx, db)`
-    // usersDAO.UpdateDB(db) // 方式二：DAO层直接更新DB`XXXDAO..UpdateDB(db)`
-    
-    user, err = usersDAO.GetFromID(1)
+    // 开始事务的DAO服务不与外面公用一个变量，所以可以继续使用事务前初始化的DAO服务
+    // 再次查询，更新或插入
+    user, err = usersDAO1Init.GetFromID(1)
     if errors.Is(err, sql.ErrTxDone) {
         fmt.Println("-=-=-=-=-=-=-=-err:", err)
     }
-    fmt.Println("= model.NewUsersDAO(ctx, db).GetFromID(1):", user, err)
+    fmt.Println("GetFromID(1):", user, err)
     
-    user.Age = 40
-    rows, err = usersDAO.UpdateByOption(user, usersDAO.WithID(1))
-    fmt.Println("- usersDAO.UpdateByOption(user, usersDAO.WithID(1)):", rows, err, user)
+    fmt.Println()
+    fmt.Println("++++++++++++++++++++++++++++++解决方式2：++++++++++++++++++++++++++++++")
+    fmt.Println("在DAO层外开始事务")
+    fmt.Println("使用`tx := db.Begin()`开启事务，tx传入DAO层操作DAO层方法：开始事务的DAO服务与外面公用一个变量")
+    usersDAO2Init := model.NewUsersDAO(ctx, db)
+    user, err = usersDAO2Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
+    // 开启事务，查询并更新，提交或者回滚事务；
+    tx2 := db.Begin() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
+    usersDAO2Init = model.NewUsersDAO(ctx, tx2) // 开始事务的DAO服务与外面公用一个变量
+    user, err = usersDAO2Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
     
+    user.Age = 2
+    rows, err = usersDAO2Init.UpdateByOption(user, usersDAO2Init.WithID(1))
+    fmt.Println("UpdateByOption:", rows, err, user)
+    if err != nil {
+        fmt.Println("xxxxxxxxxxxxxx回滚事务1")
+        tx2.Rollback()
+        fmt.Println("Rollback", err)
+        return
+    }
+    
+    // // 验证sql正确性：user存在主键ID=2，必定执行错误并执行回滚
+    // // 包括测试事务是否回滚成功
+    // user.ID = 2
+    // rows, err = usersDAO2Init.UpdateByOption(user, usersDAO2Init.WithID(1))
+    // fmt.Println("UpdateByOption:", rows, err, user)
+    // if err != nil {
+    //     fmt.Println("xxxxxxxxxxxxxx回滚事务2")
+    //     tx2.Rollback()
+    //     fmt.Println("Rollback", err)
+    //     return
+    // }
+    
+    fmt.Println("-----------------提交事务")
+    tx2.Commit()
+    
+    // 开始事务的DAO服务与外面公用一个变量。所以必须重新初始化DAO服务
+    usersDAO2Init = model.NewUsersDAO(ctx, db) // 开始事务的DAO服务与外面公用一个变量
+    
+    // 再次查询，更新或插入
+    user, err = usersDAO2Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
+    
+    fmt.Println()
+    fmt.Println("++++++++++++++++++++++++++++++解决方式3：++++++++++++++++++++++++++++++")
+    fmt.Println("在DAO层外开始事务")
+    fmt.Println("使用DAO层的事务管理。")
+    usersDAO3Init := model.NewUsersDAO(ctx, db)
+    user, err = usersDAO3Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
+    // 开启事务，查询并更新，提交或者回滚事务；
+    usersDAO3Init.BeginTx() // 开始事务之后，您应该使用 'tx' 而不是 'db'
+    fmt.Println(">>>>>>>>>>>>>>>>>开启事务")
+    user, err = usersDAO3Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
+    
+    user.Age = 3
+    rows, err = usersDAO3Init.UpdateByOption(user, usersDAO3Init.WithID(1))
+    fmt.Println("UpdateByOption:", rows, err, user)
+    if err != nil {
+        fmt.Println("xxxxxxxxxxxxxx回滚事务1")
+        usersDAO3Init.RollbackTx()
+        fmt.Println("Rollback", err)
+        return
+    }
+    
+    // // 验证sql正确性：user存在主键ID=2，必定执行错误并执行回滚
+    // // 包括测试事务是否回滚成功
+    // user.ID = 2
+    // rows, err = usersDAO3Init.UpdateByOption(user, usersDAO3Init.WithID(1))
+    // fmt.Println("UpdateByOption:", rows, err, user)
+    // if err != nil {
+    //     fmt.Println("xxxxxxxxxxxxxx回滚事务2")
+    //     usersDAO3Init.RollbackTx()
+    //     fmt.Println("Rollback", err)
+    //     return
+    // }
+    
+    fmt.Println("-----------------提交事务")
+    usersDAO3Init.CommitTx()
+    
+    // 再次查询，更新或插入
+    user, err = usersDAO3Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
+    
+    fmt.Println()
+    fmt.Println("++++++++++++++++++++++++++++++解决方式4：++++++++++++++++++++++++++++++")
+    fmt.Println("在DAO层中开启事务")
+    fmt.Println("使用`tx := db.Begin()`开启事务。")
+    usersDAO4Init := model.NewUsersDAO(ctx, db)
+    user, err = usersDAO4Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
+    
+    // DAO服务在外部不是独立的
+    fmt.Println("》DAO服务在外部不是独立的")
+    usersDAO4Init = model.NewUsersDAO(ctx, db)
+    err = usersDAO4Init.DBBeginTest()
+    if err != nil {
+        fmt.Println("DBBeginTest err:", err)
+        // return // 取消注释，测试DAO层事务回滚之后后面的查询是否影响到
+    }
+    // 再次查询，更新或插入
+    user, err = usersDAO4Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
+    
+    // DAO服务在外部是独立的
+    fmt.Println("》DAO服务在外部是独立的")
+    usersDAO4_1Init := model.NewUsersDAO(ctx, db)
+    err = usersDAO4_1Init.DBBeginTest()
+    if err != nil {
+        fmt.Println("DBBeginTest err:", err)
+        // return // 取消注释，测试DAO层事务回滚之后后面的查询是否影响到
+    }
+    
+    // 再次查询，更新或插入
+    user, err = usersDAO4Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
+    
+    fmt.Println()
+    fmt.Println("++++++++++++++++++++++++++++++解决方式5：++++++++++++++++++++++++++++++")
+    fmt.Println("在DAO层中开启事务")
+    fmt.Println("使用DAO层的事务管理")
+    usersDAO5Init := model.NewUsersDAO(ctx, db)
+    user, err = usersDAO5Init.GetFromID(1)
+    fmt.Println("GetFromID:", user, err)
+    
+    // DAO服务在外部不是独立的
+    fmt.Println("》DAO服务在外部不是独立的")
+    usersDAO5Init = model.NewUsersDAO(ctx, db)
+    err = usersDAO5Init.ObjBeginTest()
+    if err != nil {
+        fmt.Println("DBBeginTest err:", err)
+        // return // 取消注释，测试DAO层事务回滚之后后面的查询是否影响到
+    }
+    // 再次查询，更新或插入
+    user, err = usersDAO5Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
+    
+    // DAO服务在外部是独立的
+    fmt.Println("》DAO服务在外部是独立的")
+    usersDAO5_1Init := model.NewUsersDAO(ctx, db)
+    err = usersDAO5_1Init.ObjBeginTest()
+    if err != nil {
+        fmt.Println("DBBeginTest err:", err)
+        // return // 取消注释，测试DAO层事务回滚之后后面的查询是否影响到
+    }
+    
+    // 再次查询，更新或插入
+    user, err = usersDAO5Init.GetFromID(1)
+    if errors.Is(err, sql.ErrTxDone) {
+        fmt.Println("-=-=-=-=-=-=-=-err:", err)
+    }
+    fmt.Println("GetFromID(1):", user, err)
 }

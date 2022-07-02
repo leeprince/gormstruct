@@ -8,12 +8,12 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-06-30 01:57:04
+ * @Date:   2022-07-02 14:33:47
  * @Desc:   users 表的 DAO 层
  */
 
 type UsersDAO struct {
-	*_BaseDAO
+	*baseDAO
 }
 
 // 初始化 UsersDAO
@@ -23,7 +23,7 @@ func NewUsersDAO(ctx context.Context, db *gorm.DB) *UsersDAO {
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	return &UsersDAO{
-		_BaseDAO: &_BaseDAO{
+		baseDAO: &baseDAO{
 			DB:               db.Model(&Users{}),
 			db:               db,
 			model:            Users{},
@@ -52,7 +52,7 @@ func (obj *UsersDAO) Save(users *Users) (rowsAffected int64, err error) {
 
 // 创建数据:允许单条/批量创建，批量创建时传入切片
 func (obj *UsersDAO) Create(users interface{}) (rowsAffected int64, err error) {
-	tx := obj.WithContext().Create(users)
+	tx := obj.withContext().Create(users)
 	return tx.RowsAffected, tx.Error
 }
 
@@ -170,21 +170,6 @@ func (obj *UsersDAO) UpdateByOption(users *Users, opts ...Option) (rowsAffected 
 // --- 表中的字段作为 option 条件 -END ---
 
 // --- 单个字段作为查询条件 ---
-
-// 开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
-func (obj *UsersDAO) Begin() {
-	obj.UpdateDB(obj.GetDB().Begin())
-}
-// 通过单个 id(主键) 字段值，获取单条记录
-func (obj *UsersDAO) Rollback() {
-	obj.UpdateDB(obj.GetDB().Rollback())
-	obj.UpdateDB(obj.db)
-}
-// 通过单个 id(主键) 字段值，获取单条记录
-func (obj *UsersDAO) Commit() {
-	obj.UpdateDB(obj.GetDB().Commit())
-	obj.UpdateDB(obj.db)
-}
 
 // 通过单个 id(主键) 字段值，获取单条记录
 func (obj *UsersDAO) GetFromID(id int32) (result *Users, err error) {

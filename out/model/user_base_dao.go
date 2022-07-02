@@ -8,12 +8,12 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-06-30 01:57:08
+ * @Date:   2022-07-02 14:33:53
  * @Desc:   user_base 表的 DAO 层
  */
 
 type UserBaseDAO struct {
-	*_BaseDAO
+	*baseDAO
 }
 
 // 初始化 UserBaseDAO
@@ -23,8 +23,9 @@ func NewUserBaseDAO(ctx context.Context, db *gorm.DB) *UserBaseDAO {
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	return &UserBaseDAO{
-		_BaseDAO: &_BaseDAO{
+		baseDAO: &baseDAO{
 			DB:               db.Model(&UserBase{}),
+			db:               db,
 			model:            UserBase{},
 			ctx:              ctx,
 			cancel:           cancel,
@@ -51,7 +52,7 @@ func (obj *UserBaseDAO) Save(userBase *UserBase) (rowsAffected int64, err error)
 
 // 创建数据:允许单条/批量创建，批量创建时传入切片
 func (obj *UserBaseDAO) Create(userBase interface{}) (rowsAffected int64, err error) {
-	tx := obj.WithContext().Create(userBase)
+	tx := obj.withContext().Create(userBase)
 	return tx.RowsAffected, tx.Error
 }
 

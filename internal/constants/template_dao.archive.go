@@ -35,19 +35,19 @@ func (obj *{{$obj.StructName}}Dao) Reset() *{{$obj.StructName}}Dao {
 
 // Get 获取
 func (obj *{{$obj.StructName}}Dao) Get() (result {{$obj.StructName}}, err error) {
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Find(&result).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Find(&result).Error
 	return
 }
 
 // Gets 获取批量结果
 func (obj *{{$obj.StructName}}Dao) Gets() (results []*{{$obj.StructName}}, err error) {
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Find(&results).Error
 	return
 }
 
 // ----------------- 替换 gorm 的方法 -------------
 func (obj *{{$obj.StructName}}Dao) Count(count *int64) (tx *gorm.DB) {
-	return obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Count(count)
+	return obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Count(count)
 }
 
 // ----------------------------------------------------------------
@@ -69,7 +69,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOption(opts ...Option) (result {{$obj.St
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where(options.query).Find(&result).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where(options.query).Find(&result).Error
 	return
 }
 
@@ -82,7 +82,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOptions(opts ...Option) (results []*{{$o
 		o.apply(&options)
 	}
 
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where(options.query).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where(options.query).Find(&results).Error
 	return
 }
 // -------------------- 通过存在索引的单个字段作为查询条件
@@ -90,18 +90,18 @@ func (obj *{{$obj.StructName}}Dao) GetByOptions(opts ...Option) (results []*{{$o
 {{range $oem := $obj.Em}}
 // GetFrom{{$oem.ColStructName}} 通过{{$oem.ColName}}获取内容 {{$oem.Notes}} {{if $oem.IsMulti}}
 func (obj *{{$obj.StructName}}Dao) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&results).Error
 	return
 }
 {{else}}
 func (obj *{{$obj.StructName}}Dao)  GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (result {{$obj.StructName}}, err error) {
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&result).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&result).Error
 	return
 }
 {{end}}
 // GetBatchFrom{{$oem.ColStructName}} 批量查找 {{$oem.Notes}}
 func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-	err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} IN ?", {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{$oem.ColNameEx}} IN ?", {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
 	return
 }
 {{end}}
@@ -110,14 +110,14 @@ func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLower
 {{range $ofm := $obj.Primary}}
 // {{GenFListIndex $ofm 1}} primary or index 获取唯一内容
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&result).Error
     return
 }
 {{end}}
 {{range $ofm := $obj.Index}}
 // {{GenFListIndex $ofm 1}}  获取多个内容
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Dao({{$obj.StructName}}{}).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&results).Error
     return
 }
  {{end}}
@@ -159,19 +159,19 @@ func (obj *{{$obj.StructName}}Dao) Reset() *{{$obj.StructName}}Dao {
 
 // 获取单条记录
 func (obj *{{$obj.StructName}}Dao) Get() (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Find(&result).Error
     return
 }
 
 // 获取多条记录
 func (obj *{{$obj.StructName}}Dao) Gets() (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Find(&results).Error
     return
 }
 
 // -------------------- 替换 gorm 的方法 -------------
 func (obj *{{$obj.StructName}}Dao) Count(count *int64) (tx *gorm.DB) {
-    return obj.DB.WithContext(obj.ctx).Count(count)
+    return obj.DB.withContext(obj.ctx).Count(count)
 }
 
 // ----------------------------------------------------------------
@@ -206,7 +206,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOption(opts ...Option) (result {{$obj.St
         o.apply(&options)
     }
 
-    err = obj.DB.WithContext(obj.ctx).Where(options.query).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where(options.query).Find(&result).Error
     return
 }
 
@@ -220,7 +220,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOptions(opts ...Option) (results []*{{$o
         o.apply(&options)
     }
 
-	err = obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
     return
 }
 
@@ -234,7 +234,7 @@ func (obj *{{$obj.StructName}}Dao) GetCountByOptions(opts ...Option) (count int6
         o.apply(&options)
     }
 
-	obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
+	obj.DB.withContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
     return
 }
 // -------------------- 通过存在索引的单个字段作为查询条件
@@ -242,18 +242,18 @@ func (obj *{{$obj.StructName}}Dao) GetCountByOptions(opts ...Option) (count int6
 {{range $oem := $obj.Em}}
 // 通过 {{$oem.ColName}}({{$oem.Notes}}) 获取内容  {{if $oem.IsMulti}}
 func (obj *{{$obj.StructName}}Dao) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&results).Error
     return
 }
 {{else}}
 func (obj *{{$obj.StructName}}Dao) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where("{{$oem.ColNameEx}} = ?", {{CapLowercase $oem.ColStructName}}).Find(&result).Error
     return
 }
 {{end}}
 // 通过 {{$oem.ColName}}({{$oem.Notes}}) 获取多条记录
 func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where("{{$oem.ColNameEx}} IN ?", {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where("{{$oem.ColNameEx}} IN ?", {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
     return
 }
 {{end}}
@@ -261,14 +261,14 @@ func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLower
 {{range $ofm := $obj.Primary}}
 // 获取单条记录
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&result).Error
     return
 }
 {{end}}
 {{range $ofm := $obj.Index}}
 // 获取多条记录
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where("{{GenFListIndex $ofm 3}}", {{GenFListIndex $ofm 4}}).Find(&results).Error
     return
 }
 {{end}}
@@ -303,19 +303,19 @@ func (obj *{{$obj.StructName}}Dao) GetTableName() string {
 
 // 获取单条记录
 func (obj *{{$obj.StructName}}Dao) Get() (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Find(&result).Error
     return
 }
 
 // 获取多条记录
 func (obj *{{$obj.StructName}}Dao) Gets() (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Find(&results).Error
     return
 }
 
 // -------------------- 替换 gorm 的方法 -------------
 func (obj *{{$obj.StructName}}Dao) Count(count *int64) (tx *gorm.DB) {
-    return obj.DB.WithContext(obj.ctx).Count(count)
+    return obj.DB.withContext(obj.ctx).Count(count)
 }
 
 // ----------------------------------------------------------------
@@ -350,7 +350,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOption(opts ...Option) (result {{$obj.St
         o.apply(&options)
     }
 
-    err = obj.DB.WithContext(obj.ctx).Where(options.query).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where(options.query).Find(&result).Error
     return
 }
 
@@ -364,7 +364,7 @@ func (obj *{{$obj.StructName}}Dao) GetByOptions(opts ...Option) (results []*{{$o
         o.apply(&options)
     }
 
-	err = obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
+	err = obj.DB.withContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Find(&results).Error
     return
 }
 
@@ -378,7 +378,7 @@ func (obj *{{$obj.StructName}}Dao) GetCountByOptions(opts ...Option) (count int6
         o.apply(&options)
     }
 
-	obj.DB.WithContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
+	obj.DB.withContext(obj.ctx).Where(options.query).Scopes(obj.paginate(&options)).Count(&count)
     return
 }
 // -------------------- 通过存在索引的单个字段作为查询条件
@@ -386,18 +386,18 @@ func (obj *{{$obj.StructName}}Dao) GetCountByOptions(opts ...Option) (count int6
 {{range $oem := $obj.Em}}
 // 通过 {{$oem.ColName}}({{$oem.Notes}}) 获取内容  {{if $oem.IsMulti}}
 func (obj *{{$obj.StructName}}Dao) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where({{$obj.StructName}}{ {{ $oem.ColStructName}}: {{CapLowercase $oem.ColStructName}} }).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where({{$obj.StructName}}{ {{ $oem.ColStructName}}: {{CapLowercase $oem.ColStructName}} }).Find(&results).Error
     return
 }
 {{else}}
 func (obj *{{$obj.StructName}}Dao) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where({{$obj.StructName}}{ {{ $oem.ColStructName}}: {{CapLowercase $oem.ColStructName}} }).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where({{$obj.StructName}}{ {{ $oem.ColStructName}}: {{CapLowercase $oem.ColStructName}} }).Find(&result).Error
     return
 }
 {{end}}
 // 通过 {{$oem.ColName}}({{$oem.Notes}}) 获取多条记录
 func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where(fmt.Sprintf("%s IN ?", {{$obj.StructName}}Columns.{{$oem.ColStructName}}), {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where(fmt.Sprintf("%s IN ?", {{$obj.StructName}}Columns.{{$oem.ColStructName}}), {{CapLowercase $oem.ColStructName}}s).Find(&results).Error
     return
 }
 {{end}}
@@ -405,14 +405,14 @@ func (obj *{{$obj.StructName}}Dao) GetBatchFrom{{$oem.ColStructName}}({{CapLower
 {{range $ofm := $obj.Primary}}
 // 获取单条记录
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (result {{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where({{GenFListIndex $ofm 3}}).Find(&result).Error
+    err = obj.DB.withContext(obj.ctx).Where({{GenFListIndex $ofm 3}}).Find(&result).Error
     return
 }
 {{end}}
 {{range $ofm := $obj.Index}}
 // 获取多条记录
 func (obj *{{$obj.StructName}}Dao) {{GenFListIndex $ofm 1}}({{GenFListIndex $ofm 2}}) (results []*{{$obj.StructName}}, err error) {
-    err = obj.DB.WithContext(obj.ctx).Where({{GenFListIndex $ofm 3}}).Find(&results).Error
+    err = obj.DB.withContext(obj.ctx).Where({{GenFListIndex $ofm 3}}).Find(&results).Error
     return
 }
 {{end}}

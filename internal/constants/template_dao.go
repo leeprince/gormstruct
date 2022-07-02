@@ -31,6 +31,7 @@ func New{{$obj.StructName}}DAO(ctx context.Context, db *gorm.DB) *{{$obj.StructN
     return &{{$obj.StructName}}DAO{
         _BaseDAO: &_BaseDAO{
             DB: db.Model(&{{GetTableStructName $obj.StructName}}),
+            db: db,
             model:{{GetTableStructName $obj.StructName}},
             ctx:ctx,
             cancel:cancel,
@@ -57,7 +58,7 @@ func (obj *{{$obj.StructName}}DAO) Save({{$lowerStructName}} *{{$obj.StructName}
 
 // 创建数据:允许单条/批量创建，批量创建时传入切片
 func (obj *{{$obj.StructName}}DAO) Create({{$lowerStructName}} interface{}) (rowsAffected int64, err error) {
-    tx := obj.WithContext().Create({{$lowerStructName}})
+    tx := obj.withContext().Create({{$lowerStructName}})
     return tx.RowsAffected, tx.Error
 }
 

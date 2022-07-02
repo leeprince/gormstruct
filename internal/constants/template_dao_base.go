@@ -34,7 +34,8 @@ const (
 // 初始化 gorm 实例的其他字段
 type _BaseDAO struct {
     *gorm.DB
-    model     interface{}
+    db      *gorm.DB
+    model   interface{}
     ctx     context.Context
     cancel  context.CancelFunc
     timeout time.Duration
@@ -80,8 +81,25 @@ func (obj *_BaseDAO) NewDB() *gorm.DB {
     return obj.GetDB().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
 }
 
+// 开启事务：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
+func (obj *_BaseDAO) BeginTx() {
+    obj.UpdateDB(obj.GetDB().Begin())
+}
+
+// 事务回滚
+func (obj *_BaseDAO) RollbackTx() {
+    obj.UpdateDB(obj.GetDB().Rollback())
+    obj.UpdateDB(obj.db)
+}
+
+// 事务提交
+func (obj *_BaseDAO) CommitTx() {
+    obj.UpdateDB(obj.GetDB().Commit())
+    obj.UpdateDB(obj.db)
+}
+
 // 设置上下文获取 *grom.DB
-func (obj *_BaseDAO) WithContext() (db *gorm.DB) {
+func (obj *_BaseDAO) withContext() (db *gorm.DB) {
 	return obj.GetDB().WithContext(obj.ctx)
 }
 
@@ -150,7 +168,7 @@ func (obj *_BaseDAO) WithHaving(query interface{}, args ...interface{}) Option {
 func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
     options := initOption(opts...)
     
-    tx = obj.WithContext().
+    tx = obj.withContext().
         Scopes(obj.selectField(&options)).
         Where(options.query).
         Or(options.queryOr).
@@ -322,5 +340,3 @@ func initOption(opts ...Option) options {
 }
     `
 )
-
-
