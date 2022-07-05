@@ -8,12 +8,12 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-07-02 14:33:47
+ * @Date:   2022-07-05 21:52:20
  * @Desc:   users 表的 DAO 层
  */
 
 type UsersDAO struct {
-	*baseDAO
+	*_BaseDAO
 }
 
 // 初始化 UsersDAO
@@ -23,7 +23,7 @@ func NewUsersDAO(ctx context.Context, db *gorm.DB) *UsersDAO {
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	return &UsersDAO{
-		baseDAO: &baseDAO{
+		_BaseDAO: &_BaseDAO{
 			DB:               db.Model(&Users{}),
 			db:               db,
 			model:            Users{},

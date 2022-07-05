@@ -67,7 +67,7 @@ func (obj *_BaseDAO) Cancel(c context.Context) {
 }
 
 // 获取 DB 实例
-func (obj *_BaseDAO) GetDB() *gorm.DB {
+func (obj *_BaseDAO) GetDBModel() *gorm.DB {
     return obj.DB.Model(&obj.model)
 }
 
@@ -78,29 +78,29 @@ func (obj *_BaseDAO) UpdateDB(db *gorm.DB) {
 
 // 重置 gorm 会话
 func (obj *_BaseDAO) NewDB() *gorm.DB {
-    return obj.GetDB().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
+    return obj.GetDBModel().Session(&gorm.Session{NewDB: true, Context: obj.ctx})
 }
 
 // 开启事务：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
 func (obj *_BaseDAO) BeginTx() {
-    obj.UpdateDB(obj.GetDB().Begin())
+    obj.UpdateDB(obj.GetDBModel().Begin())
 }
 
 // 事务回滚
 func (obj *_BaseDAO) RollbackTx() {
-    obj.UpdateDB(obj.GetDB().Rollback())
+    obj.UpdateDB(obj.GetDBModel().Rollback())
     obj.UpdateDB(obj.db)
 }
 
 // 事务提交
 func (obj *_BaseDAO) CommitTx() {
-    obj.UpdateDB(obj.GetDB().Commit())
+    obj.UpdateDB(obj.GetDBModel().Commit())
     obj.UpdateDB(obj.db)
 }
 
 // 设置上下文获取 *grom.DB
 func (obj *_BaseDAO) withContext() (db *gorm.DB) {
-	return obj.GetDB().WithContext(obj.ctx)
+	return obj.GetDBModel().WithContext(obj.ctx)
 }
 
 // 设置 sql 语句是否默认选择表的所有字段：没有通过WithSelect指定字段时，是否默认选择表的所有字段。更新/统计（count）语句时设置为false。
