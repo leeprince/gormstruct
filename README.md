@@ -152,7 +152,7 @@ out/model_test.go
                 
                 tx.Commit()
                 ```
-            - 使用DAO层的事务管理。// TODO: 并发操作xxDAO可能存在问题 - prince@todo 2022/7/1 下午10:55
+            - 使用DAO层的事务管理。
                 ```
                 xxDAO.BeginTx()
                 
@@ -167,7 +167,7 @@ out/model_test.go
             - 使用`tx := db.Begin()`开启事务
                 ```
                 func (obj *XXXDAO) XXXX() {
-                    // 考虑：该方法的DAO服务在外部是不是独立的（独立：重新初始化进来，并且不再外部公用该DAO服务）？
+                    // 考虑：该方法的DAO服务在外部是不是独立的（独立：重新初始化进来，并且不在外部共用该DAO服务）？
                     //  - 独立的：则不是必须在该方法结束后重新初始化DOA层中的DB
                     //  - 不独立的：则必须在该方法结束后重新初始化DOA层中的DB，以供外面该DAO服务使用。初始化的方式如下
                     //      ```
@@ -198,7 +198,7 @@ out/model_test.go
                     obj.Commit()
                 }
                 ```
-            - 使用DAO层的事务管理 // TODO: 并发操作xxDAO可能存在问题 - prince@todo 2022/7/1 下午10:55
+            - 使用DAO层的事务管理
                 ```
                 func (obj *XXXDAO) XXXX() {
                     obj.BeginTx()

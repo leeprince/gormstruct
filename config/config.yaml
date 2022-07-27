@@ -7,14 +7,13 @@ dbinfo:
   database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
   type: 0 # 数据库类型:0:mysql
 
-
 # ------ 建议保留默认 ------
 # 是否控制台输出数据库表结构文档
 gendoc: true
 # 自定义数据库字段的数据类型映射 golang 的数据类型
 self_type_define:
-  int(11):             int32
-  int(11) unsigned:    uint32
+  int(11):             int64
+  int(11) unsigned:    uint64
   smallint:            int16
   smallint unsigned:   uint16
   int:                 int64

@@ -7,7 +7,7 @@ package constants
  */
 
 const (
-    TempGenTableName = `
+	TempGenTableName = `
 // 获取结构体对应的表名方法
 func (m *{{.StructName}}) TableName() string {
 	return "{{.TableName}}"
@@ -18,7 +18,7 @@ func New{{.StructName}}() *{{.StructName}} {
 	return &{{.StructName}}{}
 }
 `
-    TempGenTableField = `
+	TempGenTableField = `
 {{$obj := .}}
 
 {{$primaryKey := ""}}
@@ -63,8 +63,8 @@ func (m *{{$obj.Name}}) Set{{$genElement.Name}}(v {{$genElement.Type}}) {
 
 {{range $genElement := $obj.Elments}}
 // 获取值：{{$genElement.Comment}}
-func (m *{{$obj.Name}}) Get{{$genElement.Name}}(v {{$genElement.Type}}) {
-	m.{{$genElement.Name}} = v
+func (m *{{$obj.Name}}) Get{{$genElement.Name}}() {{$genElement.Type}} {
+	return m.{{$genElement.Name}}
 }
 {{end}}
 `
