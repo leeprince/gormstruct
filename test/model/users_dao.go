@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-07-05 21:52:20
+ * @Date:   2022-07-29 23:21:38
  * @Desc:   users 表的 DAO 层
  */
 
@@ -59,12 +59,12 @@ func (obj *UsersDAO) Create(users interface{}) (rowsAffected int64, err error) {
 // --- 表中的字段作为 option 条件 ---
 
 // 设置 id(主键) 字段作为 option 条件
-func (obj *UsersDAO) WithID(id int32) Option {
+func (obj *UsersDAO) WithID(id int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.ID] = id })
 }
 
 // 设置 id(主键) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithIDs(ids []int32) Option {
+func (obj *UsersDAO) WithIDs(ids []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.ID] = ids })
 }
 
@@ -79,12 +79,12 @@ func (obj *UsersDAO) WithNames(names []*string) Option {
 }
 
 // 设置 age(年龄) 字段作为 option 条件
-func (obj *UsersDAO) WithAge(age int32) Option {
+func (obj *UsersDAO) WithAge(age int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Age] = age })
 }
 
 // 设置 age(年龄) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithAges(ages []int32) Option {
+func (obj *UsersDAO) WithAges(ages []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Age] = ages })
 }
 
@@ -109,32 +109,32 @@ func (obj *UsersDAO) WithHeadImgs(headImgs []string) Option {
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
-func (obj *UsersDAO) WithCreatedAt(createdAt int32) Option {
+func (obj *UsersDAO) WithCreatedAt(createdAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CreatedAt] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithCreatedAts(createdAts []int32) Option {
+func (obj *UsersDAO) WithCreatedAts(createdAts []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CreatedAt] = createdAts })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
-func (obj *UsersDAO) WithUpdatedAt(updatedAt int32) Option {
+func (obj *UsersDAO) WithUpdatedAt(updatedAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.UpdatedAt] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithUpdatedAts(updatedAts []int32) Option {
+func (obj *UsersDAO) WithUpdatedAts(updatedAts []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.UpdatedAt] = updatedAts })
 }
 
 // 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UsersDAO) WithDeletedAt(deletedAt int32) Option {
+func (obj *UsersDAO) WithDeletedAt(deletedAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAt })
 }
 
 // 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithDeletedAts(deletedAts []int32) Option {
+func (obj *UsersDAO) WithDeletedAts(deletedAts []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAts })
 }
 
@@ -172,13 +172,13 @@ func (obj *UsersDAO) UpdateByOption(users *Users, opts ...Option) (rowsAffected 
 // --- 单个字段作为查询条件 ---
 
 // 通过单个 id(主键) 字段值，获取单条记录
-func (obj *UsersDAO) GetFromID(id int32) (result *Users, err error) {
+func (obj *UsersDAO) GetFromID(id int64) (result *Users, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
 // 通过多个 id(主键) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromID(ids []int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetsFromID(ids []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithIDs(ids))
 	return
 }
@@ -196,13 +196,13 @@ func (obj *UsersDAO) GetsFromName(names []*string) (results []*Users, err error)
 }
 
 // 通过单个 age(年龄) 字段值，获取多条记录
-func (obj *UsersDAO) GetFromAge(age int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetFromAge(age int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }
 
 // 通过多个 age(年龄) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromAge(ages []int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetsFromAge(ages []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithAges(ages))
 	return
 }
@@ -232,37 +232,37 @@ func (obj *UsersDAO) GetsFromHeadImg(headImgs []string) (results []*Users, err e
 }
 
 // 通过单个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetFromCreatedAt(createdAt int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetFromCreatedAt(createdAt int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithCreatedAt(createdAt))
 	return
 }
 
 // 通过多个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromCreatedAt(createdAts []int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetsFromCreatedAt(createdAts []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithCreatedAts(createdAts))
 	return
 }
 
 // 通过单个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetFromUpdatedAt(updatedAt int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetFromUpdatedAt(updatedAt int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithUpdatedAt(updatedAt))
 	return
 }
 
 // 通过多个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromUpdatedAt(updatedAts []int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetsFromUpdatedAt(updatedAts []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithUpdatedAts(updatedAts))
 	return
 }
 
 // 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetFromDeletedAt(deletedAt int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetFromDeletedAt(deletedAt int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithDeletedAt(deletedAt))
 	return
 }
 
 // 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromDeletedAt(deletedAts []int32) (results []*Users, err error) {
+func (obj *UsersDAO) GetsFromDeletedAt(deletedAts []int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithDeletedAts(deletedAts))
 	return
 }
@@ -272,7 +272,7 @@ func (obj *UsersDAO) GetsFromDeletedAt(deletedAts []int32) (results []*Users, er
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
 // 通过 id 字段值，获取单条记录
-func (obj *UsersDAO) FetchByPrimaryKey(id int32) (result *Users, err error) {
+func (obj *UsersDAO) FetchByPrimaryKey(id int64) (result *Users, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
@@ -292,7 +292,7 @@ func (obj *UsersDAO) FetchUniqueIndexByUnqNameCard(name *string, cardNo string) 
 }
 
 // 通过 age 字段值，获取多条记录
-func (obj *UsersDAO) FetchIndexByAge(age int32) (results []*Users, err error) {
+func (obj *UsersDAO) FetchIndexByAge(age int64) (results []*Users, err error) {
 	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }

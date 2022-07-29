@@ -2,9 +2,9 @@ package model
 
 //
 type UserBase struct {
-	ID   int32  `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`
+	ID   int64  `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`
 	Name string `gorm:"column:name;type:varchar(30);not null;" json:"name"`
-	Age  int32  `gorm:"column:age;type:int(11);not null;" json:"age"`
+	Age  int64  `gorm:"column:age;type:int(11);not null;" json:"age"`
 }
 
 // 获取结构体对应的表名方法
@@ -23,7 +23,7 @@ func (m *UserBase) PrimaryKey() string {
 }
 
 // 获取主键值
-func (m *UserBase) PrimaryKeyValue() int32 {
+func (m *UserBase) PrimaryKeyValue() int64 {
 	return m.ID
 }
 
@@ -47,7 +47,7 @@ var UserBaseAllColumns = []string{
 }
 
 // 设置值：
-func (m *UserBase) SetID(v int32) {
+func (m *UserBase) SetID(v int64) {
 	m.ID = v
 }
 
@@ -57,21 +57,21 @@ func (m *UserBase) SetName(v string) {
 }
 
 // 设置值：
-func (m *UserBase) SetAge(v int32) {
+func (m *UserBase) SetAge(v int64) {
 	m.Age = v
 }
 
 // 获取值：
-func (m *UserBase) GetID(v int32) {
-	m.ID = v
+func (m *UserBase) GetID() int64 {
+	return m.ID
 }
 
 // 获取值：
-func (m *UserBase) GetName(v string) {
-	m.Name = v
+func (m *UserBase) GetName() string {
+	return m.Name
 }
 
 // 获取值：
-func (m *UserBase) GetAge(v int32) {
-	m.Age = v
+func (m *UserBase) GetAge() int64 {
+	return m.Age
 }

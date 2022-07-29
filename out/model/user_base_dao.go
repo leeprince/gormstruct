@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-07-05 21:52:50
+ * @Date:   2022-07-29 23:22:16
  * @Desc:   user_base 表的 DAO 层
  */
 
@@ -59,12 +59,12 @@ func (obj *UserBaseDAO) Create(userBase interface{}) (rowsAffected int64, err er
 // --- 表中的字段作为 option 条件 ---
 
 // 设置 id() 字段作为 option 条件
-func (obj *UserBaseDAO) WithID(id int32) Option {
+func (obj *UserBaseDAO) WithID(id int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.ID] = id })
 }
 
 // 设置 id() 字段的切片作为 option 条件
-func (obj *UserBaseDAO) WithIDs(ids []int32) Option {
+func (obj *UserBaseDAO) WithIDs(ids []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.ID] = ids })
 }
 
@@ -79,12 +79,12 @@ func (obj *UserBaseDAO) WithNames(names []string) Option {
 }
 
 // 设置 age() 字段作为 option 条件
-func (obj *UserBaseDAO) WithAge(age int32) Option {
+func (obj *UserBaseDAO) WithAge(age int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Age] = age })
 }
 
 // 设置 age() 字段的切片作为 option 条件
-func (obj *UserBaseDAO) WithAges(ages []int32) Option {
+func (obj *UserBaseDAO) WithAges(ages []int64) Option {
 	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Age] = ages })
 }
 
@@ -122,13 +122,13 @@ func (obj *UserBaseDAO) UpdateByOption(userBase *UserBase, opts ...Option) (rows
 // --- 单个字段作为查询条件 ---
 
 // 通过单个 id() 字段值，获取单条记录
-func (obj *UserBaseDAO) GetFromID(id int32) (result *UserBase, err error) {
+func (obj *UserBaseDAO) GetFromID(id int64) (result *UserBase, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
 // 通过多个 id() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetsFromID(ids []int32) (results []*UserBase, err error) {
+func (obj *UserBaseDAO) GetsFromID(ids []int64) (results []*UserBase, err error) {
 	results, err = obj.GetByOptions(obj.WithIDs(ids))
 	return
 }
@@ -146,13 +146,13 @@ func (obj *UserBaseDAO) GetsFromName(names []string) (results []*UserBase, err e
 }
 
 // 通过单个 age() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetFromAge(age int32) (results []*UserBase, err error) {
+func (obj *UserBaseDAO) GetFromAge(age int64) (results []*UserBase, err error) {
 	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }
 
 // 通过多个 age() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetsFromAge(ages []int32) (results []*UserBase, err error) {
+func (obj *UserBaseDAO) GetsFromAge(ages []int64) (results []*UserBase, err error) {
 	results, err = obj.GetByOptions(obj.WithAges(ages))
 	return
 }
@@ -162,13 +162,13 @@ func (obj *UserBaseDAO) GetsFromAge(ages []int32) (results []*UserBase, err erro
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
 // 通过 id 字段值，获取单条记录
-func (obj *UserBaseDAO) FetchByPrimaryKey(id int32) (result *UserBase, err error) {
+func (obj *UserBaseDAO) FetchByPrimaryKey(id int64) (result *UserBase, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
 // 通过 age 字段值，获取多条记录
-func (obj *UserBaseDAO) FetchIndexByAge(age int32) (results []*UserBase, err error) {
+func (obj *UserBaseDAO) FetchIndexByAge(age int64) (results []*UserBase, err error) {
 	results, err = obj.GetByOptions(obj.WithAge(age))
 	return
 }
