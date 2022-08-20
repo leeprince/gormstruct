@@ -3,6 +3,7 @@ package model
 import (
     "bytes"
     "fmt"
+    infrautils "github.com/leeprince/goinfra/utils"
     "github.com/leeprince/gormstruct/internal/config"
     "github.com/leeprince/gormstruct/internal/constants"
     "github.com/leeprince/gormstruct/internal/genfunc"
@@ -195,7 +196,12 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
                     pkg.AddImport(v2)
                 }
             }
-            
+        }
+        
+        // 行记录是否存在删除的字段
+        if infrautils.InString(el.Name, config.GenDeleteFlagFieldList()) {
+            data.IsHaveDeleteFlag = true
+            data.DeleteFlagStructField = utils.GetCamelName(el.Name)
         }
     }
     data.Primary = append(data.Primary, primary...)

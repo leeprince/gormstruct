@@ -68,11 +68,13 @@ type GenOutInfo struct {
 }
 
 type funDef struct {
-    StructName string
-    TableName  string
-    Em         []EmInfo // 字段列表
-    Primary    []FList  // 唯一索引（主键、唯一索引、唯一联合索引）方法列表
-    Index      []FList  // 普通索引的方法列表
+    StructName            string
+    TableName             string
+    Em                    []EmInfo // 字段列表
+    Primary               []FList  // 唯一索引（主键、唯一索引、唯一联合索引）方法列表
+    Index                 []FList  // 普通索引的方法列表
+    IsHaveDeleteFlag      bool     // 行记录是否存在删除的字段
+    DeleteFlagStructField string   // 存在删除的字段的结构名称
 }
 
 // EmInfo element of func info

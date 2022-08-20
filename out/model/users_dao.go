@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2022-07-29 23:21:38
+ * @Date:   2022-08-20 12:14:41
  * @Desc:   users 表的 DAO 层
  */
 
@@ -140,6 +140,7 @@ func (obj *UsersDAO) WithDeletedAts(deletedAts []int64) Option {
 
 // 函数选项模式获取单条记录
 func (obj *UsersDAO) GetByOption(opts ...Option) (result *Users, err error) {
+	opts = append(opts, obj.WithDeletedAt(0))
 	err = obj.prepare(opts...).Find(&result).Error
 	return
 }

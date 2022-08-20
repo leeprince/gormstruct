@@ -7,7 +7,7 @@ dbinfo:
   database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
   type: 0 # 数据库类型:0:mysql
 
-# ------ 建议保留默认 ------
+# --- 建议保留默认 ---------------------------------------------------------------------------
 # 是否控制台输出数据库表结构文档
 gendoc: true
 # 自定义数据库字段的数据类型映射 golang 的数据类型
@@ -59,22 +59,29 @@ packagename: model
 # 输出的文件路径
 ouput_dir: ./out/model/
 
-# 生成的基本方法版本:V1,V2,V3,V4
+# 生成的基本方法版本:V1,V2,V3,V4(请使用最新，不再维护历史版本)
 gen_base_func_version: V4
 
-# 生成的逻辑方法版本:V1,V2,V3,V4
+# 生成的逻辑方法版本:V1,V2,V3,V4(请使用最新，不再维护历史版本)
 gen_logic_func_version: V4
-
-# 主键ID的数据类型
-primary_id_type: int
 
 # 是否自动根据存在 id+created_at+updated_at+deleted_at 字段时，统一使用 gorm 的结构体 `gorm.Model` 覆盖
 # true: 因为 gorm.model 默认这三个时间字段为time.Time数据类型，所以需要表设置的数据类型为时间类型：date、datetime、timestamp。否则字段值为非NULL，并且查询记录存在时会报：unsupported Scan, storing driver.Value type []uint8 into type *time.Time。其中自动设置 `deleted_at` IS NULL，除非添加`db.Unscoped()`方法
 # false: 建议设置
 is_gorm_model_tag: false
 
-# 设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
-# 设置指针的好处是：通过 gorm 的模型结构体执行更新操作时会更新字段为设置的零值
+# 设置 "is_gorm_model_tag=true"时主键ID的数据类型
+primary_id_type: int64
+
+# 字段允许为Null时是否设置为指针类型
+#   设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
+#   设置指针的好处是：通过 gorm 的模型结构体执行更新操作时会更新字段为设置的零值
 is_null_to_point: true
 
-# ------ 建议保留默认-end ------
+# 自定义的行记录删除字段列表
+delete_flag_field_list:
+  - is_delete
+  - is_deleted
+  - deleted_at
+
+# --- 建议保留默认-end ---------------------------------------------------------------------------
