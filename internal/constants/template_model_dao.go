@@ -44,8 +44,8 @@ func New{{$allParams.StructName}}DAO(ctx context.Context, db *gorm.DB) *{{$allPa
 
 // 获取表名称
 func (obj *{{$allParams.StructName}}DAO) GetTableName() string {
-    {{$allParams.TableName}} := &{{GetTableStructName $allParams.StructName}}
-    return {{$allParams.TableName}}.TableName()
+    {{$lowerStructName}} := &{{GetTableStructName $allParams.StructName}}
+    return {{$lowerStructName}}.TableName()
 }
 
 // 存在则更新，否则插入
