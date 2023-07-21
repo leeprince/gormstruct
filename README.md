@@ -22,9 +22,18 @@
 18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
 
 # 二、注意
-1. 当通过 struct 结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
-2. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
-3. CreatedAt/UpdatedAt:
+> 零值：0、''、false
+
+## （一）更新
+1. 当通过 struct 结构体更新时，
+   - GORM Updates() 方法只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
+   - GORM Save() 方法会保存所有的字段，即使字段是零值(// prince@TODO: 添加该方法 2023/7/21 16:15)
+
+## （二）查询
+1. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
+
+## (三)创建时间/创建时间
+1. CreatedAt/UpdatedAt:
     - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
     - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 
