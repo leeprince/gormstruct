@@ -1,5 +1,8 @@
 # 根据表名生成表结构体和数据操作方法
+
+> gorm 官方工具，请查阅：https://gorm.io/gen/gen_tool.html
 ---
+
 
 # 一、包含功能点
 1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
@@ -256,3 +259,84 @@ out/model_test.go
      - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
      - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
 - [x] 允许自定义行记录的删除字段，存在删除字段时，`查询`方法默认会添加过滤已删除的记录
+
+# gorm 官网 gentool 工具的使用
+## (一) 安装
+```
+go install gorm.io/gen/tools/gentool@latest
+```
+
+## (二) 使用
+```
+gentool -h
+
+Usage of gentool:
+ -c string
+       config file path 
+ -db string
+       input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html] (default "mysql")
+ -dsn string
+       consult[https://gorm.io/docs/connecting_to_the_database.html]
+ -fieldNullable
+       generate with pointer when field is nullable
+ -fieldWithIndexTag
+       generate field with gorm index tag
+ -fieldWithTypeTag
+       generate field with gorm column type tag
+ -modelPkgName string
+       generated model code's package name
+ -outFile string
+       query code file name, default: gen.go
+ -outPath string
+       specify a directory for output (default "./dao/query")
+ -tables string
+       enter the required data table or leave it blank
+ -onlyModel
+       only generate models (without query file)
+ -withUnitTest
+       generate unit test for query code
+ -fieldSignable
+       detect integer field's unsigned type, adjust generated data type
+```
+
+## (三) 例子
+```
+# 基础
+gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor"
+
+# 指定输出路径
+gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor" -outPath=out/gentool/dao
+
+# 生成用例
+gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor" -outPath=out/gentool/dao -withUnitTest
+
+# 指定配置文件
+gentool -c "./gen.tool"
+```
+
+
+
+```
+version: "0.1"
+database:
+  # consult[https://gorm.io/docs/connecting_to_the_database.html]"
+  dsn : "username:password@tcp(address:port)/db?charset=utf8mb4&parseTime=true&loc=Local"
+  # input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
+  db  : "mysql"
+  # enter the required data table or leave it blank.You can input : orders,users,goods
+  tables  : "user"
+  # specify a directory for output
+  outPath :  "./dao/query"
+  # query code file name, default: gen.go
+  outFile :  ""
+  # generate unit test for query code
+  withUnitTest  : false
+  # generated model code's package name
+  modelPkgName  : ""
+  # generate with pointer when field is nullable
+  fieldNullable : false
+  # generate field with gorm index tag
+  fieldWithIndexTag : false
+  # generate field with gorm column type tag
+  fieldWithTypeTag  : false
+```

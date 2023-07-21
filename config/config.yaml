@@ -1,10 +1,19 @@
+
 # 数据库设置
+#dbinfo:
+#  host: 127.0.0.1
+#  port: 3306
+#  username: root
+#  password: leeprince
+#  database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
+#  type: 0 # 数据库类型:0:mysql
+
 dbinfo:
-  host: 127.0.0.1
+  host: 10.22.32.17
   port: 3306
-  username: root
-  password: leeprince
-  database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
+  username: gordon
+  password: c39EAQmC2ibIxPd5
+  database: wbx_reimburse # 该参数可通过命令行设置，命令行设置会覆盖该值
   type: 0 # 数据库类型:0:mysql
 
 # --- 建议保留默认 ---------------------------------------------------------------------------
