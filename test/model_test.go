@@ -21,7 +21,7 @@ import (
 	// _ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
+var mysqlDns = "root:root@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
 
 const IsDebug = true
 
@@ -150,21 +150,26 @@ func TestModelCount(t *testing.T) {
 func TestModelGetByOption(t *testing.T) {
 	db := GetGorm()
 
+	fmt.Printf("--------------TestModelGetByOption \n\n")
+
 	var users []*model.Users
 	var err error
 
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	user, err := userDAO.GetByOption(userDAO.WithID(1))
-	fmt.Println("user, err:", user, err)
+	fmt.Println(">>>>>>>>>>> 1 user, err:", user, err)
+
+	user, err = userDAO.GetByOption(userDAO.WithID(1000))
+	fmt.Println(">>>>>>>>>>> 1.1 user, err:", user, err)
 
 	users, err = userDAO.GetByOptions(userDAO.WithIDs([]int64{1, 2}))
 	for _, i2 := range users {
-		fmt.Printf("err:%v, users:%+v \n", err, i2)
+		fmt.Printf(">>>>>>>>>>> 2 err:%v, users:%+v \n", err, i2)
 	}
 
 	user, err = userDAO.GetByOption(userDAO.WithIDs([]int64{1, 2}))
-	fmt.Println("user, err:", user, err)
+	fmt.Println(">>>>>>>>>>> 3 user, err:", user, err)
 }
 
 // GetByOptions 条件查询
