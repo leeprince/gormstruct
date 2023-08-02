@@ -1,115 +1,17 @@
-package model_test
+package test
 
 import (
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/leeprince/goinfra/plog"
-	"github.com/leeprince/goinfra/utils"
 	"github.com/leeprince/gormstruct/out/model"
-	"gorm.io/gorm/logger"
-	"log"
-	"os"
 	"testing"
 	"time"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 
 	// "github.com/jinzhu/gorm"
 	// _ "github.com/jinzhu/gorm/dialects/mysql"
 )
-
-var mysqlDns = "root:root@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
-
-const IsDebug = true
-
-func InitLooger() {
-	// err := plog.SetOutputFile("./logs", "gorm.log", false)
-	err := plog.SetOutputFile("./logs", "gorm.log", true)
-	if err != nil {
-		panic(fmt.Sprintf("plog.SetOutputFile err:%v", err))
-	}
-	// plog.SetReportCaller(true)
-
-	plog.Debugln("0001", "0002")
-	plog.WithFiledLogID(utils.UniqID()).WithField("key01", "v001").Debugln("0001", "0002")
-}
-
-var logWriterStdout = log.New(os.Stdout, "\r\n", log.LstdFlags) // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
-
-var DBLogger = logger.New(
-	// logWriterStdout, // 标准输出
-	plog.GetLogger(), // 指定日志文件输出
-	logger.Config{
-		SlowThreshold:             time.Second, // 慢 SQL 阈值
-		LogLevel:                  logger.Warn, // 日志级别
-		IgnoreRecordNotFoundError: false,       // 忽略ErrRecordNotFound（记录未找到）错误
-		Colorful:                  true,        // 彩色打印
-	},
-)
-
-func GetGorm() *gorm.DB {
-	InitLooger()
-
-	mysqlConnDns := mysqlDns
-
-	// --- gorm.io/gorm
-	// 需 import  "gorm.io/driver/mysql","gorm.io/gorm"
-
-	db, err := gorm.Open(mysql.Open(mysqlConnDns), &gorm.Config{
-		PrepareStmt:              false,
-		Logger:                   DBLogger,
-		DisableNestedTransaction: false,
-	})
-	if err != nil {
-		panic("gorm open err:" + err.Error())
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		panic("db.DB() err:" + err.Error())
-	}
-	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(10)
-	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(100)
-	// SetConnMaxLifetime 设置了连接可复用的最大时间。
-	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	if IsDebug {
-		return db.Debug()
-	}
-	// --- gorm.io/gorm -end
-
-	// --- 	github.com/jinzhu/gorm
-	// > 注意：使用 github.com/jinzhu/gorm 替换 gorm.io/gorm 需先阅读：base_dao.go 文件的 @Desc 说明
-	// 连接需 import "github.com/jinzhu/gorm", _ "github.com/jinzhu/gorm/dialects/mysql"
-
-	/*mysqlConnDns := mysqlDns
-
-	  db, err := gorm.Open("mysql", mysqlConnDns)
-	  if err != nil {
-	      panic("gorm open err:" + err.Error())
-	  }
-	  sqlDB := db.DB()
-
-	  // SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	  sqlDB.SetMaxIdleConns(10)
-	  // SetMaxOpenConns 设置打开数据库连接的最大数量。
-	  sqlDB.SetMaxOpenConns(100)
-	  // SetConnMaxLifetime 设置了连接可复用的最大时间。
-	  sqlDB.SetConnMaxLifetime(time.Hour)
-	*/
-	// --- 	github.com/jinzhu/gorm -end
-
-	if IsDebug {
-		return db.Debug()
-	}
-
-	return db
-
-}
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
@@ -117,14 +19,14 @@ func GetGorm() *gorm.DB {
  * @Desc:
  */
 func TestModelGetTableName(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	userTableName := model.NewUsersDAO(context.Background(), db).GetTableName()
 	fmt.Println("userTableName:", userTableName)
 }
 
 func TestModelCount(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var count int64
 
@@ -147,8 +49,29 @@ func TestModelCount(t *testing.T) {
 }
 
 // GetByOption 条件查询
+func TestModelGetByOptionWithID(t *testing.T) {
+	db := InitDB()
+
+	fmt.Printf("--------------TestModelGetByOptionWithID \n\n")
+
+	var err error
+
+	userDAO := model.NewUsersDAO(context.Background(), db)
+
+	user, err := userDAO.GetByOption(
+		/*userDAO.WithSelect([]string{
+			model.UsersColumns.ID,
+			model.UsersColumns.Age,
+		}),*/
+		userDAO.WithID(1),
+	)
+
+	fmt.Println(">>>>>>>>>>> 1 user, err:", user, err)
+}
+
+// GetByOption 条件查询
 func TestModelGetByOption(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	fmt.Printf("--------------TestModelGetByOption \n\n")
 
@@ -163,18 +86,30 @@ func TestModelGetByOption(t *testing.T) {
 	user, err = userDAO.GetByOption(userDAO.WithID(1000))
 	fmt.Println(">>>>>>>>>>> 1.1 user, err:", user, err)
 
+	user, err = userDAO.GetByOptionGLTID(1)
+	fmt.Println(">>>>>>>>>>> 1.2 user, err:", user, err)
+
+	user, err = userDAO.GetByOption(userDAO.WithWhere("id >= 1"))
+	fmt.Println(">>>>>>>>>>> 1.3 user, err:", user, err)
+
+	user, err = userDAO.GetByOption(userDAO.WithWhere("id >= ?", 1))
+	fmt.Println(">>>>>>>>>>> 1.4 user, err:", user, err)
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= ?", 1))
+	fmt.Println(">>>>>>>>>>> 1.5 users, err:", users, err)
+
 	users, err = userDAO.GetByOptions(userDAO.WithIDs([]int64{1, 2}))
 	for _, i2 := range users {
-		fmt.Printf(">>>>>>>>>>> 2 err:%v, users:%+v \n", err, i2)
+		fmt.Printf("------ 2 err:%v, users:%+v \n", err, i2)
 	}
 
 	user, err = userDAO.GetByOption(userDAO.WithIDs([]int64{1, 2}))
-	fmt.Println(">>>>>>>>>>> 3 user, err:", user, err)
+	fmt.Println("=========== 3 user, err:", user, err)
 }
 
 // GetByOptions 条件查询
 func TestModelGetByOptions(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var users []*model.Users
 	var err error
@@ -203,7 +138,7 @@ func TestModelGetByOptions(t *testing.T) {
 
 // or 条件查询
 func TestModelOr(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	var users []*model.Users
@@ -227,7 +162,7 @@ func TestModelOr(t *testing.T) {
 
 // 查询指定字段
 func TestModelSelect(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	var user *model.Users
@@ -264,7 +199,7 @@ func TestModelSelect(t *testing.T) {
 }
 
 func TestModelSave(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
@@ -299,7 +234,7 @@ func TestModelUpdate(t *testing.T) {
 	var err error
 	var count int64
 
-	db := GetGorm()
+	db := InitDB()
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	name := ""
@@ -338,7 +273,7 @@ func TestModelMoreUpdate(t *testing.T) {
 	var err error
 	var count int64
 
-	db := GetGorm()
+	db := InitDB()
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	// usesUpdate, err := userDAO.GetFromID(1)
@@ -388,7 +323,7 @@ func TestModelMoreUpdate(t *testing.T) {
 
 // 分组+筛选
 func TestModelGetByOptionsOfGroup(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var users []*model.Users
 	var err error
@@ -414,7 +349,7 @@ func TestModelGetByOptionsOfGroup(t *testing.T) {
 
 // 分页
 func TestModelPage(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var users []*model.Users
 	var err error
@@ -434,7 +369,7 @@ func TestModelPage(t *testing.T) {
 
 // GetFromXxx 返回单条记录时，传入的参数为空值（0，""，nil）时会忽略为查询条件
 func TestModelFrom(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var user *model.Users
 	var users []*model.Users
@@ -504,7 +439,7 @@ func TestModelFrom(t *testing.T) {
 
 // 通过索引获取数据
 func TestModelFetch(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var user *model.Users
 	var users []*model.Users
@@ -528,7 +463,7 @@ func TestModelFetch(t *testing.T) {
 
 // 重置连接
 func TestModelReset(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	var user *model.Users
 	var err error
@@ -551,7 +486,7 @@ func TestModelReset(t *testing.T) {
 
 // 支持事务便捷操作
 func TestTracsaction(t *testing.T) {
-	db := GetGorm()
+	db := InitDB()
 
 	ctx := context.Background()
 

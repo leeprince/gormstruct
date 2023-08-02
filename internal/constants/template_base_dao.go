@@ -7,11 +7,11 @@ package constants
  */
 
 const (
-    FileBaseName = "base_dao.go"
+	FileBaseName = "base_dao.go"
 )
 
 const (
-    TempGenBaseV4 = `
+	TempGenBaseV4 = `
 package {{.PackageName}}
 
 /**
@@ -118,15 +118,25 @@ func (obj *_BaseDAO) WithSelect(query interface{}, args ...interface{}) Option {
     })
 }
 
-// Or 查询：将所有 Withxxx 的 options.query 作为 Or 的查询条件
+// 自定义查询条件
+func (obj *_BaseDAO) WithWhere(query interface{}, args ...interface{}) Option {
+	return selectOptionFunc(func(o *options) {
+		o.queryArgs = queryArg{
+			query: query,
+			arg:   args,
+		}
+	})
+}
+
+// Or 查询：将所有 Withxxx 的 options.queryMap 作为 Or 的查询条件
 func (obj *_BaseDAO) WithOrOption(opts ...Option) Option {
     optionOr := initOption(opts...)
     
     return queryOrOptionFunc(func(o *options) {
-        if len(optionOr.query) > 0 {
-            o.queryOr = make(map[string]interface{}, len(optionOr.query))
-            for key, value := range optionOr.query {
-                o.queryOr[key] = value
+        if len(optionOr.queryMap) > 0 {
+            o.queryMapOr = make(map[string]interface{}, len(optionOr.queryMap))
+            for key, value := range optionOr.queryMap {
+                o.queryMapOr[key] = value
             }
         }
     })
@@ -170,8 +180,8 @@ func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
     
     tx = obj.withContext().
         Scopes(obj.selectField(&options)).
-        Where(options.query).
-        Or(options.queryOr).
+        Where(options.queryMap).
+        Or(options.queryMapOr).
         Scopes(obj.paginate(&options)).
         Scopes(obj.orderBy(&options)).
         Scopes(obj.groupBy(&options)).
@@ -192,6 +202,19 @@ func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
         }
         return db
     }
+}
+
+// 自定义查询条件
+func (obj *_BaseDAO) queryArgs(opt *options) func(*gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if opt.queryArgs.query != nil && opt.queryArgs.query != "" {
+			if opt.queryArgs.arg != nil && len(opt.queryArgs.arg) > 0 {
+				return db.Where(opt.queryArgs.query, opt.queryArgs.arg)
+			}
+			return db.Where(opt.queryArgs.query)
+		}
+		return db
+	}
 }
 
 // 排序
@@ -242,16 +265,23 @@ func (obj *_BaseDAO) paginate(opt *options) func(*gorm.DB) *gorm.DB {
 
 // 函数选项模式的参数字段
 type options struct {
+	// 指定字段：查询指定字段或者更新指定字段
     selectField queryArg
-    query       map[string]interface{}
-    queryOr     map[string]interface{}
+	// 查询条件AND
+    queryMap    map[string]interface{}
+	// 查询条件OR
+    queryMapOr  map[string]interface{}
+	// 分页
     page        paging
+	// 排序
     orderBy     string
+	// 分组
     groupBy     string
+	// 分组后的条件过滤条件
     having      queryArg
 }
 
-// 分页数据结构
+// query-arg数据结构
 type queryArg struct {
     query interface{}
     arg   []interface{}
@@ -268,21 +298,28 @@ type Option interface {
     apply(*options)
 }
 
-// options.query 实现 Option 接口
+// options.selectOptionFunc 实现 Option 接口
 type selectOptionFunc func(*options)
 
 func (f selectOptionFunc) apply(o *options) {
     f(o)
 }
 
-// options.query 实现 Option 接口
+// options.queryArgs 实现 Option 接口
+type queryArgsOptionFunc func(*options)
+
+func (f queryArgsOptionFunc) apply(o *options) {
+	f(o)
+}
+
+// options.queryMap 实现 Option 接口
 type queryOptionFunc func(*options)
 
 func (f queryOptionFunc) apply(o *options) {
     f(o)
 }
 
-// options.query 实现 Option 接口
+// options.queryMap 实现 Option 接口
 type queryOrOptionFunc func(*options)
 
 func (f queryOrOptionFunc) apply(o *options) {
@@ -324,8 +361,8 @@ func initOption(opts ...Option) options {
             query: nil,
             arg:   nil,
         },
-        query:   make(map[string]interface{}, len(opts)),
-        queryOr: make(map[string]interface{}, len(opts)),
+        queryMap:   make(map[string]interface{}, len(opts)),
+        queryMapOr: make(map[string]interface{}, len(opts)),
         page: paging{
             offset: 0,
             limit:  0,

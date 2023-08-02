@@ -60,32 +60,32 @@ func (obj *UserBaseDAO) Create(userBase interface{}) (rowsAffected int64, err er
 
 // 设置 id() 字段作为 option 条件
 func (obj *UserBaseDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.ID] = id })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = id })
 }
 
 // 设置 id() 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.ID] = ids })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = ids })
 }
 
 // 设置 name() 字段作为 option 条件
 func (obj *UserBaseDAO) WithName(name string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Name] = name })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = name })
 }
 
 // 设置 name() 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithNames(names []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Name] = names })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = names })
 }
 
 // 设置 age() 字段作为 option 条件
 func (obj *UserBaseDAO) WithAge(age int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Age] = age })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = age })
 }
 
 // 设置 age() 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithAges(ages []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UserBaseColumns.Age] = ages })
+	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = ages })
 }
 
 // 函数选项模式获取单条记录

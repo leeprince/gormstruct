@@ -60,142 +60,142 @@ func (obj *AccountMessageDAO) Create(accountMessage interface{}) (rowsAffected i
 
 // 设置 id(主键ID,消息ID) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ID] = id })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ID] = id })
 }
 
 // 设置 id(主键ID,消息ID) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ID] = ids })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ID] = ids })
 }
 
 // 设置 org_id(租户ID) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithOrgID(orgID int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.OrgID] = orgID })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.OrgID] = orgID })
 }
 
 // 设置 org_id(租户ID) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithOrgIDs(orgIDs []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.OrgID] = orgIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.OrgID] = orgIDs })
 }
 
 // 设置 client_id(商户ID,租户ID) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithClientID(clientID int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ClientID] = clientID })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ClientID] = clientID })
 }
 
 // 设置 client_id(商户ID,租户ID) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithClientIDs(clientIDs []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ClientID] = clientIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ClientID] = clientIDs })
 }
 
 // 设置 client_name(商户名称) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithClientName(clientName string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ClientName] = clientName })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ClientName] = clientName })
 }
 
 // 设置 client_name(商户名称) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithClientNames(clientNames []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.ClientName] = clientNames })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.ClientName] = clientNames })
 }
 
 // 设置 order_id(高灯云订单号) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithOrderID(orderID string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.OrderID] = orderID })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.OrderID] = orderID })
 }
 
 // 设置 order_id(高灯云订单号) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithOrderIDs(orderIDs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.OrderID] = orderIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.OrderID] = orderIDs })
 }
 
 // 设置 message_type(消息类型(1:到账; 2:系统; 3:活动)；固定为1) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithMessageType(messageType int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.MessageType] = messageType })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.MessageType] = messageType })
 }
 
 // 设置 message_type(消息类型(1:到账; 2:系统; 3:活动)；固定为1) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithMessageTypes(messageTypes []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.MessageType] = messageTypes })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.MessageType] = messageTypes })
 }
 
 // 设置 real_amount(实付金额。单位分) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithRealAmount(realAmount int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.RealAmount] = realAmount })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.RealAmount] = realAmount })
 }
 
 // 设置 real_amount(实付金额。单位分) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithRealAmounts(realAmounts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.RealAmount] = realAmounts })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.RealAmount] = realAmounts })
 }
 
 // 设置 status(打款状态。-1：打款失败； 0：打款中； 1：打款成功； 2：打款退票； 3：冻结出款；仅记录失败和成功) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithStatus(status int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.Status] = status })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.Status] = status })
 }
 
 // 设置 status(打款状态。-1：打款失败； 0：打款中； 1：打款成功； 2：打款退票； 3：冻结出款；仅记录失败和成功) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithStatuss(statuss []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.Status] = statuss })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.Status] = statuss })
 }
 
 // 设置 fail_reason(失败原因) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithFailReason(failReason string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.FailReason] = failReason })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.FailReason] = failReason })
 }
 
 // 设置 fail_reason(失败原因) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithFailReasons(failReasons []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.FailReason] = failReasons })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.FailReason] = failReasons })
 }
 
 // 设置 payee_bank_account(打款银行卡号) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithPayeeBankAccount(payeeBankAccount string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.PayeeBankAccount] = payeeBankAccount })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.PayeeBankAccount] = payeeBankAccount })
 }
 
 // 设置 payee_bank_account(打款银行卡号) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithPayeeBankAccounts(payeeBankAccounts []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.PayeeBankAccount] = payeeBankAccounts })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.PayeeBankAccount] = payeeBankAccounts })
 }
 
 // 设置 is_read(消息是否已读；0：未读；1：已读) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithIsRead(isRead int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.IsRead] = isRead })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.IsRead] = isRead })
 }
 
 // 设置 is_read(消息是否已读；0：未读；1：已读) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithIsReads(isReads []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.IsRead] = isReads })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.IsRead] = isReads })
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithCreatedAt(createdAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.CreatedAt] = createdAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.CreatedAt] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithCreatedAts(createdAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.CreatedAt] = createdAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.CreatedAt] = createdAts })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithUpdatedAt(updatedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.UpdatedAt] = updatedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.UpdatedAt] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithUpdatedAts(updatedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.UpdatedAt] = updatedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.UpdatedAt] = updatedAts })
 }
 
 // 设置 deleted_at(删除时间) 字段作为 option 条件
 func (obj *AccountMessageDAO) WithDeletedAt(deletedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.DeletedAt] = deletedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.DeletedAt] = deletedAt })
 }
 
 // 设置 deleted_at(删除时间) 字段的切片作为 option 条件
 func (obj *AccountMessageDAO) WithDeletedAts(deletedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[AccountMessageColumns.DeletedAt] = deletedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[AccountMessageColumns.DeletedAt] = deletedAts })
 }
 
 // 函数选项模式获取单条记录

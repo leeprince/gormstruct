@@ -7,7 +7,7 @@ package constants
  */
 
 const (
-    TempGenLogicV4 = `
+	TempGenLogicV4 = `
 {{$allParams := .}}
 {{$list := $allParams.Em}}
 {{$lowerStructName := CapLowercase $allParams.StructName}}
@@ -66,12 +66,12 @@ func (obj *{{$allParams.StructName}}DAO) Create({{$lowerStructName}} interface{}
 {{range $oem := $allParams.Em}}
 // 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) Option {
-    return queryOptionFunc(func(o *options) { o.query[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}} })
+    return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}} })
 }
 
 // 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段的切片作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$oem.ColStructName}}s({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) Option {
-    return queryOptionFunc(func(o *options) { o.query[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}}s })
+    return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}}s })
 }
 {{end}}
 

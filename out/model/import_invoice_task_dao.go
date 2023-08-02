@@ -60,142 +60,142 @@ func (obj *ImportInvoiceTaskDAO) Create(importInvoiceTask interface{}) (rowsAffe
 
 // 设置 id(主键) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.ID] = id })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ID] = id })
 }
 
 // 设置 id(主键) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.ID] = ids })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ID] = ids })
 }
 
 // 设置 org_id(租户ID) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithOrgID(orgID int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.OrgID] = orgID })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.OrgID] = orgID })
 }
 
 // 设置 org_id(租户ID) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithOrgIDs(orgIDs []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.OrgID] = orgIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.OrgID] = orgIDs })
 }
 
 // 设置 client_id(纳税人ID) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithClientID(clientID int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.ClientID] = clientID })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ClientID] = clientID })
 }
 
 // 设置 client_id(纳税人ID) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithClientIDs(clientIDs []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.ClientID] = clientIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ClientID] = clientIDs })
 }
 
 // 设置 enterprise_id(企业ID) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithEnterpriseID(enterpriseID string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseID })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseID })
 }
 
 // 设置 enterprise_id(企业ID) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithEnterpriseIDs(enterpriseIDs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseIDs })
 }
 
 // 设置 tax_code(税号) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithTaxCode(taxCode string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.TaxCode] = taxCode })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaxCode] = taxCode })
 }
 
 // 设置 tax_code(税号) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithTaxCodes(taxCodes []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.TaxCode] = taxCodes })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaxCode] = taxCodes })
 }
 
 // 设置 file_md5(源文件md5) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFileMd5(fileMd5 string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FileMd5] = fileMd5 })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FileMd5] = fileMd5 })
 }
 
 // 设置 file_md5(源文件md5) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFileMd5s(fileMd5s []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FileMd5] = fileMd5s })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FileMd5] = fileMd5s })
 }
 
 // 设置 source_file_name(源文件名称) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithSourceFileName(sourceFileName string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.SourceFileName] = sourceFileName })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.SourceFileName] = sourceFileName })
 }
 
 // 设置 source_file_name(源文件名称) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithSourceFileNames(sourceFileNames []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.SourceFileName] = sourceFileNames })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.SourceFileName] = sourceFileNames })
 }
 
 // 设置 file_cos_url(源文件cos地址) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFileCosURL(fileCosURL string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FileCosURL] = fileCosURL })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FileCosURL] = fileCosURL })
 }
 
 // 设置 file_cos_url(源文件cos地址) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFileCosURLs(fileCosURLs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FileCosURL] = fileCosURLs })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FileCosURL] = fileCosURLs })
 }
 
 // 设置 task_status(任务状态：1(等待中)；2(成功)；3(失败)) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithTaskStatus(taskStatus int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.TaskStatus] = taskStatus })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaskStatus] = taskStatus })
 }
 
 // 设置 task_status(任务状态：1(等待中)；2(成功)；3(失败)) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithTaskStatuss(taskStatuss []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.TaskStatus] = taskStatuss })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaskStatus] = taskStatuss })
 }
 
 // 设置 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailType(failType int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FailType] = failType })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailType] = failType })
 }
 
 // 设置 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailTypes(failTypes []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FailType] = failTypes })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailType] = failTypes })
 }
 
 // 设置 fail_content(失败原因) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailContent(failContent string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FailContent] = failContent })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailContent] = failContent })
 }
 
 // 设置 fail_content(失败原因) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailContents(failContents []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.FailContent] = failContents })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailContent] = failContents })
 }
 
 // 设置 retry_num(重试次数) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithRetryNum(retryNum int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.RetryNum] = retryNum })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.RetryNum] = retryNum })
 }
 
 // 设置 retry_num(重试次数) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithRetryNums(retryNums []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.RetryNum] = retryNums })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.RetryNum] = retryNums })
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithCreatedAt(createdAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.CreatedAt] = createdAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.CreatedAt] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithCreatedAts(createdAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.CreatedAt] = createdAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.CreatedAt] = createdAts })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithUpdatedAt(updatedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.UpdatedAt] = updatedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.UpdatedAt] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithUpdatedAts(updatedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[ImportInvoiceTaskColumns.UpdatedAt] = updatedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.UpdatedAt] = updatedAts })
 }
 
 // 函数选项模式获取单条记录

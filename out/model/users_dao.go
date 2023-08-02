@@ -60,88 +60,95 @@ func (obj *UsersDAO) Create(users interface{}) (rowsAffected int64, err error) {
 
 // 设置 id(主键) 字段作为 option 条件
 func (obj *UsersDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.ID] = id })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = id })
 }
 
 // 设置 id(主键) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.ID] = ids })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = ids })
 }
 
 // 设置 name(名称) 字段作为 option 条件
 func (obj *UsersDAO) WithName(name *string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Name] = name })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = name })
 }
 
 // 设置 name(名称) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNames(names []*string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Name] = names })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = names })
 }
 
 // 设置 age(年龄) 字段作为 option 条件
 func (obj *UsersDAO) WithAge(age int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Age] = age })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = age })
 }
 
 // 设置 age(年龄) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithAges(ages []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.Age] = ages })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = ages })
 }
 
 // 设置 card_no(身份证) 字段作为 option 条件
 func (obj *UsersDAO) WithCardNo(cardNo string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CardNo] = cardNo })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNo })
 }
 
 // 设置 card_no(身份证) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithCardNos(cardNos []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CardNo] = cardNos })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNos })
 }
 
 // 设置 head_img(头像) 字段作为 option 条件
 func (obj *UsersDAO) WithHeadImg(headImg string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.HeadImg] = headImg })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImg })
 }
 
 // 设置 head_img(头像) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithHeadImgs(headImgs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.HeadImg] = headImgs })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImgs })
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *UsersDAO) WithCreatedAt(createdAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CreatedAt] = createdAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithCreatedAts(createdAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.CreatedAt] = createdAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAts })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *UsersDAO) WithUpdatedAt(updatedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.UpdatedAt] = updatedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithUpdatedAts(updatedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.UpdatedAt] = updatedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAts })
 }
 
 // 设置 deleted_at(删除时间) 字段作为 option 条件
 func (obj *UsersDAO) WithDeletedAt(deletedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAt })
 }
 
 // 设置 deleted_at(删除时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithDeletedAts(deletedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.query[UsersColumns.DeletedAt] = deletedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAts })
 }
 
 // 函数选项模式获取单条记录
 func (obj *UsersDAO) GetByOption(opts ...Option) (result *Users, err error) {
 	opts = append(opts, obj.WithDeletedAt(0))
 	err = obj.prepare(opts...).Find(&result).Error
+	return
+}
+
+// 函数选项模式获取单条记录
+func (obj *UsersDAO) GetByOptionGLTID(gltID int64, opts ...Option) (result *Users, err error) {
+	opts = append(opts, obj.WithDeletedAt(0))
+	err = obj.prepare(opts...).Where(fmt.Sprintf("%s >= ?", UsersColumns.ID), gltID).Find(&result).Error
 	return
 }
 

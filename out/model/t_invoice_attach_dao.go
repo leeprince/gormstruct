@@ -61,122 +61,122 @@ func (obj *TInvoiceAttachDAO) Create(tInvoiceAttach interface{}) (rowsAffected i
 
 // 设置 id() 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithID(id uint64) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ID] = id })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ID] = id })
 }
 
 // 设置 id() 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithIDs(ids []uint64) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ID] = ids })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ID] = ids })
 }
 
 // 设置 invoice_id(发票id) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithInvoiceID(invoiceID string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.InvoiceID] = invoiceID })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.InvoiceID] = invoiceID })
 }
 
 // 设置 invoice_id(发票id) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithInvoiceIDs(invoiceIDs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.InvoiceID] = invoiceIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.InvoiceID] = invoiceIDs })
 }
 
 // 设置 order_sn(订单id) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithOrderSn(orderSn string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.OrderSn] = orderSn })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.OrderSn] = orderSn })
 }
 
 // 设置 order_sn(订单id) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithOrderSns(orderSns []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.OrderSn] = orderSns })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.OrderSn] = orderSns })
 }
 
 // 设置 attachment_url(附件链接,JSON["a","b"]) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithAttachmentURL(attachmentURL string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.AttachmentURL] = attachmentURL })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.AttachmentURL] = attachmentURL })
 }
 
 // 设置 attachment_url(附件链接,JSON["a","b"]) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithAttachmentURLs(attachmentURLs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.AttachmentURL] = attachmentURLs })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.AttachmentURL] = attachmentURLs })
 }
 
 // 设置 ocr_modify(OCR修改记录,JSON) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithOcrModify(ocrModify string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.OcrModify] = ocrModify })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.OcrModify] = ocrModify })
 }
 
 // 设置 ocr_modify(OCR修改记录,JSON) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithOcrModifys(ocrModifys []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.OcrModify] = ocrModifys })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.OcrModify] = ocrModifys })
 }
 
 // 设置 custom_tax_rate(税率默认值-1) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCustomTaxRate(customTaxRate float64) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CustomTaxRate] = customTaxRate })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CustomTaxRate] = customTaxRate })
 }
 
 // 设置 custom_tax_rate(税率默认值-1) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCustomTaxRates(customTaxRates []float64) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CustomTaxRate] = customTaxRates })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CustomTaxRate] = customTaxRates })
 }
 
 // 设置 cert_status(凭证入账状态) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCertStatus(certStatus int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CertStatus] = certStatus })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CertStatus] = certStatus })
 }
 
 // 设置 cert_status(凭证入账状态) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCertStatuss(certStatuss []int8) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CertStatus] = certStatuss })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CertStatus] = certStatuss })
 }
 
 // 设置 pdf_url(ofd转pdf的url) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithPdfURL(pdfURL string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.PdfURL] = pdfURL })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.PdfURL] = pdfURL })
 }
 
 // 设置 pdf_url(ofd转pdf的url) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithPdfURLs(pdfURLs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.PdfURL] = pdfURLs })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.PdfURL] = pdfURLs })
 }
 
 // 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithUpdatedAt(updatedAt time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.UpdatedAt] = updatedAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.UpdatedAt] = updatedAt })
 }
 
 // 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithUpdatedAts(updatedAts []time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.UpdatedAt] = updatedAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.UpdatedAt] = updatedAts })
 }
 
 // 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCreatedAt(createdAt time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CreatedAt] = createdAt })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CreatedAt] = createdAt })
 }
 
 // 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithCreatedAts(createdAts []time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.CreatedAt] = createdAts })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.CreatedAt] = createdAts })
 }
 
 // 设置 external_order_id(外部订单号（多个订单用逗号隔开）) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithExternalOrderID(externalOrderID string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ExternalOrderID] = externalOrderID })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ExternalOrderID] = externalOrderID })
 }
 
 // 设置 external_order_id(外部订单号（多个订单用逗号隔开）) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithExternalOrderIDs(externalOrderIDs []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ExternalOrderID] = externalOrderIDs })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ExternalOrderID] = externalOrderIDs })
 }
 
 // 设置 external_ticket_type(外部票据类型（taxi, flight, hotel, train）) 字段作为 option 条件
 func (obj *TInvoiceAttachDAO) WithExternalTicketType(externalTicketType string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ExternalTicketType] = externalTicketType })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ExternalTicketType] = externalTicketType })
 }
 
 // 设置 external_ticket_type(外部票据类型（taxi, flight, hotel, train）) 字段的切片作为 option 条件
 func (obj *TInvoiceAttachDAO) WithExternalTicketTypes(externalTicketTypes []string) Option {
-	return queryOptionFunc(func(o *options) { o.query[TInvoiceAttachColumns.ExternalTicketType] = externalTicketTypes })
+	return queryOptionFunc(func(o *options) { o.queryMap[TInvoiceAttachColumns.ExternalTicketType] = externalTicketTypes })
 }
 
 // 函数选项模式获取单条记录
