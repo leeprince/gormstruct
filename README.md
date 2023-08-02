@@ -260,7 +260,7 @@ out/model_test.go
      - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
 - [x] 允许自定义行记录的删除字段，存在删除字段时，`查询`方法默认会添加过滤已删除的记录
 - [x] 允许通过`WithWhere`自定义查询条件
-- [] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`自定义查询条件；或者拆分为多条sql语句执行
+- [ ] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`自定义查询条件；或者拆分为多条sql语句执行
 
 # gorm 官网 gentool 工具的使用
 ## (一) 安装
