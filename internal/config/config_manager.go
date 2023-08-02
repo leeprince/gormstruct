@@ -19,13 +19,13 @@ func GetConfigDBDatabase() string {
 	if flagInfo.database != "" {
 		db = flagInfo.database
 	}
-	
+
 	return db
 }
 
 // 获取mysql 连接字符串
 func GetConfigDBOfMysqlConStr() string {
-	
+
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&interpolateParams=True",
 		config.DBInfo.Username,
 		config.DBInfo.Password,
@@ -35,28 +35,20 @@ func GetConfigDBOfMysqlConStr() string {
 	)
 }
 
-func GetGenBaseFuncVersion() string {
-    return config.GenBaseFuncVersion
-}
-
-func GetGenLogicFuncVersion() string {
-    return config.GenLogicFuncVersion
-}
-
 func GetPrimaryIdType() string {
-    return config.PrimaryIdType
+	return config.PrimaryIdType
 }
 
 func GetIsGormModelTag() bool {
-    return config.IsGormModelTag
+	return config.IsGormModelTag
 }
 
 func GetIsNullToPoint() bool {
-    return config.IsNullToPoint
+	return config.IsNullToPoint
 }
 
 func GetTable() string {
-    return flagInfo.table
+	return flagInfo.table
 }
 
 func GetPackageName() string {
@@ -64,25 +56,25 @@ func GetPackageName() string {
 	if flagInfo.packageName != "" {
 		packageName = flagInfo.packageName
 	}
-    return packageName
+	return packageName
 }
 
 func GetStructName() string {
-    return flagInfo.structName
+	return flagInfo.structName
 }
 
 func GetOuputDir() string {
-    return config.OuputDir
+	return config.OuputDir
 }
 
 func GetSelfTypeDefine() map[string]string {
-    return config.SelfTypeDefine
+	return config.SelfTypeDefine
 }
 
 func GenDoc() bool {
-    return config.GenDoc
+	return config.GenDoc
 }
 
 func GenDeleteFlagFieldList() []string {
-    return config.DeleteFlagFieldList
+	return config.DeleteFlagFieldList
 }

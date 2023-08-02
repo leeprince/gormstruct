@@ -86,25 +86,44 @@ func TestModelGetByOption(t *testing.T) {
 	user, err = userDAO.GetByOption(userDAO.WithID(1000))
 	fmt.Println(">>>>>>>>>>> 1.1 user, err:", user, err)
 
-	user, err = userDAO.GetByOptionGLTID(1)
-	fmt.Println(">>>>>>>>>>> 1.2 user, err:", user, err)
-
-	user, err = userDAO.GetByOption(userDAO.WithWhere("id >= 1"))
-	fmt.Println(">>>>>>>>>>> 1.3 user, err:", user, err)
-
-	user, err = userDAO.GetByOption(userDAO.WithWhere("id >= ?", 1))
-	fmt.Println(">>>>>>>>>>> 1.4 user, err:", user, err)
-
-	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= ?", 1))
-	fmt.Println(">>>>>>>>>>> 1.5 users, err:", users, err)
-
 	users, err = userDAO.GetByOptions(userDAO.WithIDs([]int64{1, 2}))
 	for _, i2 := range users {
+		i2 := i2
 		fmt.Printf("------ 2 err:%v, users:%+v \n", err, i2)
 	}
 
 	user, err = userDAO.GetByOption(userDAO.WithIDs([]int64{1, 2}))
 	fmt.Println("=========== 3 user, err:", user, err)
+}
+
+// GetByOption 条件查询
+func TestModelGetByOptionWithWhere(t *testing.T) {
+	db := InitDB()
+
+	fmt.Printf("--------------TestModelGetByOption \n\n")
+
+	var users []*model.Users
+	var err error
+
+	userDAO := model.NewUsersDAO(context.Background(), db)
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= 2"))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------1 err:%v, users:%+v \n", err, i2)
+	}
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= ?", 2))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------2 err:%v, users:%+v \n", err, i2)
+	}
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= ?", []int64{2}))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------3 err:%v, users:%+v \n", err, i2)
+	}
 }
 
 // GetByOptions 条件查询
@@ -145,10 +164,123 @@ func TestModelOr(t *testing.T) {
 	var err error
 
 	name := "name01"
-
 	userCol := model.UsersColumns
+
+	// SELECT `id`,`age` FROM `users` WHERE `id` = 1 OR `age` = 18
 	users, err = userDAO.GetByOptions(
-		userDAO.WithSelect([]string{userCol.ID, userCol.Age}),
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		userDAO.WithID(1),
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+		),
+	)
+	for _, i2 := range users {
+		fmt.Printf(">1 err:%v, users:%+v \n", err, i2)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `id` = 1 OR `name` = 'name01'
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		userDAO.WithID(1),
+		// 只会保留最后一个or
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+		),
+		userDAO.WithOrOption(
+			userDAO.WithName(&name),
+		),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">2 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `id` = 1 AND `name` = 'name01' OR `age` = 18
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		userDAO.WithID(1),
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+		),
+		userDAO.WithName(&name),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">3 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `id` = 1 AND `name` = 'name01' OR `age` = 18
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		userDAO.WithID(1),
+		// 只会保留最后一个or
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+		),
+		userDAO.WithName(&name),
+		userDAO.WithOrOption(
+			userDAO.WithName(&name),
+		),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">31 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `name` = 'name01'
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		// 只会保留最后一个or
+		userDAO.WithOrOption(
+			userDAO.WithID(1),
+		),
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+		),
+		userDAO.WithOrOption(
+			userDAO.WithName(&name),
+		),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">32 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users`
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		// 只会保留最后一个or
+		userDAO.WithOrOption(
+			userDAO.WithOrOption(
+				userDAO.WithAge(18),
+			),
+			userDAO.WithOrOption(
+				userDAO.WithName(&name),
+			),
+		),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">33 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `id` = 1 AND `name` = 'name01' OR `age` = 18
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		// 只会保留最后一个or
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+			userDAO.WithName(&name),
+		),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">34 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	// SELECT `id`,`age` FROM `users` WHERE `id` = 1 OR (`age` = 18 AND `name` = 'name01')
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
 		userDAO.WithID(1),
 		userDAO.WithOrOption(
 			userDAO.WithAge(18),
@@ -156,7 +288,22 @@ func TestModelOr(t *testing.T) {
 		),
 	)
 	for _, i2 := range users {
-		fmt.Printf("err:%v, users:%+v \n", err, i2)
+		fmt.Printf(">4 err:%v, users:%+v \n", err, i2)
+	}
+
+	// SELECT `id`,`name`,`age` FROM `users` WHERE `id` = 1 AND `name` = 'name01' OR (`age` = 18 AND `name` = 'name01')
+	users, err = userDAO.GetByOptions(
+		userDAO.WithSelect([]string{userCol.ID, userCol.Name, userCol.Age}),
+		userDAO.WithID(1),
+		userDAO.WithOrOption(
+			userDAO.WithAge(18),
+			userDAO.WithName(&name),
+		),
+		userDAO.WithName(&name),
+	)
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf(">5 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
 	}
 }
 

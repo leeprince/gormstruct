@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-07-26 18:10:28
+ * @Date:   2023-08-02 16:38:07
  * @Desc:   DAO 的基本方法
  */
 
@@ -106,8 +106,8 @@ func (obj *_BaseDAO) WithSelect(query interface{}, args ...interface{}) Option {
 
 // 自定义查询条件
 func (obj *_BaseDAO) WithWhere(query interface{}, args ...interface{}) Option {
-	return queryArgsOptionFunc(func(o *options) {
-		o.queryArgs = queryArg{
+	return queryArgOptionFunc(func(o *options) {
+		o.queryArg = queryArg{
 			query: query,
 			arg:   args,
 		}
@@ -166,7 +166,7 @@ func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
 
 	tx = obj.withContext().
 		Scopes(obj.selectField(&options)).
-		Scopes(obj.queryArgs(&options)).
+		Scopes(obj.queryArg(&options)).
 		Where(options.queryMap).
 		Or(options.queryMapOr).
 		Scopes(obj.paginate(&options)).
@@ -192,13 +192,13 @@ func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 自定义查询条件
-func (obj *_BaseDAO) queryArgs(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) queryArg(opt *options) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if opt.queryArgs.query != nil && opt.queryArgs.query != "" {
-			if opt.queryArgs.arg != nil && len(opt.queryArgs.arg) > 0 {
-				return db.Where(opt.queryArgs.query, opt.queryArgs.arg)
+		if opt.queryArg.query != nil && opt.queryArg.query != "" {
+			if opt.queryArg.arg != nil && len(opt.queryArg.arg) > 0 {
+				return db.Where(opt.queryArg.query, opt.queryArg.arg)
 			}
-			return db.Where(opt.queryArgs.query)
+			return db.Where(opt.queryArg.query)
 		}
 		return db
 	}
@@ -252,23 +252,25 @@ func (obj *_BaseDAO) paginate(opt *options) func(*gorm.DB) *gorm.DB {
 
 // 函数选项模式的参数字段
 type options struct {
+	// 指定字段：查询指定字段或者更新指定字段
 	selectField queryArg
-
-	// 新增
-	queryArgs queryArg
-
-	//queryMap map[string]interface{}
-	// query => queryMap
+	// 自定义查询条件
+	queryArg queryArg
+	// 查询条件AND
 	queryMap map[string]interface{}
-
+	// 查询条件OR
 	queryMapOr map[string]interface{}
-	page       paging
-	orderBy    string
-	groupBy    string
-	having     queryArg
+	// 分页
+	page paging
+	// 排序
+	orderBy string
+	// 分组
+	groupBy string
+	// 分组后的条件过滤条件
+	having queryArg
 }
 
-// 分页数据结构
+// query-arg数据结构
 type queryArg struct {
 	query interface{}
 	arg   []interface{}
@@ -285,17 +287,17 @@ type Option interface {
 	apply(*options)
 }
 
-// options.queryMap 实现 Option 接口
+// options.selectOptionFunc 实现 Option 接口
 type selectOptionFunc func(*options)
 
 func (f selectOptionFunc) apply(o *options) {
 	f(o)
 }
 
-// options.queryArgs 实现 Option 接口
-type queryArgsOptionFunc func(*options)
+// options.queryArg 实现 Option 接口
+type queryArgOptionFunc func(*options)
 
-func (f queryArgsOptionFunc) apply(o *options) {
+func (f queryArgOptionFunc) apply(o *options) {
 	f(o)
 }
 
@@ -348,7 +350,7 @@ func initOption(opts ...Option) options {
 			query: nil,
 			arg:   nil,
 		},
-		queryArgs: queryArg{
+		queryArg: queryArg{
 			query: nil,
 			arg:   nil,
 		},

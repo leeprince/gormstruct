@@ -1,8 +1,7 @@
 package genfunc
 
 import (
-    "github.com/leeprince/gormstruct/internal/config"
-    "github.com/leeprince/gormstruct/internal/constants"
+	"github.com/leeprince/gormstruct/internal/constants"
 )
 
 /**
@@ -13,37 +12,21 @@ import (
 
 // 生成数据库表名方法
 func GetGenTableNameTemp() string {
-    return constants.TempGenTableName
+	return constants.TempGenTableName
 }
 
 // 生成表字段相关的方法。1.字段映射；2.主键相关
 func GetGenTableFieldTemp() string {
-    return constants.TempGenTableField
+	return constants.TempGenTableField
 }
 
 // 生成操作数据表的基本方法
 func GetGenBaseTemp() string {
-    switch config.GetGenBaseFuncVersion() {
-    case "V1":
-        return constants.TempGenBaseV1
-    case "V2":
-        return constants.TempGenBaseV2
-    case "V3":
-        return constants.TempGenBaseV3
-    }
-    return constants.TempGenBaseV4
+
+	return constants.TempGenBaseV4
 }
 
 // 生成操作数据的方法
 func GetGenLogic() string {
-    switch config.GetGenLogicFuncVersion() {
-    case "V1":
-        return constants.TempGenLogicV1
-    case "V2":
-        return constants.TempGenLogicV2
-    case "V3":
-        return constants.TempGenLogicV3
-    }
-    return constants.TempGenLogicV4
+	return constants.TempGenLogicV4
 }
-

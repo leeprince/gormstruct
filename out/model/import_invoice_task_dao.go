@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-07-26 18:10:28
+ * @Date:   2023-08-02 16:38:07
  * @Desc:   import_invoice_task 表的 DAO 层
  */
 
@@ -59,12 +59,12 @@ func (obj *ImportInvoiceTaskDAO) Create(importInvoiceTask interface{}) (rowsAffe
 // --- 表中的字段作为 option 条件 ---
 
 // 设置 id(主键) 字段作为 option 条件
-func (obj *ImportInvoiceTaskDAO) WithID(id int64) Option {
+func (obj *ImportInvoiceTaskDAO) WithID(id uint64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ID] = id })
 }
 
 // 设置 id(主键) 字段的切片作为 option 条件
-func (obj *ImportInvoiceTaskDAO) WithIDs(ids []int64) Option {
+func (obj *ImportInvoiceTaskDAO) WithIDs(ids []uint64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ID] = ids })
 }
 
@@ -88,12 +88,12 @@ func (obj *ImportInvoiceTaskDAO) WithClientIDs(clientIDs []int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.ClientID] = clientIDs })
 }
 
-// 设置 enterprise_id(企业ID) 字段作为 option 条件
+// 设置 enterprise_id(企业ID（费控企业ID,当前版本还不能去掉）) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithEnterpriseID(enterpriseID string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseID })
 }
 
-// 设置 enterprise_id(企业ID) 字段的切片作为 option 条件
+// 设置 enterprise_id(企业ID（费控企业ID,当前版本还不能去掉）) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithEnterpriseIDs(enterpriseIDs []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.EnterpriseID] = enterpriseIDs })
 }
@@ -106,6 +106,26 @@ func (obj *ImportInvoiceTaskDAO) WithTaxCode(taxCode string) Option {
 // 设置 tax_code(税号) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithTaxCodes(taxCodes []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaxCode] = taxCodes })
+}
+
+// 设置 tax_code_name(税号对应的名称) 字段作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithTaxCodeName(taxCodeName string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaxCodeName] = taxCodeName })
+}
+
+// 设置 tax_code_name(税号对应的名称) 字段的切片作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithTaxCodeNames(taxCodeNames []string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaxCodeName] = taxCodeNames })
+}
+
+// 设置 invoice_type(发票类型；1:销项;2:进项) 字段作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithInvoiceType(invoiceType int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.InvoiceType] = invoiceType })
+}
+
+// 设置 invoice_type(发票类型；1:销项;2:进项) 字段的切片作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithInvoiceTypes(invoiceTypes []int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.InvoiceType] = invoiceTypes })
 }
 
 // 设置 file_md5(源文件md5) 字段作为 option 条件
@@ -148,16 +168,6 @@ func (obj *ImportInvoiceTaskDAO) WithTaskStatuss(taskStatuss []int8) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.TaskStatus] = taskStatuss })
 }
 
-// 设置 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段作为 option 条件
-func (obj *ImportInvoiceTaskDAO) WithFailType(failType int8) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailType] = failType })
-}
-
-// 设置 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段的切片作为 option 条件
-func (obj *ImportInvoiceTaskDAO) WithFailTypes(failTypes []int8) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailType] = failTypes })
-}
-
 // 设置 fail_content(失败原因) 字段作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailContent(failContent string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailContent] = failContent })
@@ -166,6 +176,16 @@ func (obj *ImportInvoiceTaskDAO) WithFailContent(failContent string) Option {
 // 设置 fail_content(失败原因) 字段的切片作为 option 条件
 func (obj *ImportInvoiceTaskDAO) WithFailContents(failContents []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.FailContent] = failContents })
+}
+
+// 设置 last_logid(最后一次logID) 字段作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithLastLogid(lastLogid string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.LastLogid] = lastLogid })
+}
+
+// 设置 last_logid(最后一次logID) 字段的切片作为 option 条件
+func (obj *ImportInvoiceTaskDAO) WithLastLogids(lastLogids []string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[ImportInvoiceTaskColumns.LastLogid] = lastLogids })
 }
 
 // 设置 retry_num(重试次数) 字段作为 option 条件
@@ -233,13 +253,13 @@ func (obj *ImportInvoiceTaskDAO) UpdateByOption(importInvoiceTask *ImportInvoice
 // --- 单个字段作为查询条件 ---
 
 // 通过单个 id(主键) 字段值，获取单条记录
-func (obj *ImportInvoiceTaskDAO) GetFromID(id int64) (result *ImportInvoiceTask, err error) {
+func (obj *ImportInvoiceTaskDAO) GetFromID(id uint64) (result *ImportInvoiceTask, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
 // 通过多个 id(主键) 字段值，获取多条记录
-func (obj *ImportInvoiceTaskDAO) GetsFromID(ids []int64) (results []*ImportInvoiceTask, err error) {
+func (obj *ImportInvoiceTaskDAO) GetsFromID(ids []uint64) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithIDs(ids))
 	return
 }
@@ -268,13 +288,13 @@ func (obj *ImportInvoiceTaskDAO) GetsFromClientID(clientIDs []int64) (results []
 	return
 }
 
-// 通过单个 enterprise_id(企业ID) 字段值，获取多条记录
+// 通过单个 enterprise_id(企业ID（费控企业ID,当前版本还不能去掉）) 字段值，获取多条记录
 func (obj *ImportInvoiceTaskDAO) GetFromEnterpriseID(enterpriseID string) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithEnterpriseID(enterpriseID))
 	return
 }
 
-// 通过多个 enterprise_id(企业ID) 字段值，获取多条记录
+// 通过多个 enterprise_id(企业ID（费控企业ID,当前版本还不能去掉）) 字段值，获取多条记录
 func (obj *ImportInvoiceTaskDAO) GetsFromEnterpriseID(enterpriseIDs []string) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithEnterpriseIDs(enterpriseIDs))
 	return
@@ -289,6 +309,30 @@ func (obj *ImportInvoiceTaskDAO) GetFromTaxCode(taxCode string) (results []*Impo
 // 通过多个 tax_code(税号) 字段值，获取多条记录
 func (obj *ImportInvoiceTaskDAO) GetsFromTaxCode(taxCodes []string) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithTaxCodes(taxCodes))
+	return
+}
+
+// 通过单个 tax_code_name(税号对应的名称) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetFromTaxCodeName(taxCodeName string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithTaxCodeName(taxCodeName))
+	return
+}
+
+// 通过多个 tax_code_name(税号对应的名称) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetsFromTaxCodeName(taxCodeNames []string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithTaxCodeNames(taxCodeNames))
+	return
+}
+
+// 通过单个 invoice_type(发票类型；1:销项;2:进项) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetFromInvoiceType(invoiceType int8) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithInvoiceType(invoiceType))
+	return
+}
+
+// 通过多个 invoice_type(发票类型；1:销项;2:进项) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetsFromInvoiceType(invoiceTypes []int8) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithInvoiceTypes(invoiceTypes))
 	return
 }
 
@@ -340,18 +384,6 @@ func (obj *ImportInvoiceTaskDAO) GetsFromTaskStatus(taskStatuss []int8) (results
 	return
 }
 
-// 通过单个 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段值，获取多条记录
-func (obj *ImportInvoiceTaskDAO) GetFromFailType(failType int8) (results []*ImportInvoiceTask, err error) {
-	results, err = obj.GetByOptions(obj.WithFailType(failType))
-	return
-}
-
-// 通过多个 fail_type(失败的原因类型；1：文件错误；2：识别/解析错误，允许重试) 字段值，获取多条记录
-func (obj *ImportInvoiceTaskDAO) GetsFromFailType(failTypes []int8) (results []*ImportInvoiceTask, err error) {
-	results, err = obj.GetByOptions(obj.WithFailTypes(failTypes))
-	return
-}
-
 // 通过单个 fail_content(失败原因) 字段值，获取多条记录
 func (obj *ImportInvoiceTaskDAO) GetFromFailContent(failContent string) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithFailContent(failContent))
@@ -361,6 +393,18 @@ func (obj *ImportInvoiceTaskDAO) GetFromFailContent(failContent string) (results
 // 通过多个 fail_content(失败原因) 字段值，获取多条记录
 func (obj *ImportInvoiceTaskDAO) GetsFromFailContent(failContents []string) (results []*ImportInvoiceTask, err error) {
 	results, err = obj.GetByOptions(obj.WithFailContents(failContents))
+	return
+}
+
+// 通过单个 last_logid(最后一次logID) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetFromLastLogid(lastLogid string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithLastLogid(lastLogid))
+	return
+}
+
+// 通过多个 last_logid(最后一次logID) 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) GetsFromLastLogid(lastLogids []string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(obj.WithLastLogids(lastLogids))
 	return
 }
 
@@ -405,8 +449,24 @@ func (obj *ImportInvoiceTaskDAO) GetsFromUpdatedAt(updatedAts []int64) (results 
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
 // 通过 id 字段值，获取单条记录
-func (obj *ImportInvoiceTaskDAO) FetchByPrimaryKey(id int64) (result *ImportInvoiceTask, err error) {
+func (obj *ImportInvoiceTaskDAO) FetchByPrimaryKey(id uint64) (result *ImportInvoiceTask, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
+	return
+}
+
+// 通过 org_id, tax_code 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) FetchIndexByIDxOrgidTaxcode(orgID int64, taxCode string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(
+		obj.WithOrgID(orgID),
+		obj.WithTaxCode(taxCode))
+	return
+}
+
+// 通过 enterprise_id, tax_code 字段值，获取多条记录
+func (obj *ImportInvoiceTaskDAO) FetchIndexByIDxEidTaxcode(enterpriseID string, taxCode string) (results []*ImportInvoiceTask, err error) {
+	results, err = obj.GetByOptions(
+		obj.WithEnterpriseID(enterpriseID),
+		obj.WithTaxCode(taxCode))
 	return
 }
 
