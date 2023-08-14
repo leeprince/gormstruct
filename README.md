@@ -51,10 +51,6 @@ dbinfo:
   database: tmp
   type: 0 # 数据库类型:0:mysql
 
-# 生成的基本方法版本:V1,V2
-gen_base_func_version: V2
-# 生成的逻辑方法版本:V1,V2
-gen_logic_func_version: V2
 ```
 
 ## （二）运行指令
@@ -65,7 +61,7 @@ gen_logic_func_version: V2
 > go run main.go gen --help
 
 
-**表名参数必填！**
+**表名参数(-t)必填！**
 
 ```
 go run main.go -t=users [-p=model] [-s=Users]
