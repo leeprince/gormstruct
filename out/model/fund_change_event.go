@@ -2,13 +2,13 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-15 10:39:21
+ * @Date:   2023-08-15 19:53:04
  * @Desc:   fund_change_event 表
  */
 
 // 资金变更事件表
 type FundChangeEvent struct {
-	ID                         int64  `gorm:"column:id;primaryKey;type:int(11);" json:"id"`                                                                   // 主键
+	ID                         uint64 `gorm:"column:id;primaryKey;type:int(11) unsigned;autoIncrement" json:"id"`                                             // 主键
 	EventID                    string `gorm:"column:event_id;type:varchar(64);not null;DEFAULT ''" json:"event_id"`                                           // 事件ID
 	EventType                  string `gorm:"column:event_type;type:varchar(64);not null;DEFAULT ''" json:"event_type"`                                       // 事件类型，区分大小写：Income(收入)、Expenditure(支出)
 	EventMsg                   string `gorm:"column:event_msg;type:varchar(255);not null;DEFAULT ''" json:"event_msg"`                                        // 事件说明
@@ -22,6 +22,7 @@ type FundChangeEvent struct {
 	IncomeBankName             string `gorm:"column:income_bank_name;type:varchar(32);not null;DEFAULT ''" json:"income_bank_name"`                           // 收款银行名称
 	TradingAmount              int64  `gorm:"column:trading_amount;type:bigint(20);not null;DEFAULT '0'" json:"trading_amount"`                               // 交易金额，单位分
 	TradingTime                int64  `gorm:"column:trading_time;type:bigint(20);not null;DEFAULT '0'" json:"trading_time"`                                   // 交易时间戳
+	IsStatistic                int8   `gorm:"column:is_statistic;type:tinyint(1);not null;DEFAULT '0'" json:"is_statistic"`                                   // 是否统计过。0:未统计；1:已统计
 	CreatedAt                  int64  `gorm:"column:created_at;type:int(11);not null;DEFAULT '0'" json:"created_at"`                                          // 事件创建时间戳
 }
 
@@ -41,7 +42,7 @@ func (m *FundChangeEvent) PrimaryKey() string {
 }
 
 // 获取主键值
-func (m *FundChangeEvent) PrimaryKeyValue() int64 {
+func (m *FundChangeEvent) PrimaryKeyValue() uint64 {
 	return m.ID
 }
 
@@ -61,6 +62,7 @@ var FundChangeEventColumns = struct {
 	IncomeBankName             string
 	TradingAmount              string
 	TradingTime                string
+	IsStatistic                string
 	CreatedAt                  string
 }{
 	ID:                         "id",
@@ -77,6 +79,7 @@ var FundChangeEventColumns = struct {
 	IncomeBankName:             "income_bank_name",
 	TradingAmount:              "trading_amount",
 	TradingTime:                "trading_time",
+	IsStatistic:                "is_statistic",
 	CreatedAt:                  "created_at",
 }
 
@@ -96,12 +99,13 @@ var FundChangeEventAllColumns = []string{
 	FundChangeEventColumns.IncomeBankName,             // 收款银行名称
 	FundChangeEventColumns.TradingAmount,              // 交易金额，单位分
 	FundChangeEventColumns.TradingTime,                // 交易时间戳
+	FundChangeEventColumns.IsStatistic,                // 是否统计过。0:未统计；1:已统计
 	FundChangeEventColumns.CreatedAt,                  // 事件创建时间戳
 
 }
 
 // 设置值：主键
-func (m *FundChangeEvent) SetID(v int64) {
+func (m *FundChangeEvent) SetID(v uint64) {
 	m.ID = v
 }
 
@@ -170,13 +174,18 @@ func (m *FundChangeEvent) SetTradingTime(v int64) {
 	m.TradingTime = v
 }
 
+// 设置值：是否统计过。0:未统计；1:已统计
+func (m *FundChangeEvent) SetIsStatistic(v int8) {
+	m.IsStatistic = v
+}
+
 // 设置值：事件创建时间戳
 func (m *FundChangeEvent) SetCreatedAt(v int64) {
 	m.CreatedAt = v
 }
 
 // 获取值：主键
-func (m *FundChangeEvent) GetID() int64 {
+func (m *FundChangeEvent) GetID() uint64 {
 	return m.ID
 }
 
@@ -243,6 +252,11 @@ func (m *FundChangeEvent) GetTradingAmount() int64 {
 // 获取值：交易时间戳
 func (m *FundChangeEvent) GetTradingTime() int64 {
 	return m.TradingTime
+}
+
+// 获取值：是否统计过。0:未统计；1:已统计
+func (m *FundChangeEvent) GetIsStatistic() int8 {
+	return m.IsStatistic
 }
 
 // 获取值：事件创建时间戳

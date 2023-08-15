@@ -3,14 +3,20 @@
 > gorm 官方工具，请查阅：https://gorm.io/gen/gen_tool.html
 ---
 
-
 # 一、包含功能点
+
 1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
-2. 命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
+2.
+
+命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
+
 3. 生成表的 gorm 结构体，对应文件名：{表名}.go
 4. 生成操作表的基本方法，对应文件名：base_dao.go
-5. 根据结合 `WithXxxx` 指定值作为 option 条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_dao.go)
-6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`/`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新   
+5. 根据结合 `WithXxxx` 指定值作为 option
+   条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_
+   dao.go)
+6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`
+   /`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新
 7. 指定字段 `WithSelect`: 设置 option 条件作为查询指定字段或者更新指定字段的值
 8. 排序 `WithOrderBy`: 设置 option 条件作为排序条件
 9. 分组 `WithGroupBy`: 设置 option 条件作为分组条件
@@ -25,23 +31,30 @@
 18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
 
 # 二、注意
+
 > 零值：0、''、false
 
 ## （一）更新
+
 1. 当通过 struct 结构体更新时，
-   - GORM Updates() 方法只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
-   - GORM Save() 方法会保存所有的字段，即使字段是零值(// prince@TODO: 添加该方法 2023/7/21 16:15)
+    - GORM Updates() 方法只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
+    - GORM Save() 方法会保存所有的字段，即使字段是零值(// prince@TODO: 添加该方法 2023/7/21 16:15)
 
 ## （二）查询
-1. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他 零值，该字段不会被用于构建查询条件
+
+1. 当使用 struct 结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他
+   零值，该字段不会被用于构建查询条件
 
 ## (三)创建时间/创建时间
+
 1. CreatedAt/UpdatedAt:
     - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
     - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 
 # 三、快速使用
+
 ## （一）配置 ./config/config.yaml
+
 ```
 dbinfo:
   host: 127.0.0.1
@@ -54,6 +67,7 @@ dbinfo:
 ```
 
 ## （二）运行指令
+
 ### 帮助命令
 
 > go run main.go --help
@@ -74,6 +88,7 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
 ```
 
 # 四、包含sql查询
+
 ```
 SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = 'p_procedure';
 
@@ -83,7 +98,9 @@ SHOW FULL COLUMNS FROM p_procedure;
 ```
 
 # 五、测试
+
 ## （一）测试表：users
+
 ```
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -100,6 +117,7 @@ CREATE TABLE `users` (
   KEY `age` (`age`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表';
 ```
+
 ```
 INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 'name01', 12, '1', '', 1639411296, 1639411296, 1639411296);
 INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (2, 'name02', 12, '2', '', 1639411296, 1639411296, 0);
@@ -107,17 +125,23 @@ INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_
 INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (4, 'name01', 12, '4', '', 1639411296, 1639411296, 0);
 INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (6, 'name03', 18, '5', '', 1639411296, 1639411296, 0);
 ```
+
 ## （二）测试运行的生成指令
+
 生成的文件路径：out/model/*.go
+
 ```
 go run main.go -t=users
 ```
+
 ## （三）单元测试
+
 ```
 out/model_test.go
 ```
 
 # 六、修改记录
+
 - [x] 表的结构体的数据类型，根据表的数据类型、默认值、是否为 null、并根据配置是否使用指针类型，去最终设置为指针类型
     - 保持当前设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
     - WithXxxx() 方法使用 `map[string]interface{}` 的形式支持所有数据类型
@@ -139,7 +163,8 @@ out/model_test.go
         3. 再次查询，更新或插入。出现报错：`sql: transaction has already been committed or rolled back`
     - 原因：当前DAO层的DB已经提交事务，不允许再通过操作该DB
     - 注意：开启事务之后，必须使用开启事务返回的*gorm.DB, 而不是开启事务时使用*gorm.DB
-    - 解决：!!!开始事务时，应基于**会话**的方式操作`*gorm.DB`。如：`tx := db.Begin()`开启事务后，必须使用tx而不是db操作事务中的sql!!!
+    - 解决：!!!开始事务时，应基于**会话**的方式操作`*gorm.DB`。如：`tx := db.Begin()`
+      开启事务后，必须使用tx而不是db操作事务中的sql!!!
         - 在DAO层外开始事务
             - 使用`tx := db.Begin()`开启事务，tx传入DAO层操作DAO层方法
                 ```
@@ -220,51 +245,58 @@ out/model_test.go
                 }
                 ```
     - 注意点：并发场景时，请选择合适的方式！
-    
+
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
 - [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库
-     [gorm.io/gorm] 
-        - "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
-        - 存在 UpdatedAt 字段，并且 UpdatedAt 未传非零值时，会自动更新（默认：UpdatedAt==当前时间戳）。
-        - 参考：gorm.io/gorm@v1.22.4/schema/field.go@ParseField
-        - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
-     [github.com/jinzhu/gorm]
-        - 更新零值，需配置字段为"指针"的数据类型。WithSelect 更新指定字段无效
-        - 更新必须指定 db.Table("table") 或者 db.Molde(&tableStruce{})
-        - 取消默认的 deleted_at IS NULL: db.Unscoped()...
-        - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
-        - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
-     > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
+  [gorm.io/gorm]
+    - "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
+    - 存在 UpdatedAt 字段，并且 UpdatedAt 未传非零值时，会自动更新（默认：UpdatedAt==当前时间戳）。
+    - 参考：gorm.io/gorm@v1.22.4/schema/field.go@ParseField
+    - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+      [github.com/jinzhu/gorm]
+    - 更新零值，需配置字段为"指针"的数据类型。WithSelect 更新指定字段无效
+    - 更新必须指定 db.Table("table") 或者 db.Molde(&tableStruce{})
+    - 取消默认的 deleted_at IS NULL: db.Unscoped()...
+    - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
+    - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
+  > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
 - [x] 表的结构体对象统一使用指针
     1. 更新/插入时传参
     2. 返回时
 - [x] 生成的模型中包含获取主键的字段及方法 `PrimaryKey()` 及 `PrimaryKeyValue()`
 - [x] 支持批量插入 `Create()`
 - [x] 添加 `Save()` 方法：存在则更新，否则插入
-    - 通过`PrimaryKeyValue()`检查模型主键(如果非整型需要调整下，大部分数据库设计的主键都为整型，`Save()`方法不使用反射降低性能)存在则更新
+    - 通过`PrimaryKeyValue()`检查模型主键(如果非整型需要调整下，大部分数据库设计的主键都为整型，`Save()`
+      方法不使用反射降低性能)存在则更新
 - [x] 支持表的模型对应的 *_dao.go 文件归并到 `dao` 目录下，并与 `model` 目录同级。
     - 目的：将*_dao.go文件拷贝到业务项目的`dao`目录时，需要手动修改表的模型对应包的引用路径
     - 无需项目支持，手动操作IDEA(goland)可实现目的.做法：
         - 1.从该项目拷贝生成的`模型文件（*.go）`及模型文件对应的`DAO文件（*_dao.go）`到业务项目的`model`目录下，
         - 2.手动迁移`DAO文件（*_dao.go）`，并利用IDEA(goland)的迁移`重构功能(Refactor)`，会自动补全model的包路径
 - [x] 支持多次更新同一个模型
-     - 问题场景操作步骤：
+    - 问题场景操作步骤：
         - 1.更新模型
-        - 2.再次按条件更新同一模型,出现条件错误：再次更新模型的条件会自动加上上一次模型的主键，如：`WHERE id = 2 AND id = 1`
-     - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
-     - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
+        -
+      2.再次按条件更新同一模型,出现条件错误：再次更新模型的条件会自动加上上一次模型的主键，如：`WHERE id = 2 AND id = 1`
+    - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
+    - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
 - [x] 允许自定义行记录的删除字段，存在删除字段时，`查询`方法默认会添加过滤已删除的记录
 - [x] 允许通过`WithWhere`自定义查询条件
-- [ ] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`自定义查询条件；或者拆分为多条sql语句执行
+- [x] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`
+  自定义查询条件；或者拆分为多条sql语句执行
+- [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页 `func (obj *XxxDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {`
 
 # gorm 官网 gentool 工具的使用
+
 ## (一) 安装
+
 ```
 go install gorm.io/gen/tools/gentool@latest
 ```
 
 ## (二) 使用
+
 ```
 gentool -h
 
@@ -298,6 +330,7 @@ Usage of gentool:
 ```
 
 ## (三) 例子
+
 ```
 # 基础
 gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor"
@@ -311,8 +344,6 @@ gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=Tr
 # 指定配置文件
 gentool -c "./gen.tool"
 ```
-
-
 
 ```
 version: "0.1"

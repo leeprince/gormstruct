@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-15 10:39:21
+ * @Date:   2023-08-15 19:53:04
  * @Desc:   fund_change_event 表的 DAO 层
  */
 
@@ -59,12 +59,12 @@ func (obj *FundChangeEventDAO) Create(fundChangeEvent interface{}) (rowsAffected
 // --- 表中的字段作为 option 条件 ---
 
 // 设置 id(主键) 字段作为 option 条件
-func (obj *FundChangeEventDAO) WithID(id int64) Option {
+func (obj *FundChangeEventDAO) WithID(id uint64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.ID] = id })
 }
 
 // 设置 id(主键) 字段的切片作为 option 条件
-func (obj *FundChangeEventDAO) WithIDs(ids []int64) Option {
+func (obj *FundChangeEventDAO) WithIDs(ids []uint64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.ID] = ids })
 }
 
@@ -202,6 +202,16 @@ func (obj *FundChangeEventDAO) WithTradingTimes(tradingTimes []int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.TradingTime] = tradingTimes })
 }
 
+// 设置 is_statistic(是否统计过。0:未统计；1:已统计) 字段作为 option 条件
+func (obj *FundChangeEventDAO) WithIsStatistic(isStatistic int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.IsStatistic] = isStatistic })
+}
+
+// 设置 is_statistic(是否统计过。0:未统计；1:已统计) 字段的切片作为 option 条件
+func (obj *FundChangeEventDAO) WithIsStatistics(isStatistics []int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.IsStatistic] = isStatistics })
+}
+
 // 设置 created_at(事件创建时间戳) 字段作为 option 条件
 func (obj *FundChangeEventDAO) WithCreatedAt(createdAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[FundChangeEventColumns.CreatedAt] = createdAt })
@@ -247,13 +257,13 @@ func (obj *FundChangeEventDAO) UpdateByOption(fundChangeEvent *FundChangeEvent, 
 // --- 单个字段作为查询条件 ---
 
 // 通过单个 id(主键) 字段值，获取单条记录
-func (obj *FundChangeEventDAO) GetFromID(id int64) (result *FundChangeEvent, err error) {
+func (obj *FundChangeEventDAO) GetFromID(id uint64) (result *FundChangeEvent, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
 // 通过多个 id(主键) 字段值，获取多条记录
-func (obj *FundChangeEventDAO) GetsFromID(ids []int64) (results []*FundChangeEvent, err error) {
+func (obj *FundChangeEventDAO) GetsFromID(ids []uint64) (results []*FundChangeEvent, err error) {
 	results, err = obj.GetByOptions(obj.WithIDs(ids))
 	return
 }
@@ -294,9 +304,9 @@ func (obj *FundChangeEventDAO) GetsFromEventMsg(eventMsgs []string) (results []*
 	return
 }
 
-// 通过单个 order_id(订单ID) 字段值，获取单条记录
-func (obj *FundChangeEventDAO) GetFromOrderID(orderID string) (result *FundChangeEvent, err error) {
-	result, err = obj.GetByOption(obj.WithOrderID(orderID))
+// 通过单个 order_id(订单ID) 字段值，获取多条记录
+func (obj *FundChangeEventDAO) GetFromOrderID(orderID string) (results []*FundChangeEvent, err error) {
+	results, err = obj.GetByOptions(obj.WithOrderID(orderID))
 	return
 }
 
@@ -414,6 +424,18 @@ func (obj *FundChangeEventDAO) GetsFromTradingTime(tradingTimes []int64) (result
 	return
 }
 
+// 通过单个 is_statistic(是否统计过。0:未统计；1:已统计) 字段值，获取多条记录
+func (obj *FundChangeEventDAO) GetFromIsStatistic(isStatistic int8) (results []*FundChangeEvent, err error) {
+	results, err = obj.GetByOptions(obj.WithIsStatistic(isStatistic))
+	return
+}
+
+// 通过多个 is_statistic(是否统计过。0:未统计；1:已统计) 字段值，获取多条记录
+func (obj *FundChangeEventDAO) GetsFromIsStatistic(isStatistics []int8) (results []*FundChangeEvent, err error) {
+	results, err = obj.GetByOptions(obj.WithIsStatistics(isStatistics))
+	return
+}
+
 // 通过单个 created_at(事件创建时间戳) 字段值，获取多条记录
 func (obj *FundChangeEventDAO) GetFromCreatedAt(createdAt int64) (results []*FundChangeEvent, err error) {
 	results, err = obj.GetByOptions(obj.WithCreatedAt(createdAt))
@@ -431,14 +453,8 @@ func (obj *FundChangeEventDAO) GetsFromCreatedAt(createdAts []int64) (results []
 // --- 通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件 ---
 
 // 通过 id 字段值，获取单条记录
-func (obj *FundChangeEventDAO) FetchByPrimaryKey(id int64) (result *FundChangeEvent, err error) {
+func (obj *FundChangeEventDAO) FetchByPrimaryKey(id uint64) (result *FundChangeEvent, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
-	return
-}
-
-// 通过 order_id 字段值，获取单条记录
-func (obj *FundChangeEventDAO) FetchUniqueByUniqOrderid(orderID string) (result *FundChangeEvent, err error) {
-	result, err = obj.GetByOption(obj.WithOrderID(orderID))
 	return
 }
 
@@ -450,9 +466,12 @@ func (obj *FundChangeEventDAO) FetchUniqueIndexByUniqOrgidOrderid(orderID string
 	return
 }
 
-// 通过 org_id 字段值，获取多条记录
-func (obj *FundChangeEventDAO) FetchIndexByIDxOrgid(orgID int64) (results []*FundChangeEvent, err error) {
-	results, err = obj.GetByOptions(obj.WithOrgID(orgID))
+// 通过 event_type, org_id, trading_time 字段值，获取多条记录
+func (obj *FundChangeEventDAO) FetchIndexByIDxOrgidTimeType(eventType string, orgID int64, tradingTime int64) (results []*FundChangeEvent, err error) {
+	results, err = obj.GetByOptions(
+		obj.WithEventType(eventType),
+		obj.WithOrgID(orgID),
+		obj.WithTradingTime(tradingTime))
 	return
 }
 

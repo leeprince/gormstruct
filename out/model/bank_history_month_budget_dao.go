@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-15 09:37:56
+ * @Date:   2023-08-15 19:59:34
  * @Desc:   bank_history_month_budget 表的 DAO 层
  */
 
@@ -79,14 +79,14 @@ func (obj *BankHistoryMonthBudgetDAO) WithOrgIDs(orgIDs []int64) Option {
 }
 
 // 设置 income_expenditure_type(收支类型：1(收入)、2(支出)) 字段作为 option 条件
-func (obj *BankHistoryMonthBudgetDAO) WithIncomeExpenditureType(incomeExpenditureType int64) Option {
+func (obj *BankHistoryMonthBudgetDAO) WithIncomeExpenditureType(incomeExpenditureType int8) Option {
 	return queryOptionFunc(func(o *options) {
 		o.queryMap[BankHistoryMonthBudgetColumns.IncomeExpenditureType] = incomeExpenditureType
 	})
 }
 
 // 设置 income_expenditure_type(收支类型：1(收入)、2(支出)) 字段的切片作为 option 条件
-func (obj *BankHistoryMonthBudgetDAO) WithIncomeExpenditureTypes(incomeExpenditureTypes []int64) Option {
+func (obj *BankHistoryMonthBudgetDAO) WithIncomeExpenditureTypes(incomeExpenditureTypes []int8) Option {
 	return queryOptionFunc(func(o *options) {
 		o.queryMap[BankHistoryMonthBudgetColumns.IncomeExpenditureType] = incomeExpenditureTypes
 	})
@@ -113,12 +113,12 @@ func (obj *BankHistoryMonthBudgetDAO) WithBankAccountNames(bankAccountNames []st
 }
 
 // 设置 statistics_date(统计:年月,202308) 字段作为 option 条件
-func (obj *BankHistoryMonthBudgetDAO) WithStatisticsDate(statisticsDate int) Option {
+func (obj *BankHistoryMonthBudgetDAO) WithStatisticsDate(statisticsDate int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[BankHistoryMonthBudgetColumns.StatisticsDate] = statisticsDate })
 }
 
 // 设置 statistics_date(统计:年月,202308) 字段的切片作为 option 条件
-func (obj *BankHistoryMonthBudgetDAO) WithStatisticsDates(statisticsDates []int) Option {
+func (obj *BankHistoryMonthBudgetDAO) WithStatisticsDates(statisticsDates []int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[BankHistoryMonthBudgetColumns.StatisticsDate] = statisticsDates })
 }
 
@@ -201,13 +201,13 @@ func (obj *BankHistoryMonthBudgetDAO) GetsFromOrgID(orgIDs []int64) (results []*
 }
 
 // 通过单个 income_expenditure_type(收支类型：1(收入)、2(支出)) 字段值，获取多条记录
-func (obj *BankHistoryMonthBudgetDAO) GetFromIncomeExpenditureType(incomeExpenditureType int64) (results []*BankHistoryMonthBudget, err error) {
+func (obj *BankHistoryMonthBudgetDAO) GetFromIncomeExpenditureType(incomeExpenditureType int8) (results []*BankHistoryMonthBudget, err error) {
 	results, err = obj.GetByOptions(obj.WithIncomeExpenditureType(incomeExpenditureType))
 	return
 }
 
 // 通过多个 income_expenditure_type(收支类型：1(收入)、2(支出)) 字段值，获取多条记录
-func (obj *BankHistoryMonthBudgetDAO) GetsFromIncomeExpenditureType(incomeExpenditureTypes []int64) (results []*BankHistoryMonthBudget, err error) {
+func (obj *BankHistoryMonthBudgetDAO) GetsFromIncomeExpenditureType(incomeExpenditureTypes []int8) (results []*BankHistoryMonthBudget, err error) {
 	results, err = obj.GetByOptions(obj.WithIncomeExpenditureTypes(incomeExpenditureTypes))
 	return
 }
@@ -237,13 +237,13 @@ func (obj *BankHistoryMonthBudgetDAO) GetsFromBankAccountName(bankAccountNames [
 }
 
 // 通过单个 statistics_date(统计:年月,202308) 字段值，获取多条记录
-func (obj *BankHistoryMonthBudgetDAO) GetFromStatisticsDate(statisticsDate int) (results []*BankHistoryMonthBudget, err error) {
+func (obj *BankHistoryMonthBudgetDAO) GetFromStatisticsDate(statisticsDate int64) (results []*BankHistoryMonthBudget, err error) {
 	results, err = obj.GetByOptions(obj.WithStatisticsDate(statisticsDate))
 	return
 }
 
 // 通过多个 statistics_date(统计:年月,202308) 字段值，获取多条记录
-func (obj *BankHistoryMonthBudgetDAO) GetsFromStatisticsDate(statisticsDates []int) (results []*BankHistoryMonthBudget, err error) {
+func (obj *BankHistoryMonthBudgetDAO) GetsFromStatisticsDate(statisticsDates []int64) (results []*BankHistoryMonthBudget, err error) {
 	results, err = obj.GetByOptions(obj.WithStatisticsDates(statisticsDates))
 	return
 }
@@ -282,10 +282,11 @@ func (obj *BankHistoryMonthBudgetDAO) FetchByPrimaryKey(id uint64) (result *Bank
 	return
 }
 
-// 通过 org_id, statistics_date 字段值，获取多条记录
-func (obj *BankHistoryMonthBudgetDAO) FetchIndexByIDxOrgidDate(orgID int64, statisticsDate int) (results []*BankHistoryMonthBudget, err error) {
+// 通过 org_id, income_expenditure_type, statistics_date 字段值，获取多条记录
+func (obj *BankHistoryMonthBudgetDAO) FetchIndexByIDxOrgidDateType(orgID int64, incomeExpenditureType int8, statisticsDate int64) (results []*BankHistoryMonthBudget, err error) {
 	results, err = obj.GetByOptions(
 		obj.WithOrgID(orgID),
+		obj.WithIncomeExpenditureType(incomeExpenditureType),
 		obj.WithStatisticsDate(statisticsDate))
 	return
 }

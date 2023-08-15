@@ -1,15 +1,21 @@
 package model
 
+/**
+ * @Author: prince.lee <leeprince@foxmail.com>
+ * @Date:   2023-08-15 19:59:34
+ * @Desc:   bank_history_month_budget 表
+ */
+
 // 银行账号历史月度收支统计表
 type BankHistoryMonthBudget struct {
-	ID                    uint64 `gorm:"column:id;primaryKey;type:bigint(20) unsigned;autoIncrement" json:"id"`                             // 主键
-	OrgID                 int64  `gorm:"column:org_id;type:int(11);not null;DEFAULT '0'" json:"org_id"`                                     // 租户ID
-	IncomeExpenditureType int64  `gorm:"column:income_expenditure_type;type:bigint(1);not null;DEFAULT '1'" json:"income_expenditure_type"` // 收支类型：1(收入)、2(支出)
-	BankNumber            string `gorm:"column:bank_number;type:varchar(50);not null;DEFAULT ''" json:"bank_number"`                        // 银行卡号
-	BankAccountName       string `gorm:"column:bank_account_name;type:varchar(64);not null;DEFAULT ''" json:"bank_account_name"`            // 银行账户名称
-	StatisticsDate        int    `gorm:"column:statistics_date;type:int(1);not null;DEFAULT '0'" json:"statistics_date"`                    // 统计:年月,202308
-	TradingTotalAmount    int64  `gorm:"column:trading_total_amount;type:bigint(20);not null;DEFAULT '0'" json:"trading_total_amount"`      // 交易总金额，单位分
-	CreatedAt             int64  `gorm:"column:created_at;type:int(11);not null;DEFAULT '0'" json:"created_at"`                             // 创建时间
+	ID                    uint64 `gorm:"column:id;primaryKey;type:bigint(20) unsigned;autoIncrement" json:"id"`                              // 主键
+	OrgID                 int64  `gorm:"column:org_id;type:int(11);not null;DEFAULT '0'" json:"org_id"`                                      // 租户ID
+	IncomeExpenditureType int8   `gorm:"column:income_expenditure_type;type:tinyint(1);not null;DEFAULT '1'" json:"income_expenditure_type"` // 收支类型：1(收入)、2(支出)
+	BankNumber            string `gorm:"column:bank_number;type:varchar(50);not null;DEFAULT ''" json:"bank_number"`                         // 银行卡号
+	BankAccountName       string `gorm:"column:bank_account_name;type:varchar(64);not null;DEFAULT ''" json:"bank_account_name"`             // 银行账户名称
+	StatisticsDate        int64  `gorm:"column:statistics_date;type:int(11);not null;DEFAULT '0'" json:"statistics_date"`                    // 统计:年月,202308
+	TradingTotalAmount    int64  `gorm:"column:trading_total_amount;type:bigint(20);not null;DEFAULT '0'" json:"trading_total_amount"`       // 交易总金额，单位分
+	CreatedAt             int64  `gorm:"column:created_at;type:int(11);not null;DEFAULT '0'" json:"created_at"`                              // 创建时间
 }
 
 // 获取结构体对应的表名方法
@@ -77,7 +83,7 @@ func (m *BankHistoryMonthBudget) SetOrgID(v int64) {
 }
 
 // 设置值：收支类型：1(收入)、2(支出)
-func (m *BankHistoryMonthBudget) SetIncomeExpenditureType(v int64) {
+func (m *BankHistoryMonthBudget) SetIncomeExpenditureType(v int8) {
 	m.IncomeExpenditureType = v
 }
 
@@ -92,7 +98,7 @@ func (m *BankHistoryMonthBudget) SetBankAccountName(v string) {
 }
 
 // 设置值：统计:年月,202308
-func (m *BankHistoryMonthBudget) SetStatisticsDate(v int) {
+func (m *BankHistoryMonthBudget) SetStatisticsDate(v int64) {
 	m.StatisticsDate = v
 }
 
@@ -117,7 +123,7 @@ func (m *BankHistoryMonthBudget) GetOrgID() int64 {
 }
 
 // 获取值：收支类型：1(收入)、2(支出)
-func (m *BankHistoryMonthBudget) GetIncomeExpenditureType() int64 {
+func (m *BankHistoryMonthBudget) GetIncomeExpenditureType() int8 {
 	return m.IncomeExpenditureType
 }
 
@@ -132,7 +138,7 @@ func (m *BankHistoryMonthBudget) GetBankAccountName() string {
 }
 
 // 获取值：统计:年月,202308
-func (m *BankHistoryMonthBudget) GetStatisticsDate() int {
+func (m *BankHistoryMonthBudget) GetStatisticsDate() int64 {
 	return m.StatisticsDate
 }
 
