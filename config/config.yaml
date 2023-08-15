@@ -7,6 +7,23 @@
 #  password: leeprince
 #  database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
 #  type: 0 # 数据库类型:0:mysql
+## fk
+#dbinfo:
+#  host: 10.22.32.17
+#  port: 3306
+#  username: gordon
+#  password: c39EAQmC2ibIxPd5
+#  database: wbx_reimburse # 该参数可通过命令行设置，命令行设置会覆盖该值
+#  type: 0 # 数据库类型:0:mysql
+
+# gdc
+dbinfo:
+  host: 10.21.32.3
+  port: 3306
+  username: gordon
+  password: 4qYAEZ6scVNYPLTWRviT
+  database: gdc_enterprise_digital_statistics # 该参数可通过命令行设置，命令行设置会覆盖该值
+  type: 0 # 数据库类型:0:mysql
 
 # --- 建议保留默认 ---------------------------------------------------------------------------
 # 是否控制台输出数据库表结构文档

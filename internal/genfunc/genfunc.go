@@ -11,6 +11,11 @@ import (
  */
 
 // 生成数据库表名方法
+func GetGenAuthorTemp() string {
+	return constants.TemplateAuthor
+}
+
+// 生成数据库表名方法
 func GetGenTableNameTemp() string {
 	return constants.TempGenTableName
 }

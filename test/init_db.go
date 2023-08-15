@@ -58,7 +58,7 @@ func InitDB() *gorm.DB {
 	// --- gorm.io/gorm
 	// 需 import  "gorm.io/driver/mysql","gorm.io/gorm"
 	db, err := gorm.Open(mysql.Open(mysqlConnDns), &gorm.Config{
-		PrepareStmt:              false,
+		PrepareStmt:              false, // 预编译语句
 		Logger:                   DBLogger,
 		DisableNestedTransaction: false,
 	})
