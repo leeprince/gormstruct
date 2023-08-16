@@ -210,7 +210,7 @@ func (obj *_BaseDAO) queryArg(opt *options) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if opt.queryArg.query != nil && opt.queryArg.query != "" {
 			if opt.queryArg.arg != nil && len(opt.queryArg.arg) > 0 {
-				return db.Where(opt.queryArg.query, opt.queryArg.arg)
+				return db.Where(opt.queryArg.query, opt.queryArg.arg...)
 			}
 			return db.Where(opt.queryArg.query)
 		}

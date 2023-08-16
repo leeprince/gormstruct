@@ -59,14 +59,39 @@ func TestModelGetByOptionWithID(t *testing.T) {
 	userDAO := model.NewUsersDAO(context.Background(), db)
 
 	user, err := userDAO.GetByOption(
-		/*userDAO.WithSelect([]string{
-			model.UsersColumns.ID,
-			model.UsersColumns.Age,
-		}),*/
 		userDAO.WithID(1),
 	)
 
 	fmt.Println(">>>>>>>>>>> 1 user, err:", user, err)
+}
+
+// GetByOption 条件查询
+func TestModelGetByOptionWithSelect(t *testing.T) {
+	db := InitDB()
+
+	fmt.Printf("--------------TestModelGetByOptionWithID \n\n")
+
+	var err error
+
+	userDAO := model.NewUsersDAO(context.Background(), db)
+
+	user, err := userDAO.GetByOption(
+		userDAO.WithSelect([]string{
+			model.UsersColumns.ID,
+			model.UsersColumns.Age,
+		}),
+		userDAO.WithID(1),
+	)
+	fmt.Println(">>>>>>>>>>> 1 user, err:", user, err)
+
+	user, err = userDAO.GetByOption(
+		userDAO.WithSelect(fmt.Sprintf("%s, %s",
+			model.UsersColumns.ID,
+			model.UsersColumns.Age,
+		)),
+		userDAO.WithID(1),
+	)
+	fmt.Println(">>>>>>>>>>> 2 user, err:", user, err)
 }
 
 // GetByOption 条件查询
@@ -123,6 +148,18 @@ func TestModelGetByOptionWithWhere(t *testing.T) {
 	for _, i2 := range users {
 		i2 := i2
 		fmt.Printf("------3 err:%v, users:%+v \n", err, i2)
+	}
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------4 err:%v, users:%+v \n", err, i2)
+	}
+
+	users, err = userDAO.GetByOptions(userDAO.WithWhere("id in ? ", []int64{2, 10}))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------5 err:%v, users:%+v \n", err, i2)
 	}
 }
 

@@ -181,7 +181,7 @@ func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if opt.selectField.query != nil && opt.selectField.query != "" {
 			if opt.selectField.arg != nil && len(opt.selectField.arg) > 0 {
-				return db.Select(opt.selectField.query, opt.selectField.arg)
+				return db.Select(opt.selectField.query, opt.selectField.arg...)
 			}
 			return db.Select(opt.selectField.query)
 		} else if obj.isDefaultColumns {
@@ -196,7 +196,7 @@ func (obj *_BaseDAO) queryArg(opt *options) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if opt.queryArg.query != nil && opt.queryArg.query != "" {
 			if opt.queryArg.arg != nil && len(opt.queryArg.arg) > 0 {
-				return db.Where(opt.queryArg.query, opt.queryArg.arg)
+				return db.Where(opt.queryArg.query, opt.queryArg.arg...)
 			}
 			return db.Where(opt.queryArg.query)
 		}

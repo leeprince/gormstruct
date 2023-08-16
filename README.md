@@ -285,7 +285,10 @@ out/model_test.go
 - [x] 允许通过`WithWhere`自定义查询条件
 - [x] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`
   自定义查询条件；或者拆分为多条sql语句执行
-- [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页 `func (obj *XxxDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {`
+- [ ] 支持多条件参数绑定
+  ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
+- [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页 
+  ```func (obj *XxxDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {```
 
 # gorm 官网 gentool 工具的使用
 
