@@ -311,11 +311,11 @@ out/model_test.go
   ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
 
 - [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页 
-  > 注意：是 `Find(results)`, 而不是 `Find(&results)`
+  > 注意：是 `Find(result)`, 而不是 `Find(&result)`
   ```
   // 函数选项模式获取多条记录到自定义结构体中：支持分页
-    func (obj *FundChangeEventDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {
-    err = obj.prepare(opts...).Find(results).Error
+    func (obj *FundChangeEventDAO) GetCustomeResultByOptions(result interface{}, opts ...Option) (err error) {
+    err = obj.prepare(opts...).Find(result).Error
     return
     }
   ```
