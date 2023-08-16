@@ -146,16 +146,25 @@ out/model_test.go
     - 保持当前设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
     - WithXxxx() 方法使用 `map[string]interface{}` 的形式支持所有数据类型
     - 更新数据通过更新结构体时，就算结构体的字段不是指针类型，想要更新为零值时，可配合 `WithSelect()` 更新
+
 - [x] 表的 xxxColumns 放在 `dao` 层
+
 - [x] 去除 `base_dao.go` 的 `updateOptionFunc` 方法
+
 - [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetByOptions()` 方法
+
 - [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
     - 继续统一在 model 中，通用性更强。具体什么架构，使用者自行移动即可
+
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
+
 - [x] 生成的表结构体包含：结构体字段、结构体类型、表字段、表数据类型、表字段是否允许为null,表字段默认值、json字段
+
 - [x] 支持配置是否控制台输出数据库表结构文档
+
 - [x] 基础服务的包使用自定义的包 leeprince/goinfra
     - 保持当前
+
 - [x] 支持事务便捷操作。
     - 问题场景操作步骤：
         1. 查询，更新或插入；
@@ -196,6 +205,7 @@ out/model_test.go
 
                 xxDAO.CommitTx()
                 ```
+              
         - 在DAO层中开启事务
             - 使用`tx := db.Begin()`开启事务
                 ```
@@ -247,7 +257,9 @@ out/model_test.go
     - 注意点：并发场景时，请选择合适的方式！
 
 - [x] select 不指定的情况下取已生成的所有字段代替 `select *`
+
 - [x] 优化生成的模型，满足 DDD 架构设计时对领域实体（模型）的设置
+
 - [x] 默认使用 `gorm.io/gorm` 库，并兼容测试 `github.com/jinzhu/gorm` 库
   [gorm.io/gorm]
     - "非指针"的结构体字段更新为零值时，需配合 WithSelect 更新指定字段
@@ -261,19 +273,25 @@ out/model_test.go
     - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
     - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
   > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
+
 - [x] 表的结构体对象统一使用指针
     1. 更新/插入时传参
     2. 返回时
+
 - [x] 生成的模型中包含获取主键的字段及方法 `PrimaryKey()` 及 `PrimaryKeyValue()`
+
 - [x] 支持批量插入 `Create()`
+
 - [x] 添加 `Save()` 方法：存在则更新，否则插入
     - 通过`PrimaryKeyValue()`检查模型主键(如果非整型需要调整下，大部分数据库设计的主键都为整型，`Save()`
       方法不使用反射降低性能)存在则更新
+
 - [x] 支持表的模型对应的 *_dao.go 文件归并到 `dao` 目录下，并与 `model` 目录同级。
     - 目的：将*_dao.go文件拷贝到业务项目的`dao`目录时，需要手动修改表的模型对应包的引用路径
     - 无需项目支持，手动操作IDEA(goland)可实现目的.做法：
         - 1.从该项目拷贝生成的`模型文件（*.go）`及模型文件对应的`DAO文件（*_dao.go）`到业务项目的`model`目录下，
         - 2.手动迁移`DAO文件（*_dao.go）`，并利用IDEA(goland)的迁移`重构功能(Refactor)`，会自动补全model的包路径
+
 - [x] 支持多次更新同一个模型
     - 问题场景操作步骤：
         - 1.更新模型
@@ -281,14 +299,26 @@ out/model_test.go
       2.再次按条件更新同一模型,出现条件错误：再次更新模型的条件会自动加上上一次模型的主键，如：`WHERE id = 2 AND id = 1`
     - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
     - 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
+
 - [x] 允许自定义行记录的删除字段，存在删除字段时，`查询`方法默认会添加过滤已删除的记录
+
 - [x] 允许通过`WithWhere`自定义查询条件
+
 - [x] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere`
   自定义查询条件；或者拆分为多条sql语句执行
+
 - [ ] 支持多条件参数绑定
   ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
+
 - [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页 
-  ```func (obj *XxxDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {```
+  > 注意：是 `Find(results)`, 而不是 `Find(&results)`
+  ```
+  // 函数选项模式获取多条记录到自定义结构体中：支持分页
+    func (obj *FundChangeEventDAO) GetCustomeResultByOptions(results interface{}, opts ...Option) (err error) {
+    err = obj.prepare(opts...).Find(results).Error
+    return
+    }
+  ```
 
 # gorm 官网 gentool 工具的使用
 
