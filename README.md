@@ -400,7 +400,9 @@ func (obj *FundChangeEventDAO) GetCustomeResultByOptions(result interface{}, opt
     return
 }
 ```
-  
+
+- [ ] `GetByOptions` 改名为 `GetListByOption`
+
 - [x] 解释是否需要 dao 层的上层是否需要 repository 层？答案：简单的CURD不需要，直接调用DAO层；复杂的需要repository层
 ```
 使用 repo 的原因：model 和 dao 都可以生成，并且仅提供简单的方法.
@@ -426,7 +428,7 @@ type TradingTimeRange struct {
     TradingTimeEnd   int64
 }
 
-// 初始化 FundChangeEvent 的有关条件判断的options。其他的select/group by/order by等option都应该在外面去组装
+// 初始化 FundChangeEvent 的有关条件判断的options。其他的select/group by/order by等option都应该在外面去组装或者默认不设置
 func (r *MysqlRepo) MakeFundChangeEventWhereOpt(opt FundChangeEventWhereOpt) (options []dao.Option) {
     if opt.OrgID > 0 {
         options = append(options, r.bankHistoryMonthBudgetDAO.WithOrgID(opt.OrgID))
