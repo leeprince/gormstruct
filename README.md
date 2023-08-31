@@ -404,7 +404,7 @@ func (obj *XXXDAO) XXXX() {
 - [x] 支持多条件参数绑定
 ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
 
-- [x] GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
+- [x] GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
 >   注意：是 `Find(result)`, 而不是 `Find(&result)`
 ```
 // 指定开始时间到当前时间的金额统计
