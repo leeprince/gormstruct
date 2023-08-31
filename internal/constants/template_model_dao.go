@@ -105,7 +105,7 @@ func (obj *{{$allParams.StructName}}DAO) GetCountByOption(opts ...Option) (count
     return
 }
 
-// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
+// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
 func (obj *{{$allParams.StructName}}DAO) GetCustomeResultByOption(result interface{}, opts ...Option) (err error) {
     err = obj.prepare(opts...).Find(result).Error
     return
