@@ -19,13 +19,13 @@ func GetConfigDBDatabase() string {
 	if flagInfo.database != "" {
 		db = flagInfo.database
 	}
-
+	
 	return db
 }
 
 // 获取mysql 连接字符串
 func GetConfigDBOfMysqlConStr() string {
-
+	
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local&interpolateParams=True",
 		config.DBInfo.Username,
 		config.DBInfo.Password,
@@ -40,7 +40,9 @@ func GetPrimaryIdType() string {
 }
 
 func GetIsGormModelTag() bool {
-	return config.IsGormModelTag
+	// 已强制为false
+	// return config.IsGormModelTag
+	return false
 }
 
 func GetIsNullToPoint() bool {

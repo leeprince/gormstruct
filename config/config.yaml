@@ -1,12 +1,13 @@
 
 # 数据库设置
-#dbinfo:
-#  host: 127.0.0.1
-#  port: 3306
-#  username: root
-#  password: leeprince
-#  database: tmp # 该参数可通过命令行设置，命令行设置会覆盖该值
-#  type: 0 # 数据库类型:0:mysql
+dbinfo:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: leeprince
+  database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值
+  type: 0 # 数据库类型:0:mysql
+
 ## fk
 #dbinfo:
 #  host: 10.22.32.17
@@ -17,13 +18,13 @@
 #  type: 0 # 数据库类型:0:mysql
 
 # gdc
-dbinfo:
-  host: 10.21.32.3
-  port: 3306
-  username: gordon
-  password: 4qYAEZ6scVNYPLTWRviT
-  database: gdc_enterprise_digital_statistics # 该参数可通过命令行设置，命令行设置会覆盖该值
-  type: 0 # 数据库类型:0:mysql
+#dbinfo:
+#  host: 10.21.32.3
+#  port: 3306
+#  username: gordon
+#  password: 4qYAEZ6scVNYPLTWRviT
+#  database: gdc_enterprise_digital_statistics # 该参数可通过命令行设置，命令行设置会覆盖该值
+#  type: 0 # 数据库类型:0:mysql
 
 # --- 建议保留默认 ---------------------------------------------------------------------------
 # 是否控制台输出数据库表结构文档
@@ -78,8 +79,8 @@ packagename: model
 ouput_dir: ./out/model/
 
 # 是否自动根据存在 id+created_at+updated_at+deleted_at 字段时，统一使用 gorm 的结构体 `gorm.Model` 覆盖
-# true: 因为 gorm.model 默认这三个时间字段为time.Time数据类型，所以需要表设置的数据类型为时间类型：date、datetime、timestamp。否则字段值为非NULL，并且查询记录存在时会报：unsupported Scan, storing driver.Value type []uint8 into type *time.Time。其中自动设置 `deleted_at` IS NULL，除非添加`db.Unscoped()`方法
-# false: 建议设置
+# true: 因为 gorm.model 默认这三个时间字段为time.Time数据类型，所以需要表设置的数据类型为时间类型：date、datetime、timestamp, 并且允许为NULL。否则字段值为非NULL，并且查询记录存在时会报：unsupported Scan, storing driver.Value type []uint8 into type *time.Time。其中自动设置 `deleted_at` IS NULL，除非添加`db.Unscoped()`方法。由于该包已经支持自定义所以，不支持设置为true
+# false: 强制为false
 is_gorm_model_tag: false
 
 # 设置 "is_gorm_model_tag=true"时主键ID的数据类型

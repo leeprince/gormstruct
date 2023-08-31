@@ -401,20 +401,38 @@ func (obj *XXXDAO) XXXX() {
 
 - [x] 因为使用`Or(options.queryMapOr)`所以目前仅支持一个OR条件；如需使用多个or条件，可以使用`WithWhere` 自定义查询条件；或者拆分为多条sql语句执行
 
-- [ ] 支持多条件参数绑定
+- [x] 支持多条件参数绑定
 ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
 
-- [ ] 函数选项模式获取多条记录到自定义结构体中：支持分页
+- [x] GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
 >   注意：是 `Find(result)`, 而不是 `Find(&result)`
 ```
-// 函数选项模式获取多条记录到自定义结构体中：支持分页
-func (obj *FundChangeEventDAO) GetCustomeResultByOptions(result interface{}, opts ...Option) (err error) {
+// 指定开始时间到当前时间的金额统计
+func (r *MysqlRepo) SumTradingAmountFCEDataOfOption(opt FundChangeEventWhereOpt) (results *message.SumAmountMonthFCEData, err error) {
+	options := r.MakeFundChangeEventWhereOpt(opt)
+
+	selectArr := []string{model.FundChangeEventColumns.TradingTime}
+	sum := fmt.Sprintf("SUM(%s) AS %s", model.FundChangeEventColumns.TradingAmount, message.SumTradingAmountAsField)
+	selectArr = append(selectArr, sum)
+
+	options = append(options, r.fundChangeEventDAO.WithSelect(selectArr))
+
+	results = &message.SumAmountMonthFCEData{}
+	err = r.fundChangeEventDAO.GetCustomeResultByOption(results,
+		options...,
+	)
+	return
+}
+
+----
+// 函数选项模式获取多条记录到自定义结构体中：支持包含自定义聚合字段
+func (obj *FundChangeEventDAO) GetCustomeResultByOption(result interface{}, opts ...Option) (err error) {
     err = obj.prepare(opts...).Find(result).Error
     return
 }
 ```
 
-- [ ] `GetByOptions` 改名为 `GetListByOption`
+- [x] `GetByOptions` 改名为 `GetListByOption`
 
 - [x] 解释是否需要 dao 层的上层是否需要 repository 层？答案：简单的CURD不需要，直接调用DAO层；复杂的需要repository层
 ```

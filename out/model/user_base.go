@@ -1,6 +1,11 @@
 package model
 
-//
+/**
+ * @Author: prince.lee <leeprince@foxmail.com>
+ * @Date:   2023-08-31 23:21:05
+ * @Desc:   user_base 表
+ */
+
 type UserBase struct {
 	ID   int64  `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`
 	Name string `gorm:"column:name;type:varchar(30);not null;" json:"name"`

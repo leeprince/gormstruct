@@ -1,5 +1,11 @@
 package model
 
+/**
+ * @Author: prince.lee <leeprince@foxmail.com>
+ * @Date:   2023-08-31 23:21:02
+ * @Desc:   users 表
+ */
+
 // 用户表
 type Users struct {
 	ID        int64   `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`             // 主键
