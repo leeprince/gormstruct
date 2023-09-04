@@ -6,24 +6,24 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-29 23:48:38
+ * @Date:   2023-09-05 01:42:00
  * @Desc:   order_info 表
  */
 
 // 订单统计表
 type OrderInfo struct {
-	ID             int64     `gorm:"column:id;primaryKey;type:bigint(11);autoIncrement" json:"id"`           // 主键ID
-	OrderID        *string   `gorm:"column:order_id;type:varchar(32);is null;" json:"order_id"`              // 订单ID
-	TicketNumber   *string   `gorm:"column:ticket_number;type:varchar(12);is null;" json:"ticket_number"`    // 订单取票号
-	ContactPhone   *string   `gorm:"column:contact_phone;type:varchar(11);is null;" json:"contact_phone"`    // 订单联系电话
-	IsTransfer     *int64    `gorm:"column:is_transfer;type:bigint(20);is null;" json:"is_transfer"`         // 是否换乘.0:false
-	IsOccupySeat   *int64    `gorm:"column:is_occupy_seat;type:bigint(20);is null;" json:"is_occupy_seat"`   // 是否占座.0:false
-	CompleteStatus *int64    `gorm:"column:complete_status;type:bigint(20);is null;" json:"complete_status"` // 完成状态.0:未完成;1:出票成功;2:出票失败;
-	FailReason     *string   `gorm:"column:fail_reason;type:varchar(255);is null;" json:"fail_reason"`       // 出票失败原因
-	MachineName    *string   `gorm:"column:machine_name;type:varchar(128);is null;" json:"machine_name"`     // 设备名称
-	DeletedAt      time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`
-	UpdatedAt      time.Time `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`
-	CreatedAt      time.Time `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`
+	ID             int64      `gorm:"column:id;primaryKey;type:bigint(11);autoIncrement" json:"id"`                      // 主键ID
+	OrderID        *string    `gorm:"column:order_id;type:varchar(32);is null;" json:"order_id"`                         // 订单ID
+	TicketNumber   *string    `gorm:"column:ticket_number;type:varchar(12);is null;" json:"ticket_number"`               // 订单取票号
+	ContactPhone   *string    `gorm:"column:contact_phone;type:varchar(11);is null;" json:"contact_phone"`               // 订单联系电话
+	IsTransfer     *int64     `gorm:"column:is_transfer;type:bigint(20);is null;DEFAULT '2'" json:"is_transfer"`         // 是否换乘.1:true;2:false;
+	IsOccupySeat   *int64     `gorm:"column:is_occupy_seat;type:bigint(20);is null;DEFAULT '2'" json:"is_occupy_seat"`   // 是否占座.1:true;2:false;
+	CompleteStatus *int64     `gorm:"column:complete_status;type:bigint(20);is null;DEFAULT '2'" json:"complete_status"` // 完成状态.1:未完成;2:出票成功;3:出票失败;
+	FailReason     *string    `gorm:"column:fail_reason;type:varchar(255);is null;" json:"fail_reason"`                  // 出票失败原因
+	MachineName    *string    `gorm:"column:machine_name;type:varchar(128);is null;" json:"machine_name"`                // 设备名称
+	DeletedAt      *time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`
+	UpdatedAt      time.Time  `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`
+	CreatedAt      time.Time  `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`
 }
 
 // 获取结构体对应的表名方法
@@ -81,9 +81,9 @@ var OrderInfoAllColumns = []string{
 	OrderInfoColumns.OrderID,        // 订单ID
 	OrderInfoColumns.TicketNumber,   // 订单取票号
 	OrderInfoColumns.ContactPhone,   // 订单联系电话
-	OrderInfoColumns.IsTransfer,     // 是否换乘.0:false
-	OrderInfoColumns.IsOccupySeat,   // 是否占座.0:false
-	OrderInfoColumns.CompleteStatus, // 完成状态.0:未完成;1:出票成功;2:出票失败;
+	OrderInfoColumns.IsTransfer,     // 是否换乘.1:true;2:false;
+	OrderInfoColumns.IsOccupySeat,   // 是否占座.1:true;2:false;
+	OrderInfoColumns.CompleteStatus, // 完成状态.1:未完成;2:出票成功;3:出票失败;
 	OrderInfoColumns.FailReason,     // 出票失败原因
 	OrderInfoColumns.MachineName,    // 设备名称
 	OrderInfoColumns.DeletedAt,      //
@@ -112,17 +112,17 @@ func (m *OrderInfo) SetContactPhone(v *string) {
 	m.ContactPhone = v
 }
 
-// 设置值：是否换乘.0:false
+// 设置值：是否换乘.1:true;2:false;
 func (m *OrderInfo) SetIsTransfer(v *int64) {
 	m.IsTransfer = v
 }
 
-// 设置值：是否占座.0:false
+// 设置值：是否占座.1:true;2:false;
 func (m *OrderInfo) SetIsOccupySeat(v *int64) {
 	m.IsOccupySeat = v
 }
 
-// 设置值：完成状态.0:未完成;1:出票成功;2:出票失败;
+// 设置值：完成状态.1:未完成;2:出票成功;3:出票失败;
 func (m *OrderInfo) SetCompleteStatus(v *int64) {
 	m.CompleteStatus = v
 }
@@ -138,7 +138,7 @@ func (m *OrderInfo) SetMachineName(v *string) {
 }
 
 // 设置值：
-func (m *OrderInfo) SetDeletedAt(v time.Time) {
+func (m *OrderInfo) SetDeletedAt(v *time.Time) {
 	m.DeletedAt = v
 }
 
@@ -172,17 +172,17 @@ func (m *OrderInfo) GetContactPhone() *string {
 	return m.ContactPhone
 }
 
-// 获取值：是否换乘.0:false
+// 获取值：是否换乘.1:true;2:false;
 func (m *OrderInfo) GetIsTransfer() *int64 {
 	return m.IsTransfer
 }
 
-// 获取值：是否占座.0:false
+// 获取值：是否占座.1:true;2:false;
 func (m *OrderInfo) GetIsOccupySeat() *int64 {
 	return m.IsOccupySeat
 }
 
-// 获取值：完成状态.0:未完成;1:出票成功;2:出票失败;
+// 获取值：完成状态.1:未完成;2:出票成功;3:出票失败;
 func (m *OrderInfo) GetCompleteStatus() *int64 {
 	return m.CompleteStatus
 }
@@ -198,7 +198,7 @@ func (m *OrderInfo) GetMachineName() *string {
 }
 
 // 获取值：
-func (m *OrderInfo) GetDeletedAt() time.Time {
+func (m *OrderInfo) GetDeletedAt() *time.Time {
 	return m.DeletedAt
 }
 

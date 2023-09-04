@@ -78,7 +78,7 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
 		if strings.EqualFold(el.Type, constants.GormModelWord) { // gorm model
 			genEl.Type = el.Type
 		} else {
-			genEl.Type = getTypeName(el.Type, el.IsNull)
+			genEl.Type = getTypeName(el.Name, el.Type, el.IsNull)
 		}
 		
 		isPrimary := false
@@ -159,7 +159,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 	var primary, unique, uniqueIndex, index []FList
 	// 根据表的属性信息构建模版所需字段
 	for _, el := range g.info.Table.ColumnsElement {
-		typeName := getTypeName(el.Type, el.IsNull)
+		typeName := getTypeName(el.Name, el.Type, el.IsNull)
 		
 		// 构建索引（包含主键）的方法需要的信息
 		if strings.EqualFold(el.Type, constants.GormModelWord) {
@@ -169,6 +169,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		} else {
 			// 该字段值在表中是否可重复
 			isMulti := true
+			
 			for _, key := range el.Keys {
 				switch key.Key {
 				case ColumnsKeyPrimary:
@@ -201,7 +202,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		}
 		
 		// 行记录是否存在删除的字段
-		if infrautils.InString(el.Name, config.GenDeleteFlagFieldList()) {
+		if !data.IsHaveDeleteFlag && infrautils.InString(el.Name, config.GenDeleteFlagFieldList()) {
 			data.IsHaveDeleteFlag = true
 			data.DeleteFlagIsTime = false
 			if strings.Contains(typeName, constants.ColumnTypeTimeContains) {

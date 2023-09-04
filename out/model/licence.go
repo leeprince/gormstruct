@@ -6,19 +6,19 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-30 01:28:13
+ * @Date:   2023-09-05 01:42:43
  * @Desc:   licence 表
  */
 
 // 授权表
 type Licence struct {
-	ID          int64     `gorm:"column:id;primaryKey;type:bigint(11);autoIncrement" json:"id"`       // 主键ID
-	ClientIP    *string   `gorm:"column:client_ip;type:varchar(32);is null;" json:"client_ip"`        // 客户端IP
-	MachineName *string   `gorm:"column:machine_name;type:varchar(128);is null;" json:"machine_name"` // 设备名称
-	ExpireTime  time.Time `gorm:"column:expire_time;type:datetime(3);is null;" json:"expire_time"`    // 授权设备过期时间
-	DeletedAt   time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`
-	UpdatedAt   time.Time `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`
-	CreatedAt   time.Time `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`
+	ID          int64      `gorm:"column:id;primaryKey;type:bigint(11);autoIncrement" json:"id"`       // 主键ID
+	ClientIP    *string    `gorm:"column:client_ip;type:varchar(32);is null;" json:"client_ip"`        // 客户端IP
+	MachineName *string    `gorm:"column:machine_name;type:varchar(128);is null;" json:"machine_name"` // 设备名称
+	ExpireTime  time.Time  `gorm:"column:expire_time;type:datetime(3);is null;" json:"expire_time"`    // 授权设备过期时间
+	DeletedAt   *time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`
+	UpdatedAt   time.Time  `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`
+	CreatedAt   time.Time  `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`
 }
 
 // 获取结构体对应的表名方法
@@ -93,7 +93,7 @@ func (m *Licence) SetExpireTime(v time.Time) {
 }
 
 // 设置值：
-func (m *Licence) SetDeletedAt(v time.Time) {
+func (m *Licence) SetDeletedAt(v *time.Time) {
 	m.DeletedAt = v
 }
 
@@ -128,7 +128,7 @@ func (m *Licence) GetExpireTime() time.Time {
 }
 
 // 获取值：
-func (m *Licence) GetDeletedAt() time.Time {
+func (m *Licence) GetDeletedAt() *time.Time {
 	return m.DeletedAt
 }
 

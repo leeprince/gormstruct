@@ -9,7 +9,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-31 23:21:09
+ * @Date:   2023-09-05 02:17:30
  * @Desc:   user_auth 表的 DAO 层
  */
 
@@ -120,12 +120,12 @@ func (obj *UserAuthDAO) WithCreatedAts(createdAts []time.Time) Option {
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAt(deletedAt time.Time) Option {
+func (obj *UserAuthDAO) WithDeletedAt(deletedAt *time.Time) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAts(deletedAts []time.Time) Option {
+func (obj *UserAuthDAO) WithDeletedAts(deletedAts []*time.Time) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAts })
 }
 
@@ -155,7 +155,7 @@ func (obj *UserAuthDAO) GetCountByOption(opts ...Option) (count int64) {
 	return
 }
 
-// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
+// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
 func (obj *UserAuthDAO) GetCustomeResultByOption(result interface{}, opts ...Option) (err error) {
 	err = obj.prepare(opts...).Find(result).Error
 	return
@@ -249,13 +249,13 @@ func (obj *UserAuthDAO) GetsFromCreatedAt(createdAts []time.Time) (results []*Us
 }
 
 // GetFromDeletedAt 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt time.Time) (results []*UserAuth, err error) {
+func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt *time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAt(deletedAt))
 	return
 }
 
 // GetsFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromDeletedAt(deletedAts []time.Time) (results []*UserAuth, err error) {
+func (obj *UserAuthDAO) GetsFromDeletedAt(deletedAts []*time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }

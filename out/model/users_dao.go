@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-31 23:21:02
+ * @Date:   2023-09-05 02:17:51
  * @Desc:   users 表的 DAO 层
  */
 
@@ -159,7 +159,7 @@ func (obj *UsersDAO) GetCountByOption(opts ...Option) (count int64) {
 	return
 }
 
-// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
+// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
 func (obj *UsersDAO) GetCustomeResultByOption(result interface{}, opts ...Option) (err error) {
 	err = obj.prepare(opts...).Find(result).Error
 	return
