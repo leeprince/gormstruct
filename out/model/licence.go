@@ -6,7 +6,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-09-05 01:42:43
+ * @Date:   2023-09-06 01:36:58
  * @Desc:   licence 表
  */
 
@@ -15,6 +15,7 @@ type Licence struct {
 	ID          int64      `gorm:"column:id;primaryKey;type:bigint(11);autoIncrement" json:"id"`       // 主键ID
 	ClientIP    *string    `gorm:"column:client_ip;type:varchar(32);is null;" json:"client_ip"`        // 客户端IP
 	MachineName *string    `gorm:"column:machine_name;type:varchar(128);is null;" json:"machine_name"` // 设备名称
+	AuthStatus  *int8      `gorm:"column:auth_status;type:tinyint(1);is null;" json:"auth_status"`     // 授权状态。1:未授权;2:已授权
 	ExpireTime  time.Time  `gorm:"column:expire_time;type:datetime(3);is null;" json:"expire_time"`    // 授权设备过期时间
 	DeletedAt   *time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`
 	UpdatedAt   time.Time  `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`
@@ -46,6 +47,7 @@ var LicenceColumns = struct {
 	ID          string
 	ClientIP    string
 	MachineName string
+	AuthStatus  string
 	ExpireTime  string
 	DeletedAt   string
 	UpdatedAt   string
@@ -54,6 +56,7 @@ var LicenceColumns = struct {
 	ID:          "id",
 	ClientIP:    "client_ip",
 	MachineName: "machine_name",
+	AuthStatus:  "auth_status",
 	ExpireTime:  "expire_time",
 	DeletedAt:   "deleted_at",
 	UpdatedAt:   "updated_at",
@@ -65,6 +68,7 @@ var LicenceAllColumns = []string{
 	LicenceColumns.ID,          // 主键ID
 	LicenceColumns.ClientIP,    // 客户端IP
 	LicenceColumns.MachineName, // 设备名称
+	LicenceColumns.AuthStatus,  // 授权状态。1:未授权;2:已授权
 	LicenceColumns.ExpireTime,  // 授权设备过期时间
 	LicenceColumns.DeletedAt,   //
 	LicenceColumns.UpdatedAt,   //
@@ -85,6 +89,11 @@ func (m *Licence) SetClientIP(v *string) {
 // 设置值：设备名称
 func (m *Licence) SetMachineName(v *string) {
 	m.MachineName = v
+}
+
+// 设置值：授权状态。1:未授权;2:已授权
+func (m *Licence) SetAuthStatus(v *int8) {
+	m.AuthStatus = v
 }
 
 // 设置值：授权设备过期时间
@@ -120,6 +129,11 @@ func (m *Licence) GetClientIP() *string {
 // 获取值：设备名称
 func (m *Licence) GetMachineName() *string {
 	return m.MachineName
+}
+
+// 获取值：授权状态。1:未授权;2:已授权
+func (m *Licence) GetAuthStatus() *int8 {
+	return m.AuthStatus
 }
 
 // 获取值：授权设备过期时间

@@ -590,5 +590,6 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 ```
 
 - [x] 删除字段使用：*time.Time，而不是 time.Time, 避免初始化变量或者数据json转化后使用time.Time的默认值：`0001-01-01 00:00:00 +0000` 插入数据，导致查询删除字段是否为空错误
+另外一种方案是使用：gorm.DeletedAt 字段类型。本库未使用
 
 

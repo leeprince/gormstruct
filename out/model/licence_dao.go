@@ -9,7 +9,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-09-05 01:42:43
+ * @Date:   2023-09-06 01:36:58
  * @Desc:   licence 表的 DAO 层
  */
 
@@ -87,6 +87,16 @@ func (obj *LicenceDAO) WithMachineName(machineName *string) Option {
 // WithMachineNames 设置 machine_name(设备名称) 字段的切片作为 option 条件
 func (obj *LicenceDAO) WithMachineNames(machineNames []*string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[LicenceColumns.MachineName] = machineNames })
+}
+
+// WithAuthStatus 设置 auth_status(授权状态。1:未授权;2:已授权) 字段作为 option 条件
+func (obj *LicenceDAO) WithAuthStatus(authStatus *int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[LicenceColumns.AuthStatus] = authStatus })
+}
+
+// WithAuthStatuss 设置 auth_status(授权状态。1:未授权;2:已授权) 字段的切片作为 option 条件
+func (obj *LicenceDAO) WithAuthStatuss(authStatuss []*int8) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[LicenceColumns.AuthStatus] = authStatuss })
 }
 
 // WithExpireTime 设置 expire_time(授权设备过期时间) 字段作为 option 条件
@@ -209,6 +219,18 @@ func (obj *LicenceDAO) GetFromMachineName(machineName *string) (result *Licence,
 // GetsFromMachineName 通过多个 machine_name(设备名称) 字段值，获取多条记录
 func (obj *LicenceDAO) GetsFromMachineName(machineNames []*string) (results []*Licence, err error) {
 	results, err = obj.GetListByOption(obj.WithMachineNames(machineNames))
+	return
+}
+
+// GetFromAuthStatus 通过单个 auth_status(授权状态。1:未授权;2:已授权) 字段值，获取多条记录
+func (obj *LicenceDAO) GetFromAuthStatus(authStatus *int8) (results []*Licence, err error) {
+	results, err = obj.GetListByOption(obj.WithAuthStatus(authStatus))
+	return
+}
+
+// GetsFromAuthStatus 通过多个 auth_status(授权状态。1:未授权;2:已授权) 字段值，获取多条记录
+func (obj *LicenceDAO) GetsFromAuthStatus(authStatuss []*int8) (results []*Licence, err error) {
+	results, err = obj.GetListByOption(obj.WithAuthStatuss(authStatuss))
 	return
 }
 
