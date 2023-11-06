@@ -144,6 +144,24 @@ func TestModelGetByOptionWithWhere(t *testing.T) {
 		fmt.Printf("------1.1 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
 	}
 
+	users, err = userDAO.GetListByOption(userDAO.WithWhere("name like ?", "%a%"))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------1.2 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	users, err = userDAO.GetListByOption(userDAO.WithWhere("name like ?", fmt.Sprintf("%%%s%%", "a")))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------1.3 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
+	users, err = userDAO.GetListByOption(userDAO.WithWhere(fmt.Sprintf("name like '%%%s%%'", "a")))
+	for _, i2 := range users {
+		i2 := i2
+		fmt.Printf("------1.4 err:%v, users:%+v name:%s \n", err, i2, *i2.Name)
+	}
+
 	users, err = userDAO.GetListByOption(userDAO.WithWhere("id >= ?", 2))
 	for _, i2 := range users {
 		i2 := i2
