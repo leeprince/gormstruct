@@ -101,6 +101,7 @@ func (obj *{{$allParams.StructName}}DAO) GetListByOption(opts ...Option) (result
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *{{$allParams.StructName}}DAO) GetCountByOption(opts ...Option) (count int64) {
     obj.setIsDefaultColumns(false)
+    {{if $allParams.IsHaveDeleteFlag}}{{if $allParams.DeleteFlagIsTime}}opts = append(opts, obj.With{{$allParams.DeleteFlagStructField}}IsNull()){{else}}opts = append(opts, obj.With{{$allParams.DeleteFlagStructField}}(0)){{end}}{{end}}
     obj.prepare(opts...).Count(&count)
     return
 }
