@@ -394,16 +394,31 @@ func TestModelSelect(t *testing.T) {
 	users, err = userDAO.GetListByOption(
 		// userDAO.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
 		userDAO.WithSelect([]string{userCol.ID, userCol.Age}),
-		// userDAO.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
+		userDAO.WithSelect(fmt.Sprintf("%s, sum(%s) AS age", userCol.ID, userCol.Age)),
 		// userDAO.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
 		// userDAO.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
 		// userDAO.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
 		// userDAO.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
-		userDAO.WithIDs([]int64{1, 2}),
+		//userDAO.WithIDs([]int64{1, 2}),
 	)
 	for _, i2 := range users {
 		fmt.Printf("err:%v, users:%+v \n", err, i2)
 	}
+
+	aggratorData := struct {
+		SumAge int64 `json:"sum_age,omitempty"`
+	}{}
+	err = userDAO.GetCustomeResultByOption(&aggratorData,
+		// userDAO.WithSelect(fmt.Sprintf("%s, %s", userCol.ID, userCol.Age)),
+		//userDAO.WithSelect([]string{userCol.ID, userCol.Age}),
+		userDAO.WithSelect(fmt.Sprintf("sum(%s) AS sum_age", userCol.Age)),
+		// userDAO.WithSelect(fmt.Sprintf("IFNULL(%s, %d) AS age", userCol.Age, 100)),
+		// userDAO.WithSelect(fmt.Sprintf("IFNULL(%s, ?) AS age", userCol.Age), 100),
+		// userDAO.WithSelect(fmt.Sprintf("%s, IFNULL(%s, ?) AS age", userCol.ID, userCol.Age), 100),
+		// userDAO.WithSelect(fmt.Sprintf("%s, IF(%s, %s, ?) AS age", userCol.ID, userCol.Age, userCol.Age), 100),
+		//userDAO.WithIDs([]int64{1, 2}),
+	)
+	fmt.Printf("err:%v, aggratorData:%+v \n", err, aggratorData)
 }
 
 func TestModelSave(t *testing.T) {
