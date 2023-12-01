@@ -13,7 +13,7 @@ import (
 // 获取连接的类型
 func GetConfigDBType() int {
 	if config == nil {
-		panic("请检查`config/config.yaml`是否存在")
+		panic("请检查`config/config.yaml`是否存在或是否正确")
 	}
 	
 	return config.DBInfo.Type
@@ -24,6 +24,10 @@ func GetConfigDBDatabase() string {
 	db := config.DBInfo.Database
 	if flagInfo.database != "" {
 		db = flagInfo.database
+	}
+	
+	if db == "" {
+		panic("请设置你的数据库名")
 	}
 	
 	return db
