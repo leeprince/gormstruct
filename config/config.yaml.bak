@@ -1,0 +1,82 @@
+
+# 数据库设置
+dbinfo:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: leeprince
+  database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值
+  type: 0 # 数据库类型:0:mysql
+
+# --- 建议保留默认 ---------------------------------------------------------------------------
+# 是否控制台输出数据库表结构文档
+gendoc: true
+# 自定义数据库字段的数据类型映射 golang 的数据类型
+self_type_define:
+  int(11):             int64
+  int(11) unsigned:    uint64
+  smallint:            int16
+  smallint unsigned:   uint16
+  int:                 int64
+  int unsigned:        int64
+  bigint:              int64
+  bigint unsigned:     uint64
+  mediumint:           int32
+  mediumint unsigned:  uint32
+  varchar:             string
+  char:                string
+  date:                datatypes.Date
+  datetime:            time.Time
+  bit(1):              "[]uint8"
+  tinyint:             int8
+  tinyint unsigned:    uint8
+  tinyint(1):          int8
+  tinyint(1) unsigned: uint8
+  tinyint(2):          int8
+  tinyint(2) unsigned: uint8
+  tinyint(3):          int8
+  tinyint(3) unsigned: uint8
+  json:                datatypes.JSON
+  text:                string
+  timestamp:           time.Time
+  double:              float64
+  double unsigned:     float64
+  mediumtext:          string
+  longtext:            string
+  float:               float32
+  float unsigned:      float32
+  tinytext:            string
+  enum:                string
+  time:                time.Time
+  tinyblob:            "[]byte"
+  blob:                "[]byte"
+  mediumblob:          "[]byte"
+  longblob:            "[]byte"
+  integer:             int64
+
+# 包名
+packagename: model
+
+# 输出的文件路径
+ouput_dir: ./out/model/
+
+# 是否自动根据存在 id+created_at+updated_at+deleted_at 字段时，统一使用 gorm 的结构体 `gorm.Model` 覆盖
+# true: 因为 gorm.model 默认这三个时间字段为time.Time数据类型，所以需要表设置的数据类型为时间类型：date、datetime、timestamp, 并且允许为NULL。否则字段值为非NULL，并且查询记录存在时会报：unsupported Scan, storing driver.Value type []uint8 into type *time.Time。其中自动设置 `deleted_at` IS NULL，除非添加`db.Unscoped()`方法。由于该包已经支持自定义所以，不支持设置为true
+# false: 强制为false
+is_gorm_model_tag: false
+
+# 设置 "is_gorm_model_tag=true"时主键ID的数据类型
+primary_id_type: int64
+
+# 字段允许为Null时是否设置为指针类型
+#   设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
+#   设置指针的好处是：通过 gorm 的模型结构体执行更新操作时会更新字段为设置的零值
+is_null_to_point: true
+
+# 自定义的行记录删除字段列表
+delete_flag_field_list:
+  - is_delete
+  - is_deleted
+  - deleted_at
+
+# --- 建议保留默认-end ---------------------------------------------------------------------------

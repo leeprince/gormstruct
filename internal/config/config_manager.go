@@ -1,6 +1,8 @@
 package config
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
@@ -10,6 +12,10 @@ import "fmt"
 
 // 获取连接的类型
 func GetConfigDBType() int {
+	if config == nil {
+		panic("请检查`config/config.yaml`是否存在")
+	}
+	
 	return config.DBInfo.Type
 }
 

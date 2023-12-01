@@ -20,7 +20,8 @@ func InitConfig() {
 		configPath = path.Join(tools.GetModelPath(), "config/config.yaml")
 		logger.Info("configPath:", configPath)
 		if !tools.CheckFileIsExist(configPath) {
-			logger.Panic("config.yaml not exit. using default config")
+			logger.Errorf("未找到配置文件路径%s ，使用前请配置", configPath)
+			return
 		}
 		
 		onInit()

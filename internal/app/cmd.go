@@ -26,10 +26,10 @@ type RootCmd struct {
 var rootCmd = RootCmd{
 	cmd: &cobra.Command{
 		Use:   "gen",
-		Short: "gorm mysql reflect tools",
-		Long:  `base on gorm tools for mysql database to golang struct`,
+		Short: "gorm mysql反射工具",
+		Long:  `生成 golang 结构体作为 gorm 模型`,
 		Run: func(cmd *cobra.Command, args []string) {
-			// Start doing things.开始做事情
+			// 开始做事情
 		},
 		RunE: generateGoTag,
 	},
@@ -39,19 +39,25 @@ func NewRootCmd() *RootCmd {
 	return &rootCmd
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+// Execute 将所有子命令添加到根命令中，并适当地设置标志：这是由main.main（）调用的。它只需要对rootCmd发生一次。
 func (r RootCmd) Execute() {
+	defer func() {
+		err := recover()
+		if err != nil {
+			logger.Error(err)
+		}
+	}()
+	
 	if err := r.cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }
 
 func init() {
-	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定连接的数据库名")
+	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定连接的数据库名【配置时可选，命令设置优先级大于配置】")
 	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfTable, "t", "", "指定的表名【必填】")
-	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfPackageName, "p", "", "生成的包名")
-	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfStructName, "s", "", "表名对应结构体，默认是表名的大驼峰命名")
+	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfPackageName, "p", "", "生成的包名【可选，默认：model】")
+	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfStructName, "s", "", "表名对应结构体【可选，默认：表名的大驼峰命名】")
 }
 
 func generateGoTag(c *cobra.Command, _ []string) error {
