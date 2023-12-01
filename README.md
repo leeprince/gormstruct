@@ -1,34 +1,46 @@
 # 根据表名生成表结构体和数据操作方法
-
-> gorm 官方工具，请查阅：https://gorm.io/gen/gen_tool.html
 ---
 
-# 一、包含功能点
+# 一、快速使用
 
-1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
-2.
+## （一）使用步骤
+1. 克隆项目到本地（https://github.com/leeprince/gormstruct）
+2. 重命名`./config/config.bak.yaml`为`./config/config.yaml`
+3. 修改`dbinfo`为自己的数据库链接配置
+```
+# 数据库设置
+dbinfo:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: root
+  database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值
+  type: 0 # 数据库类型:0:mysql
+```
 
-命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
+4. 运行指令`go run main.go -t={数据库下的表名}`
 
-3. 生成表的 gorm 结构体，对应文件名：{表名}.go
-4. 生成操作表的基本方法，对应文件名：base_dao.go
-5. 根据结合 `WithXxxx` 指定值作为 option
-   条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_
-   dao.go)
-6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`
-   /`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新
-7. 指定字段 `WithSelect`: 设置 option 条件作为查询指定字段或者更新指定字段的值
-8. 排序 `WithOrderBy`: 设置 option 条件作为排序条件
-9. 分组 `WithGroupBy`: 设置 option 条件作为分组条件
-10. 分组筛选 `WithHaving`: 设置 option 条件作为分组筛选
-11. SQL `OR` 条件 `WithOrOption`: 设置 option 条件组作为 sql `OR` 条件
-12. 分页器 `WithPage`: 设置 option 条件作为 sql `offset`、`limit` 条件
-13. 查找单条记录 `GetByOption`
-14. 查找多条记录 `GetByOptions`
-15. 统计 `Count`
-16. 条件统计 `GetCountByOptions`: 设置 option 条件并统计
-17. 插入 `Create`
-18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
+会在`./out/model`下生成3个文件
+
+- 模型：表名xxx.go
+- dao层：表名_dao.go
+- 基础dao层：base.go(只有在第一次时生成)
+
+## （二）帮助命令
+> go run main.go --help
+> go run main.go gen --help
+
+**表名参数(-t)必填！**
+
+```
+go run main.go -t=users [-p=model] [-s=Users]
+go run main.go --table=users [--packageName=model] [--structName=Users]
+  -d, --database string      指定连接的数据库名
+  -h, --help                 help for gen
+  -p, --packageName string   生成的包名
+  -s, --structName string    表名对应结构体，默认是表名的大驼峰命名
+  -t, --table string         指定的表名【必填】
+```
 
 # 二、注意
 
@@ -51,41 +63,30 @@
     - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
     - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 
-# 三、快速使用
 
-## （一）配置 ./config/config.yaml
+# 三、包含功能点
 
-```
-dbinfo:
-  host: 127.0.0.1
-  port: 3306
-  username: root
-  password: leeprince
-  database: tmp
-  type: 0 # 数据库类型:0:mysql
-
-```
-
-## （二）运行指令
-
-### 帮助命令
-
-> go run main.go --help
-
-> go run main.go gen --help
-
-
-**表名参数(-t)必填！**
-
-```
-go run main.go -t=users [-p=model] [-s=Users]
-go run main.go --table=users [--packageName=model] [--structName=Users]
-  -d, --database string      指定连接的数据库名
-  -h, --help                 help for gen
-  -p, --packageName string   生成的包名
-  -s, --structName string    表名对应结构体，默认是表名的大驼峰命名
-  -t, --table string         指定的表名
-```
+1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
+2. 命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
+3. 生成表的 gorm 结构体，对应文件名：{表名}.go
+4. 生成操作表的基本方法，对应文件名：base_dao.go
+5. 根据结合 `WithXxxx` 指定值作为 option
+   条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_
+   dao.go)
+6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`
+   /`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新
+7. 指定字段 `WithSelect`: 设置 option 条件作为查询指定字段或者更新指定字段的值
+8. 排序 `WithOrderBy`: 设置 option 条件作为排序条件
+9. 分组 `WithGroupBy`: 设置 option 条件作为分组条件
+10. 分组筛选 `WithHaving`: 设置 option 条件作为分组筛选
+11. SQL `OR` 条件 `WithOrOption`: 设置 option 条件组作为 sql `OR` 条件
+12. 分页器 `WithPage`: 设置 option 条件作为 sql `offset`、`limit` 条件
+13. 查找单条记录 `GetByOption`
+14. 查找多条记录 `GetByOptions`
+15. 统计 `Count`
+16. 条件统计 `GetCountByOptions`: 设置 option 条件并统计
+17. 插入 `Create`
+18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
 
 # 四、包含sql查询
 
@@ -142,6 +143,8 @@ out/model_test.go
 
 
 # 六、gorm 官网 gentool 工具的使用
+
+> gorm 官方工具，请查阅：https://gorm.io/gen/gen_tool.html
 
 ## (一) 安装
 

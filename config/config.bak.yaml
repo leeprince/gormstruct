@@ -4,7 +4,7 @@ dbinfo:
   host: 127.0.0.1
   port: 3306
   username: root
-  password: leeprince
+  password: root
   database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值
   type: 0 # 数据库类型:0:mysql
 
