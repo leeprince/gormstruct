@@ -54,7 +54,7 @@ func (r RootCmd) Execute() {
 }
 
 func init() {
-	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定连接的数据库名【配置时可选，命令设置优先级大于配置】")
+	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfDataBase, "d", "", "指定连接的数据库名【在yaml配置时可选，命令设置优先级大于配置】")
 	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfTable, "t", "", "指定的表名【必填】")
 	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfPackageName, "p", "", "生成的包名【可选，默认：model】")
 	rootCmd.cmd.PersistentFlags().StringP(constants.FlagsOfStructName, "s", "", "表名对应结构体【可选，默认：表名的大驼峰命名】")

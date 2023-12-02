@@ -14,12 +14,11 @@ dbinfo:
   port: 3306
   username: root
   password: root
-  database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值
+  database: ticket # 该参数可通过命令行设置，命令行设置会覆盖该值。如果未设置则必须在命令中指定
   type: 0 # 数据库类型:0:mysql
 ```
 
 4. 运行指令`go run main.go -t={数据库下的表名}`
-
 会在`./out/model`下生成3个文件
 
 - 模型：表名xxx.go
@@ -35,11 +34,11 @@ dbinfo:
 ```
 go run main.go -t=users [-p=model] [-s=Users]
 go run main.go --table=users [--packageName=model] [--structName=Users]
-  -d, --database string      指定连接的数据库名
-  -h, --help                 help for gen
-  -p, --packageName string   生成的包名
-  -s, --structName string    表名对应结构体，默认是表名的大驼峰命名
+  -d, --database string      指定连接的数据库名【在yaml配置时可选，命令设置优先级大于配置】
   -t, --table string         指定的表名【必填】
+  -h, --help                 help for gen
+  -p, --packageName string   生成的包名【可选，默认：model】
+  -s, --structName string    表名对应结构体【可选，默认：表名的大驼峰命名】
 ```
 
 # 二、注意
@@ -63,30 +62,28 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
     - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
     - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 
-
 # 三、包含功能点
+## （一）关于模型
 
-1. yaml 配置文件。包含数据库连接、生成生成的基本方法版本、生成的逻辑方法版本
-2. 命令行支持指定连接的数据库名表名、包名、表名对应结构体 `go run main.go -t={表名} [-d={数据库名(命令行设置会覆盖yaml配置的数据库名)}] [-p=包名] [-s=表名结构体]`
-3. 生成表的 gorm 结构体，对应文件名：{表名}.go
-4. 生成操作表的基本方法，对应文件名：base_dao.go
-5. 根据结合 `WithXxxx` 指定值作为 option
-   条件或者根据单个字段、字段切片获取单条或者多条记录；根据主键、唯一、非唯一索引，获取单条或多条记录的方法，对应文件名：{表名}_
-   dao.go)
-6. 通过 `函数选项模式` （ `WithXxxx`）设置 option 条件，最后通过 `XxxxByOptions`(`GetByOption`/`GetByOptions`
-   /`GetCountByOptions`/`UpdateByOption`) 方法实现查询、统计、更新
-7. 指定字段 `WithSelect`: 设置 option 条件作为查询指定字段或者更新指定字段的值
-8. 排序 `WithOrderBy`: 设置 option 条件作为排序条件
-9. 分组 `WithGroupBy`: 设置 option 条件作为分组条件
-10. 分组筛选 `WithHaving`: 设置 option 条件作为分组筛选
-11. SQL `OR` 条件 `WithOrOption`: 设置 option 条件组作为 sql `OR` 条件
-12. 分页器 `WithPage`: 设置 option 条件作为 sql `offset`、`limit` 条件
-13. 查找单条记录 `GetByOption`
-14. 查找多条记录 `GetByOptions`
-15. 统计 `Count`
-16. 条件统计 `GetCountByOptions`: 设置 option 条件并统计
-17. 插入 `Create`
-18. 条件更新 `UpdateByOption`: 设置 option 条件作为更新条件，非指针的结构体字段更新为零值更新时需配合 `WithSelect()` 更新
+1. 生成模型 ：生成gorm 模型，包含每个字段的注释，注释统一在右边//对齐，方便全局观察字段的定义情况。
+2. 生成表的所有字段映射：使用字段自定义查询时，统一使用映射的字段，在字段的维护上更方便;同时默认查询所有字段，不使用*，不使用反射查询所有字段。
+3. 为所有字段生成`SetXxx()`、`GetXxx()`方法：用户设置/获取模型下指定字段的值
+
+## （二）关于dao层
+
+1. 生成操作表的基本方法，对应文件名：base_dao.go
+2. 生成`Save()`方法：存在则更新，否则插入
+3. 生成`Create()`方法：创建数据:允许单条/批量创建，批量创建时传入切片
+4. 为所有字段生成 `WithXxx`方法：将单个字段的值作为查询条件
+5. 为所有字段生成 `WithXxxs`方法（多一个s）：将单个字段的列表值作为查询条件
+6. 生成`GetByOption()`方法：函数选项模式获取单条记录
+7. 生成`GetListByOption`方法：函数选项模式获取多条记录：支持分页
+8. 生成`GetCountByOption()`方法：函数选项模式获取多条记录：支持统计记录总数
+9. 生成`GetCustomeResultByOption()`方法：函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
+10. 生成`UpdateByOption()`：更新数据
+11. 生成``GetFromXxx()`方法：简单直接通过单个字段值获取数据（自动判断该字段是否设置唯一索引，否则自动获取单条记录，反之则是多条记录）
+12. 生成`GetsFromXxx()`方法：简单直接通过单个字段的列表值获取多条记录
+13. 生成`FetchByXxx()`方法：通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件获取数据（自动判断索引类型确定获取单条记录还是多条记录）
 
 # 四、包含sql查询
 
