@@ -63,6 +63,12 @@ func TestModelGetByOptionWithID(t *testing.T) {
 	)
 	
 	fmt.Println(">>>>>>>>>>> 1 user, err:", user, err)
+	
+	user, err = userDAO.GetByOption(
+		userDAO.WithID(0),
+	)
+	
+	fmt.Println(">>>>>>>>>>> 2 user, err:", user, err)
 }
 
 // GetByOption 条件查询
@@ -460,17 +466,15 @@ func TestModelUpdate(t *testing.T) {
 	db := InitDB()
 	userDAO := model.NewUsersDAO(context.Background(), db)
 	
-	name := ""
+	name := "insert-prince01"
 	dtime := int64(1642337297)
 	usesUpdate := &model.Users{
 		// ID: 100,
 		Name:      &name,
-		Age:       0, // 需要把年龄更新为0，注意 当通过 struct 更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
+		Age:       0, // 需要把年龄更新为0，注意 当通过表模型结构体更新时，GORM 只会更新非零字段。 如果您想确保指定字段被更新，你应该使用 Select 更新选定字段，或使用 map 来完成更新操作
 		HeadImg:   "",
 		DeletedAt: dtime,
 	}
-	userCol := model.UsersColumns
-	
 	count, err = userDAO.UpdateByOption(
 		usesUpdate,
 		userDAO.WithID(1),
@@ -483,6 +487,7 @@ func TestModelUpdate(t *testing.T) {
 	)
 	fmt.Printf("err:%v, count:%d, users:%+v \n", err, count, usesUpdate)
 	
+	userCol := model.UsersColumns
 	count, err = userDAO.UpdateByOption(
 		usesUpdate,
 		userDAO.WithSelect([]string{userCol.Name, userCol.Age, userCol.HeadImg, userCol.DeletedAt}), // 更新指定字段
