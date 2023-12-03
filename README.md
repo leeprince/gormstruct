@@ -89,6 +89,8 @@ CreatedAt/UpdatedAt:
 12. 生成`GetsFromXxx()`方法：简单直接通过单个字段的列表值获取多条记录
 13. 生成`FetchByXxx()`方法：通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件获取数据（自动判断索引类型确定获取单条记录还是多条记录）
 
+> 所有的方法：在项目中都包含相应的测试用例`test/xxx_test.go`
+
 # 四、包含sql查询
 
 ```
@@ -596,3 +598,8 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 另外一种方案是使用：gorm.DeletedAt 字段类型。本库未使用
 
 
+---
+
+### 如果您觉得本工具对您有帮助，不妨在右上角点亮一颗小星星，以示鼓励！
+
+![加我微信](./lhz-prince.jpg)
