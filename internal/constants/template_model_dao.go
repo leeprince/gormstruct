@@ -48,12 +48,17 @@ func (obj *{{$allParams.StructName}}DAO) GetTableName() string {
     return {{$lowerStructName}}.TableName()
 }
 
-// Save 存在则更新，否则插入
-func (obj *{{$allParams.StructName}}DAO) Save({{$lowerStructName}} *{{$allParams.StructName}}) (rowsAffected int64, err error) {
+// UpdateOrCreate 存在则更新，否则插入
+func (obj *{{$allParams.StructName}}DAO) UpdateOrCreate({{$lowerStructName}} *{{$allParams.StructName}}) (rowsAffected int64, err error) {
 	if {{$lowerStructName}}.PrimaryKeyValue() > 0 {
 		return obj.UpdateByOption({{$lowerStructName}}, obj.WithID({{$lowerStructName}}.ID))
 	}
     return obj.Create({{$lowerStructName}})
+}
+
+// Save gorm 原生的 Save 仅会判断主键是否存在，存在则全量更新（即使是零值），不存在则创建
+func (obj *{{$allParams.StructName}}DAO) Save({{$lowerStructName}} *{{$allParams.StructName}}) {
+	obj.DB.Save({{$lowerStructName}})
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片
