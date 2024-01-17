@@ -9,7 +9,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-09-05 02:17:30
+ * @Date:   2024-01-17 18:49:00
  * @Desc:   user_auth 表的 DAO 层
  */
 
@@ -43,12 +43,17 @@ func (obj *UserAuthDAO) GetTableName() string {
 	return userAuth.TableName()
 }
 
-// Save 存在则更新，否则插入
-func (obj *UserAuthDAO) Save(userAuth *UserAuth) (rowsAffected int64, err error) {
+// UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
+func (obj *UserAuthDAO) UpdateOrCreate(userAuth *UserAuth) (rowsAffected int64, err error) {
 	if userAuth.PrimaryKeyValue() > 0 {
 		return obj.UpdateByOption(userAuth, obj.WithID(userAuth.ID))
 	}
 	return obj.Create(userAuth)
+}
+
+// Save gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+func (obj *UserAuthDAO) Save(userAuth *UserAuth) (rowsAffected int64) {
+	return obj.db.Save(userAuth).RowsAffected
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片
@@ -151,6 +156,7 @@ func (obj *UserAuthDAO) GetListByOption(opts ...Option) (results []*UserAuth, er
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserAuthDAO) GetCountByOption(opts ...Option) (count int64) {
 	obj.setIsDefaultColumns(false)
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	obj.prepare(opts...).Count(&count)
 	return
 }
@@ -162,10 +168,9 @@ func (obj *UserAuthDAO) GetCustomeResultByOption(result interface{}, opts ...Opt
 }
 
 // UpdateByOption 更新数据
-//
-//		参数说明：
-//	     userAuth: 要更新的数据
-//	     opts: 更新的条件
+// 	参数说明：
+//      userAuth: 要更新的数据
+//      opts: 更新的条件
 func (obj *UserAuthDAO) UpdateByOption(userAuth *UserAuth, opts ...Option) (rowsAffected int64, err error) {
 	obj.setIsDefaultColumns(false)
 	tx := obj.prepare(opts...).Updates(userAuth)

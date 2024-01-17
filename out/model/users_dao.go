@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-12-02 23:58:01
+ * @Date:   2024-01-17 18:49:07
  * @Desc:   users 表的 DAO 层
  */
 
@@ -42,12 +42,17 @@ func (obj *UsersDAO) GetTableName() string {
 	return users.TableName()
 }
 
-// Save 存在则更新，否则插入
-func (obj *UsersDAO) Save(users *Users) (rowsAffected int64, err error) {
+// UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
+func (obj *UsersDAO) UpdateOrCreate(users *Users) (rowsAffected int64, err error) {
 	if users.PrimaryKeyValue() > 0 {
 		return obj.UpdateByOption(users, obj.WithID(users.ID))
 	}
 	return obj.Create(users)
+}
+
+// Save gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+func (obj *UsersDAO) Save(users *Users) (rowsAffected int64) {
+	return obj.db.Save(users).RowsAffected
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片
@@ -167,10 +172,9 @@ func (obj *UsersDAO) GetCustomeResultByOption(result interface{}, opts ...Option
 }
 
 // UpdateByOption 更新数据
-//
-//		参数说明：
-//	     users: 要更新的数据
-//	     opts: 更新的条件
+// 	参数说明：
+//      users: 要更新的数据
+//      opts: 更新的条件
 func (obj *UsersDAO) UpdateByOption(users *Users, opts ...Option) (rowsAffected int64, err error) {
 	obj.setIsDefaultColumns(false)
 	tx := obj.prepare(opts...).Updates(users)

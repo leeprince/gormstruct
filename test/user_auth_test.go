@@ -15,7 +15,7 @@ import (
  */
 func TestDataTimeTT(t *testing.T) {
 	db := InitDB()
-	userAuthDao := model.NewPurchaserOrderDAO(context.Background(), db)
+	userAuthDao := model.NewUsersDAO(context.Background(), db)
 	list, err := userAuthDao.GetListByOption()
 	fmt.Println(len(list), list, err)
 

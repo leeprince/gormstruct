@@ -443,25 +443,29 @@ func TestModelSave(t *testing.T) {
 	//     - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
 	// deletedAt := int32(1)
 	name := "insert-prince2"
-	users := model.Users{
+	users := &model.Users{
 		// ID:        59,
 		Name: &name,
 		// Age:       18,
-		Age:       0,
-		CardNo:    "46100212",
-		HeadImg:   "https://dd.xx",
+		//Age:       0,
+		CardNo: "22134d433",
+		//HeadImg:   "https://dd.xx",
 		CreatedAt: 1643399938,
 		UpdatedAt: 1643399938,
 		// DeletedAt: deletedAt,
 	}
-	rowsAffected, err := userDAO.Save(&users)
-	fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+	rowsAffected := userDAO.Save(users)
+	fmt.Printf("users:%+v rowsAffected:%d \n", users, rowsAffected)
+
+	//rowsAffected, err := userDAO.UpdateOrCreate(users)
+	//fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
 
 	time.Sleep(time.Second * 2)
 	users.Age = 18
 	users.UpdatedAt = 1643399938
-	rowsAffected, err = userDAO.Save(&users)
-	fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+	rowsAffected = userDAO.Save(users)
+	//db.Save(users)
+	fmt.Printf("users:%+v rowsAffected:%d \n", users, rowsAffected)
 }
 
 // 更新
