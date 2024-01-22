@@ -602,4 +602,6 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 
 ### 如果您觉得本工具对您有帮助，不妨在右上角点亮一颗小星星，以示鼓励！
 
-![加我微信](./lhz-prince.jpg)
+也欢迎关注我的公众号
+
+![加我微信](./公众号《皇子谈技术》.png)
