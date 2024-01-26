@@ -21,7 +21,6 @@ import (
 var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
 
 //var mysqlDns = "root:leeprince@tcp(127.0.0.1:3306)/tmp?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
-//var mysqlDns = "gordon:4qYAEZ6scVNYPLTWRviT@tcp(10.21.32.3:3306)/gdc_enterprise_digital_order?charset=utf8&parseTime=true&loc=Local&interpolateParams=True"
 
 const IsDebug = true
 
