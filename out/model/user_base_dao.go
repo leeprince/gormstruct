@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-31 23:21:05
+ * @Date:   2024-03-05 22:50:39
  * @Desc:   user_base 表的 DAO 层
  */
 
@@ -42,12 +42,17 @@ func (obj *UserBaseDAO) GetTableName() string {
 	return userBase.TableName()
 }
 
-// Save 存在则更新，否则插入
-func (obj *UserBaseDAO) Save(userBase *UserBase) (rowsAffected int64, err error) {
+// UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
+func (obj *UserBaseDAO) UpdateOrCreate(userBase *UserBase) (rowsAffected int64, err error) {
 	if userBase.PrimaryKeyValue() > 0 {
 		return obj.UpdateByOption(userBase, obj.WithID(userBase.ID))
 	}
 	return obj.Create(userBase)
+}
+
+// Save gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+func (obj *UserBaseDAO) Save(userBase *UserBase) (rowsAffected int64) {
+	return obj.db.Save(userBase).RowsAffected
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片
@@ -105,11 +110,12 @@ func (obj *UserBaseDAO) GetListByOption(opts ...Option) (results []*UserBase, er
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserBaseDAO) GetCountByOption(opts ...Option) (count int64) {
 	obj.setIsDefaultColumns(false)
+
 	obj.prepare(opts...).Count(&count)
 	return
 }
 
-// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加添加 gorm:"column:字段的别名;" 标签)
+// GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
 func (obj *UserBaseDAO) GetCustomeResultByOption(result interface{}, opts ...Option) (err error) {
 	err = obj.prepare(opts...).Find(result).Error
 	return

@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2023-08-31 23:21:05
+ * @Date:   2024-03-05 22:50:39
  * @Desc:   user_base 表
  */
 
