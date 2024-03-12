@@ -11,7 +11,7 @@
  Target Server Version : 80013
  File Encoding         : 65001
 
- Date: 31/08/2023 18:12:14
+ Date: 12/03/2024 20:26:28
 */
 
 SET NAMES utf8mb4;
@@ -91,10 +91,17 @@ COMMIT;
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '名称',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
   `age` int(11) NOT NULL DEFAULT '18' COMMENT '年龄',
   `card_no` varchar(18) NOT NULL DEFAULT '' COMMENT '身份证',
-  `head_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '头像',
+  `head_img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'xxx' COMMENT '头像',
+  `school` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `null_no_default` varchar(255) DEFAULT NULL,
+  `null_default_nil` varchar(255) DEFAULT NULL,
+  `null_default_no_nil` varchar(255) DEFAULT 'x',
+  `no_null_no_default` varchar(255) NOT NULL,
+  `no_null_default_no_nil` varchar(255) NOT NULL DEFAULT 'y',
+  `no_null_default_nil` varchar(255) NOT NULL,
   `created_at` int(11) NOT NULL COMMENT '创建时间',
   `updated_at` int(11) NOT NULL COMMENT '更新时间',
   `deleted_at` int(11) NOT NULL DEFAULT '0' COMMENT '删除时间',
@@ -102,48 +109,59 @@ CREATE TABLE `users` (
   UNIQUE KEY `card_no` (`card_no`),
   UNIQUE KEY `unq_name_card` (`name`,`card_no`),
   KEY `age` (`age`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
 BEGIN;
-INSERT INTO `users` VALUES (1, '', 3, '', 'http://pp.com', 1639411296, 1657029031, 1642337297);
-INSERT INTO `users` VALUES (2, '', 0, '2', '', 1639411296, 1656511392, 1642337297);
-INSERT INTO `users` VALUES (3, '', 0, '3', '', 1639411296, 1656509847, 1642337297);
-INSERT INTO `users` VALUES (4, 'name01', 20, '4', '', 1639411296, 1639411296, 0);
-INSERT INTO `users` VALUES (6, 'name03', 18, '5', '', 1639411296, 1639411296, 0);
-INSERT INTO `users` VALUES (7, 'insert-prince01', 18, '46000', 'https://dd.xx', 1642342051, 1656520036, 0);
-INSERT INTO `users` VALUES (8, 'insert-prince02', 18, '460001', 'https://dd.xx', 1642342268, 1642342268, 0);
-INSERT INTO `users` VALUES (9, 'insert-prince003', 12, '46100001', 'https://dd.xx', 1652112852, 1652112852, 1);
-INSERT INTO `users` VALUES (14, 'insert-prince003', 0, '4610000101', 'https://dd.xx', 1643399938, 1652113064, 1);
-INSERT INTO `users` VALUES (15, 'insert-prince004', 0, '4610000102', 'https://dd.xx', 1652113064, 1643399938, 1);
-INSERT INTO `users` VALUES (16, 'insert-prince005', 0, '4610000103', 'https://dd.xx', 1652113064, 1652113064, 1);
-INSERT INTO `users` VALUES (20, 'insert-prince003', 0, '46100001001', 'https://dd.xx', 1643399938, 1652113511, 1);
-INSERT INTO `users` VALUES (21, 'insert-prince004', 0, '46100001002', 'https://dd.xx', 1652113511, 1643399938, 1);
-INSERT INTO `users` VALUES (22, 'insert-prince005', 0, '46100001003', 'https://dd.xx', 1652113511, 1652113511, 1);
-INSERT INTO `users` VALUES (23, 'insert-prince005', 0, '46100001004', 'https://dd.xx', 1652113511, 1652113511, 0);
-INSERT INTO `users` VALUES (24, 'insert-prince003', 0, '461000010001', 'https://dd.xx', 1643399938, 1652113835, 1);
-INSERT INTO `users` VALUES (25, 'insert-prince004', 0, '461000010002', 'https://dd.xx', 1652113835, 1643399938, 1);
-INSERT INTO `users` VALUES (26, 'insert-prince005', 0, '461000010003', 'https://dd.xx', 1652113835, 1652113835, 1);
-INSERT INTO `users` VALUES (27, 'insert-prince005', 0, '461000010004', 'https://dd.xx', 1652113835, 1652113835, 0);
-INSERT INTO `users` VALUES (32, 'insert-prince003', 0, '4610000100101', 'https://dd.xx', 1643399938, 1654848152, 1);
-INSERT INTO `users` VALUES (33, 'insert-prince004', 0, '4610000100102', 'https://dd.xx', 1654848152, 1643399938, 1);
-INSERT INTO `users` VALUES (34, 'insert-prince005', 0, '4610000100103', 'https://dd.xx', 1654848152, 1654848152, 1);
-INSERT INTO `users` VALUES (35, 'insert-prince005', 0, '4610000100104', 'https://dd.xx', 1654848152, 1654848152, 0);
-INSERT INTO `users` VALUES (40, 'insert-prince1', 0, '46100101', 'https://dd.xx', 1643399938, 1654927732, 1);
-INSERT INTO `users` VALUES (41, 'insert-prince1', 0, '46100102', 'https://dd.xx', 1643399938, 1654927935, 0);
-INSERT INTO `users` VALUES (42, 'insert-prince1', 0, '46100103', 'https://dd.xx', 1643399938, 1654928048, 0);
-INSERT INTO `users` VALUES (45, 'insert-prince1', 18, '46100104', 'https://dd.xx', 1643399938, 1654928145, 0);
-INSERT INTO `users` VALUES (50, 'insert-prince2', 18, '46100105', 'https://dd.xx', 1643399938, 1654928214, 0);
-INSERT INTO `users` VALUES (53, 'insert-prince2', 18, '46100106', 'https://dd.xx', 1643399938, 1654929571, 0);
-INSERT INTO `users` VALUES (56, 'insert-prince2', 18, '46100206', 'https://dd.xx', 1643399938, 1655652245, 0);
-INSERT INTO `users` VALUES (57, 'insert-prince2', 18, '46100207', 'https://dd.xx', 1643399938, 1655652561, 0);
-INSERT INTO `users` VALUES (58, 'insert-prince2', 18, '46100208', 'https://dd.xx', 1643399938, 1655652575, 0);
-INSERT INTO `users` VALUES (59, 'insert-prince2', 18, '46100209', 'https://dd.xx', 1643399938, 1655652767, 0);
-INSERT INTO `users` VALUES (60, 'insert-prince2', 18, '46100210', 'https://dd.xx', 1643399938, 1655652822, 0);
-INSERT INTO `users` VALUES (63, 'insert-prince2', 18, '46100211', 'https://dd.xx', 1643399938, 1655652868, 0);
-INSERT INTO `users` VALUES (64, 'insert-prince2', 18, '46100212', 'https://dd.xx', 1643399938, 1655652924, 0);
+INSERT INTO `users` VALUES (1, 'insert-prince01', 3, '', 'http://pp.com', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
+INSERT INTO `users` VALUES (2, 'insert-prince01', 0, '2', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
+INSERT INTO `users` VALUES (3, 'insert-prince01', 0, '3', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
+INSERT INTO `users` VALUES (4, 'name01', 20, '4', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1639411296, 0);
+INSERT INTO `users` VALUES (6, 'name03', 18, '5', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1639411296, 0);
+INSERT INTO `users` VALUES (7, 'insert-prince01', 18, '46000', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1642342051, 1656520036, 0);
+INSERT INTO `users` VALUES (8, 'insert-prince02', 18, '460001', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1642342268, 1642342268, 0);
+INSERT INTO `users` VALUES (9, 'insert-prince003', 12, '46100001', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652112852, 1652112852, 1);
+INSERT INTO `users` VALUES (14, 'insert-prince003', 0, '4610000101', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1652113064, 1);
+INSERT INTO `users` VALUES (15, 'insert-prince004', 0, '4610000102', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113064, 1643399938, 1);
+INSERT INTO `users` VALUES (16, 'insert-prince005', 0, '4610000103', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113064, 1652113064, 1);
+INSERT INTO `users` VALUES (20, 'insert-prince003', 0, '46100001001', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1652113511, 1);
+INSERT INTO `users` VALUES (21, 'insert-prince004', 0, '46100001002', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113511, 1643399938, 1);
+INSERT INTO `users` VALUES (22, 'insert-prince005', 0, '46100001003', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113511, 1652113511, 1);
+INSERT INTO `users` VALUES (23, 'insert-prince005', 0, '46100001004', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113511, 1652113511, 0);
+INSERT INTO `users` VALUES (24, 'insert-prince003', 0, '461000010001', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1652113835, 1);
+INSERT INTO `users` VALUES (25, 'insert-prince004', 0, '461000010002', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113835, 1643399938, 1);
+INSERT INTO `users` VALUES (26, 'insert-prince005', 0, '461000010003', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113835, 1652113835, 1);
+INSERT INTO `users` VALUES (27, 'insert-prince005', 0, '461000010004', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1652113835, 1652113835, 0);
+INSERT INTO `users` VALUES (32, 'insert-prince003', 0, '4610000100101', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654848152, 1);
+INSERT INTO `users` VALUES (33, 'insert-prince004', 0, '4610000100102', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1654848152, 1643399938, 1);
+INSERT INTO `users` VALUES (34, 'insert-prince005', 0, '4610000100103', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1654848152, 1654848152, 1);
+INSERT INTO `users` VALUES (35, 'insert-prince005', 0, '4610000100104', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1654848152, 1654848152, 0);
+INSERT INTO `users` VALUES (40, 'insert-prince1', 0, '46100101', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654927732, 1);
+INSERT INTO `users` VALUES (41, 'insert-prince1', 0, '46100102', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654927935, 0);
+INSERT INTO `users` VALUES (42, 'insert-prince1', 0, '46100103', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928048, 0);
+INSERT INTO `users` VALUES (45, 'insert-prince1', 18, '46100104', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928145, 0);
+INSERT INTO `users` VALUES (50, 'insert-prince2', 18, '46100105', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928214, 0);
+INSERT INTO `users` VALUES (53, 'insert-prince2', 18, '46100106', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654929571, 0);
+INSERT INTO `users` VALUES (56, 'insert-prince2', 18, '46100206', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652245, 0);
+INSERT INTO `users` VALUES (57, 'insert-prince2', 18, '46100207', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652561, 0);
+INSERT INTO `users` VALUES (58, 'insert-prince2', 18, '46100208', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652575, 0);
+INSERT INTO `users` VALUES (59, 'insert-prince2', 18, '46100209', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652767, 0);
+INSERT INTO `users` VALUES (60, 'insert-prince2', 18, '46100210', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652822, 0);
+INSERT INTO `users` VALUES (63, 'insert-prince2', 18, '46100211', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652868, 0);
+INSERT INTO `users` VALUES (64, 'insert-prince2', 18, '46100212', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652924, 0);
+INSERT INTO `users` VALUES (65, 'insert-prince2', 18, '22134d433', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1710211002, 0);
+INSERT INTO `users` VALUES (70, 'insert-prince2', 18, '32134d433', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1710211444, 0);
+INSERT INTO `users` VALUES (73, 'insert-prince2', 19, '32134d434', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1710211475, 0);
+INSERT INTO `users` VALUES (77, 'insert-prince2', 19, '32134d435', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1710211519, 0);
+INSERT INTO `users` VALUES (81, 'insert-prince2', 19, '32134d436', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1710211612, 0);
+INSERT INTO `users` VALUES (88, 'insert-prince2', 18, '32134d437', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710211690, 0);
+INSERT INTO `users` VALUES (89, 'insert-prince2', 18, '32134d447', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710211790, 0);
+INSERT INTO `users` VALUES (93, '', 18, '32134d448', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710211981, 0);
+INSERT INTO `users` VALUES (97, '', 19, '32134d449', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710212063, 0);
+INSERT INTO `users` VALUES (101, '', 19, '32134d440', 'xxx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710212173, 0);
+INSERT INTO `users` VALUES (102, '', 19, '32134da40', '', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710212711, 0);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
