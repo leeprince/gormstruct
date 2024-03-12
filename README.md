@@ -41,24 +41,37 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
   -s, --structName string    表名对应结构体【可选，默认：表名的大驼峰命名】
 ```
 
+> gorm 官网也提供 gentool 工具的使用。请查阅：https://gorm.io/gen/gen_tool.html
+> 使用过后，不是我想要的，特别是 Dao 层的使用方式，感兴趣的自行查看
+
 # 二、注意
 
 > 零值：0、''、false
 
-## （一）更新
+## （一）更新 Updates
 
 当通过表模型结构体更新数据时，
 - GORM Updates() 方法只会更新非零字段。该工具底层就是用了这个方法，如果您想确保指定字段被更新，你应该使用 Select 更新选定字段、或者允许为零值的字段设置为指针、或使用 map 来完成更新操作
-> 建议：工具会根据是否允许为空，判断允许为空则设置为指针，反之不设置；如果表设计是不允许为空，但是有存在零值，只能手动改为指针
 
-- GORM Save() 方法会保存所有的字段，即使字段是零值
+> 工具会根据是否允许为空，判断允许为空则设置为指针，反之不设置；如果表设计是不允许为空，但是有存在零值，只能手动改为指针
 
-## （二）查询
+## （一）保存或者更新 Save
+gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+
+- 保存时：字段是指针 // prince@TODO:  2024/3/12 11:33
+- - 字段有默认值（非零值）：则不会保存该字段，因为不知道该字段是否为空
+- - 字段无默认值：
+
+- 更新时：字段是指针 // prince@TODO:  2024/3/12 11:33
+- - 字段有默认值（非零值）：
+- - 字段有默认值：
+
+## （三）查询
 
 当使用表模型结构体作为条件查询时，GORM 只会查询非零值字段。这意味着如果您的字段值为 0、''、false 或其他零值，该字段不会被用于构建查询条件。
 但通过该工具生成的DAO层`WithXxx`和`WithXxxs`作为条件则可以忽略这个，因为底层是用 map 
 
-## （三）创建时间/创建时间
+## （四）创建时间/创建时间
 CreatedAt/UpdatedAt:
 - 创建数据时：CreatedAt/UpdatedAt：设置非零值时覆盖，为零值时会自动生成
 - 更新数据时：CreatedAt 不变；UpdatedAt 自动更新为当前时间戳
@@ -74,25 +87,33 @@ CreatedAt/UpdatedAt:
 3. 为所有字段生成`SetXxx()`、`GetXxx()`方法：用户设置/获取模型下指定字段的值
 
 ## （二）关于dao层
+生成操作表的基本方法，对应文件名：base_dao.go
 
-1. 生成操作表的基本方法，对应文件名：base_dao.go
-2. 生成`Save()`方法：存在则更新，否则插入
-3. 生成`Create()`方法：创建数据:允许单条/批量创建，批量创建时传入切片
-4. 为所有字段生成 `WithXxx`方法：将单个字段的值作为查询条件
-5. 为所有字段生成 `WithXxxs`方法（多一个s）：将单个字段的列表值作为查询条件
-6. 生成`GetByOption()`方法：函数选项模式获取单条记录
-7. 生成`GetListByOption`方法：函数选项模式获取多条记录：支持分页
-8. 生成`GetCountByOption()`方法：函数选项模式获取多条记录：支持统计记录总数
-9. 生成`GetCustomeResultByOption()`方法：函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
-10. 生成`UpdateByOption()`：更新数据
-11. 生成``GetFromXxx()`方法：简单直接通过单个字段值获取数据（自动判断该字段是否设置唯一索引，否则自动获取单条记录，反之则是多条记录）
-12. 生成`GetsFromXxx()`方法：简单直接通过单个字段的列表值获取多条记录
-13. 生成`FetchByXxx()`方法：通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件获取数据（自动判断索引类型确定获取单条记录还是多条记录）
+- 生成`UpdateOrCreate()`方法：存在则更新（只会更新非零值），否则插入（会忽略零值字段）
+- 生成`Save()`方法：gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+- 生成`Create()`方法：创建数据:允许单条/批量创建，批量创建时传入切片
+
+- 为所有字段生成 `WithXxx`方法：将单个字段的值作为查询条件
+- 为所有字段生成 `WithXxxs`方法（多一个s）：将单个字段的列表值作为查询条件
+
+- 生成`GetByOption()`方法：函数选项模式获取单条记录
+- 生成`GetListByOption`方法：函数选项模式获取多条记录：支持分页
+
+- 生成`GetCountByOption()`方法：函数选项模式获取多条记录：支持统计记录总数
+
+- 生成`GetCustomeResultByOption()`方法：函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
+
+- 生成`UpdateByOption()`：更新数据
+
+- 生成`GetFromXxx()`方法：简单直接通过单个字段值获取数据（自动判断该字段是否设置唯一索引，否则自动获取单条记录，反之则是多条记录）
+- 生成`GetListFromXxx()`方法：简单直接通过单个字段的列表值获取多条记录
+
+- 生成`FetchByXxx()`方法：通过索引（唯一索引（主键、唯一索引、唯一复合索引）、非唯一索引（普通索引））作为查询条件获取数据（自动判断索引类型确定获取单条记录还是多条记录）
 
 > 所有的方法：在项目中都包含相应的测试用例`test/xxx_test.go`
 
-# 四、包含sql查询
 
+# 四、包含sql查询
 ```
 SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = 'p_procedure';
 
@@ -144,92 +165,7 @@ out/model_test.go
 ```
 
 
-# 六、gorm 官网 gentool 工具的使用
-
-> gorm 官方工具，请查阅：https://gorm.io/gen/gen_tool.html
-
-## (一) 安装
-
-```
-go install gorm.io/gen/tools/gentool@latest
-```
-
-## (二) 使用
-
-```
-gentool -h
-
-Usage of gentool:
- -c string
-       config file path 
- -db string
-       input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html] (default "mysql")
- -dsn string
-       consult[https://gorm.io/docs/connecting_to_the_database.html]
- -fieldNullable
-       generate with pointer when field is nullable
- -fieldWithIndexTag
-       generate field with gorm index tag
- -fieldWithTypeTag
-       generate field with gorm column type tag
- -modelPkgName string
-       generated model code's package name
- -outFile string
-       query code file name, default: gen.go
- -outPath string
-       specify a directory for output (default "./dao/query")
- -tables string
-       enter the required data table or leave it blank
- -onlyModel
-       only generate models (without query file)
- -withUnitTest
-       generate unit test for query code
- -fieldSignable
-       detect integer field's unsigned type, adjust generated data type
-```
-
-## (三) 例子
-
-```
-# 基础
-gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor"
-
-# 指定输出路径
-gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor" -outPath=out/gentool/dao
-
-# 生成用例
-gentool -dsn "user:pwd@tcp(localhost:3306)/database?charset=utf8mb4&parseTime=True&loc=Local" -tables "orders,doctor" -outPath=out/gentool/dao -withUnitTest
-
-# 指定配置文件
-gentool -c "./gen.tool"
-```
-
-```
-version: "0.1"
-database:
-  # consult[https://gorm.io/docs/connecting_to_the_database.html]"
-  dsn : "username:password@tcp(address:port)/db?charset=utf8mb4&parseTime=true&loc=Local"
-  # input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
-  db  : "mysql"
-  # enter the required data table or leave it blank.You can input : orders,users,goods
-  tables  : "user"
-  # specify a directory for output
-  outPath :  "./dao/query"
-  # query code file name, default: gen.go
-  outFile :  ""
-  # generate unit test for query code
-  withUnitTest  : false
-  # generated model code's package name
-  modelPkgName  : ""
-  # generate with pointer when field is nullable
-  fieldNullable : false
-  # generate field with gorm index tag
-  fieldWithIndexTag : false
-  # generate field with gorm column type tag
-  fieldWithTypeTag  : false
-```
-
-# 七、修改记录
+# 六、修改记录
 
 - [x] 表的结构体的数据类型，根据表的数据类型、默认值、是否为 null、并根据配置是否使用指针类型，去最终设置为指针类型
     - 保持当前设置指针类型的条件：配置允许设置为指针类型&字段允许为null&字段的数据类型为uint|int|float|string
@@ -240,7 +176,7 @@ database:
 
 - [x] 去除 `base_dao.go` 的 `updateOptionFunc` 方法
 
-- [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetByOptions()` 方法
+- [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetListByOption()` 方法
 
 - [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
     - 继续统一在 model 中，通用性更强。具体什么架构，使用者自行移动即可
@@ -594,8 +530,8 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 
 ```
 
-- [x] 删除字段使用：*time.Time，而不是 time.Time, 避免初始化变量或者数据json转化后使用time.Time的默认值：`0001-01-01 00:00:00 +0000` 插入数据，导致查询删除字段是否为空错误
-另外一种方案是使用：gorm.DeletedAt 字段类型。本库未使用
+- [x] 当时时间格式未使用整型时间戳，而是 timestamp/datatiem 时：结构体字段类型使用 *time.Time，而不是 time.Time, 避免初始化变量或者数据json转化后使用time.Time的默认值：`0001-01-01 00:00:00 +0000` 插入数据，导致查询删除字段是否为空错误
+另外一种方案是使用：gorm.DeletedAt 字段类型---本库未使用
 
 
 ---

@@ -2,7 +2,7 @@ package model
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-01-17 18:49:07
+ * @Date:   2024-03-12 11:42:04
  * @Desc:   users 表
  */
 
@@ -13,9 +13,10 @@ type Users struct {
 	Age       int64   `gorm:"column:age;type:int(11);not null;DEFAULT:18" json:"age"`                 // 年龄
 	CardNo    string  `gorm:"column:card_no;type:varchar(18);not null;DEFAULT:" json:"card_no"`       // 身份证
 	HeadImg   string  `gorm:"column:head_img;type:varchar(255);not null;DEFAULT:xxx" json:"head_img"` // 头像
-	CreatedAt int64   `gorm:"column:created_at;type:int(11);not null;" json:"created_at"`             // 创建时间
-	UpdatedAt int64   `gorm:"column:updated_at;type:int(11);not null;" json:"updated_at"`             // 更新时间
-	DeletedAt int64   `gorm:"column:deleted_at;type:int(11);not null;DEFAULT:0" json:"deleted_at"`    // 删除时间
+	School    *string `gorm:"column:school;type:varchar(255);is null;DEFAULT:" json:"school"`
+	CreatedAt int64   `gorm:"column:created_at;type:int(11);not null;" json:"created_at"`          // 创建时间
+	UpdatedAt int64   `gorm:"column:updated_at;type:int(11);not null;" json:"updated_at"`          // 更新时间
+	DeletedAt int64   `gorm:"column:deleted_at;type:int(11);not null;DEFAULT:0" json:"deleted_at"` // 删除时间
 }
 
 // 获取结构体对应的表名方法
@@ -45,6 +46,7 @@ var UsersColumns = struct {
 	Age       string
 	CardNo    string
 	HeadImg   string
+	School    string
 	CreatedAt string
 	UpdatedAt string
 	DeletedAt string
@@ -54,6 +56,7 @@ var UsersColumns = struct {
 	Age:       "age",
 	CardNo:    "card_no",
 	HeadImg:   "head_img",
+	School:    "school",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 	DeletedAt: "deleted_at",
@@ -66,6 +69,7 @@ var UsersAllColumns = []string{
 	UsersColumns.Age,       // 年龄
 	UsersColumns.CardNo,    // 身份证
 	UsersColumns.HeadImg,   // 头像
+	UsersColumns.School,    //
 	UsersColumns.CreatedAt, // 创建时间
 	UsersColumns.UpdatedAt, // 更新时间
 	UsersColumns.DeletedAt, // 删除时间
@@ -95,6 +99,11 @@ func (m *Users) SetCardNo(v string) {
 // 设置值：头像
 func (m *Users) SetHeadImg(v string) {
 	m.HeadImg = v
+}
+
+// 设置值：
+func (m *Users) SetSchool(v *string) {
+	m.School = v
 }
 
 // 设置值：创建时间
@@ -135,6 +144,11 @@ func (m *Users) GetCardNo() string {
 // 获取值：头像
 func (m *Users) GetHeadImg() string {
 	return m.HeadImg
+}
+
+// 获取值：
+func (m *Users) GetSchool() *string {
+	return m.School
 }
 
 // 获取值：创建时间

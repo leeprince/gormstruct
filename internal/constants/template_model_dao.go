@@ -141,8 +141,8 @@ func (obj *{{$allParams.StructName}}DAO) GetFrom{{$oem.ColStructName}}({{CapLowe
     return
 }
 {{end}}
-// GetsFrom{{$oem.ColStructName}} 通过多个 {{$oem.ColName}}({{$oem.Notes}}) 字段值，获取多条记录
-func (obj *{{$allParams.StructName}}DAO) GetsFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
+// GetListFrom{{$oem.ColStructName}} 通过多个 {{$oem.ColName}}({{$oem.Notes}}) 字段值，获取多条记录
+func (obj *{{$allParams.StructName}}DAO) GetListFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
     results, err = obj.GetListByOption(obj.With{{$oem.ColStructName}}s({{CapLowercase $oem.ColStructName}}s))
     return
 }

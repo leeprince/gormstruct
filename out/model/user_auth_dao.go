@@ -43,7 +43,7 @@ func (obj *UserAuthDAO) GetTableName() string {
 	return userAuth.TableName()
 }
 
-// UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
+// UpdateOrCreate 存在则更新，否则插入。Create 插入会忽略零值字段
 func (obj *UserAuthDAO) UpdateOrCreate(userAuth *UserAuth) (rowsAffected int64, err error) {
 	if userAuth.PrimaryKeyValue() > 0 {
 		return obj.UpdateByOption(userAuth, obj.WithID(userAuth.ID))

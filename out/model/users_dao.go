@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-01-17 18:49:07
+ * @Date:   2024-03-12 11:42:04
  * @Desc:   users 表的 DAO 层
  */
 
@@ -113,6 +113,16 @@ func (obj *UsersDAO) WithHeadImgs(headImgs []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImgs })
 }
 
+// WithSchool 设置 school() 字段作为 option 条件
+func (obj *UsersDAO) WithSchool(school *string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = school })
+}
+
+// WithSchools 设置 school() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithSchools(schools []*string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = schools })
+}
+
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *UsersDAO) WithCreatedAt(createdAt int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAt })
@@ -172,9 +182,10 @@ func (obj *UsersDAO) GetCustomeResultByOption(result interface{}, opts ...Option
 }
 
 // UpdateByOption 更新数据
-// 	参数说明：
-//      users: 要更新的数据
-//      opts: 更新的条件
+//
+//		参数说明：
+//	     users: 要更新的数据
+//	     opts: 更新的条件
 func (obj *UsersDAO) UpdateByOption(users *Users, opts ...Option) (rowsAffected int64, err error) {
 	obj.setIsDefaultColumns(false)
 	tx := obj.prepare(opts...).Updates(users)
@@ -191,8 +202,8 @@ func (obj *UsersDAO) GetFromID(id int64) (result *Users, err error) {
 	return
 }
 
-// GetsFromID 通过多个 id(主键) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromID(ids []int64) (results []*Users, err error) {
+// GetListFromID 通过多个 id(主键) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromID(ids []int64) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithIDs(ids))
 	return
 }
@@ -203,8 +214,8 @@ func (obj *UsersDAO) GetFromName(name *string) (result *Users, err error) {
 	return
 }
 
-// GetsFromName 通过多个 name(名称) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromName(names []*string) (results []*Users, err error) {
+// GetListFromName 通过多个 name(名称) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromName(names []*string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithNames(names))
 	return
 }
@@ -215,8 +226,8 @@ func (obj *UsersDAO) GetFromAge(age int64) (results []*Users, err error) {
 	return
 }
 
-// GetsFromAge 通过多个 age(年龄) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromAge(ages []int64) (results []*Users, err error) {
+// GetListFromAge 通过多个 age(年龄) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromAge(ages []int64) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithAges(ages))
 	return
 }
@@ -227,8 +238,8 @@ func (obj *UsersDAO) GetFromCardNo(cardNo string) (result *Users, err error) {
 	return
 }
 
-// GetsFromCardNo 通过多个 card_no(身份证) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromCardNo(cardNos []string) (results []*Users, err error) {
+// GetListFromCardNo 通过多个 card_no(身份证) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromCardNo(cardNos []string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithCardNos(cardNos))
 	return
 }
@@ -239,9 +250,21 @@ func (obj *UsersDAO) GetFromHeadImg(headImg string) (results []*Users, err error
 	return
 }
 
-// GetsFromHeadImg 通过多个 head_img(头像) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromHeadImg(headImgs []string) (results []*Users, err error) {
+// GetListFromHeadImg 通过多个 head_img(头像) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromHeadImg(headImgs []string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithHeadImgs(headImgs))
+	return
+}
+
+// GetFromSchool 通过单个 school() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromSchool(school *string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithSchool(school))
+	return
+}
+
+// GetListFromSchool 通过多个 school() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromSchool(schools []*string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithSchools(schools))
 	return
 }
 
@@ -251,8 +274,8 @@ func (obj *UsersDAO) GetFromCreatedAt(createdAt int64) (results []*Users, err er
 	return
 }
 
-// GetsFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromCreatedAt(createdAts []int64) (results []*Users, err error) {
+// GetListFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromCreatedAt(createdAts []int64) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAts(createdAts))
 	return
 }
@@ -263,8 +286,8 @@ func (obj *UsersDAO) GetFromUpdatedAt(updatedAt int64) (results []*Users, err er
 	return
 }
 
-// GetsFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromUpdatedAt(updatedAts []int64) (results []*Users, err error) {
+// GetListFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromUpdatedAt(updatedAts []int64) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAts(updatedAts))
 	return
 }
@@ -275,8 +298,8 @@ func (obj *UsersDAO) GetFromDeletedAt(deletedAt int64) (results []*Users, err er
 	return
 }
 
-// GetsFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UsersDAO) GetsFromDeletedAt(deletedAts []int64) (results []*Users, err error) {
+// GetListFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromDeletedAt(deletedAts []int64) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }
