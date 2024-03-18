@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-03-12 11:42:04
+ * @Date:   2024-03-19 02:01:26
  * @Desc:   users 表的 DAO 层
  */
 
@@ -45,7 +45,7 @@ func (obj *UsersDAO) GetTableName() string {
 // UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
 func (obj *UsersDAO) UpdateOrCreate(users *Users) (rowsAffected int64, err error) {
 	if users.PrimaryKeyValue() > 0 {
-		return obj.UpdateByOption(users, obj.WithID(users.ID))
+		return obj.UpdateByOption(users, obj.WithPrimaryKey(users.PrimaryKeyValue()))
 	}
 	return obj.Create(users)
 }
@@ -63,6 +63,11 @@ func (obj *UsersDAO) Create(users interface{}) (rowsAffected int64, err error) {
 
 // --- 表中的字段作为 option 条件 ---
 
+// WithPrimaryKey 设置真正的主键 字段作为 option 条件
+func (obj *UsersDAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[(&Users{}).PrimaryKey()] = primaryKeyValue })
+}
+
 // WithID 设置 id(主键) 字段作为 option 条件
 func (obj *UsersDAO) WithID(id int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = id })
@@ -74,12 +79,12 @@ func (obj *UsersDAO) WithIDs(ids []int64) Option {
 }
 
 // WithName 设置 name(名称) 字段作为 option 条件
-func (obj *UsersDAO) WithName(name *string) Option {
+func (obj *UsersDAO) WithName(name string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = name })
 }
 
 // WithNames 设置 name(名称) 字段的切片作为 option 条件
-func (obj *UsersDAO) WithNames(names []*string) Option {
+func (obj *UsersDAO) WithNames(names []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = names })
 }
 
@@ -114,13 +119,73 @@ func (obj *UsersDAO) WithHeadImgs(headImgs []string) Option {
 }
 
 // WithSchool 设置 school() 字段作为 option 条件
-func (obj *UsersDAO) WithSchool(school *string) Option {
+func (obj *UsersDAO) WithSchool(school string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = school })
 }
 
 // WithSchools 设置 school() 字段的切片作为 option 条件
-func (obj *UsersDAO) WithSchools(schools []*string) Option {
+func (obj *UsersDAO) WithSchools(schools []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = schools })
+}
+
+// WithNullNoDefault 设置 null_no_default() 字段作为 option 条件
+func (obj *UsersDAO) WithNullNoDefault(nullNoDefault *string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefault })
+}
+
+// WithNullNoDefaults 设置 null_no_default() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNullNoDefaults(nullNoDefaults []*string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefaults })
+}
+
+// WithNullDefaultNil 设置 null_default_nil() 字段作为 option 条件
+func (obj *UsersDAO) WithNullDefaultNil(nullDefaultNil *string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNil })
+}
+
+// WithNullDefaultNils 设置 null_default_nil() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNullDefaultNils(nullDefaultNils []*string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNils })
+}
+
+// WithNullDefaultNoNil 设置 null_default_no_nil() 字段作为 option 条件
+func (obj *UsersDAO) WithNullDefaultNoNil(nullDefaultNoNil *string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNil })
+}
+
+// WithNullDefaultNoNils 设置 null_default_no_nil() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNullDefaultNoNils(nullDefaultNoNils []*string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNils })
+}
+
+// WithNoNullNoDefault 设置 no_null_no_default() 字段作为 option 条件
+func (obj *UsersDAO) WithNoNullNoDefault(noNullNoDefault string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefault })
+}
+
+// WithNoNullNoDefaults 设置 no_null_no_default() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNoNullNoDefaults(noNullNoDefaults []string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefaults })
+}
+
+// WithNoNullDefaultNoNil 设置 no_null_default_no_nil() 字段作为 option 条件
+func (obj *UsersDAO) WithNoNullDefaultNoNil(noNullDefaultNoNil string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNil })
+}
+
+// WithNoNullDefaultNoNils 设置 no_null_default_no_nil() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNoNullDefaultNoNils(noNullDefaultNoNils []string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNils })
+}
+
+// WithNoNullDefaultNil 设置 no_null_default_nil() 字段作为 option 条件
+func (obj *UsersDAO) WithNoNullDefaultNil(noNullDefaultNil string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNil })
+}
+
+// WithNoNullDefaultNils 设置 no_null_default_nil() 字段的切片作为 option 条件
+func (obj *UsersDAO) WithNoNullDefaultNils(noNullDefaultNils []string) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNils })
 }
 
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
@@ -209,13 +274,13 @@ func (obj *UsersDAO) GetListFromID(ids []int64) (results []*Users, err error) {
 }
 
 // GetFromName 通过单个 name(名称) 字段值，获取单条记录
-func (obj *UsersDAO) GetFromName(name *string) (result *Users, err error) {
+func (obj *UsersDAO) GetFromName(name string) (result *Users, err error) {
 	result, err = obj.GetByOption(obj.WithName(name))
 	return
 }
 
 // GetListFromName 通过多个 name(名称) 字段值，获取多条记录
-func (obj *UsersDAO) GetListFromName(names []*string) (results []*Users, err error) {
+func (obj *UsersDAO) GetListFromName(names []string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithNames(names))
 	return
 }
@@ -257,14 +322,86 @@ func (obj *UsersDAO) GetListFromHeadImg(headImgs []string) (results []*Users, er
 }
 
 // GetFromSchool 通过单个 school() 字段值，获取多条记录
-func (obj *UsersDAO) GetFromSchool(school *string) (results []*Users, err error) {
+func (obj *UsersDAO) GetFromSchool(school string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithSchool(school))
 	return
 }
 
 // GetListFromSchool 通过多个 school() 字段值，获取多条记录
-func (obj *UsersDAO) GetListFromSchool(schools []*string) (results []*Users, err error) {
+func (obj *UsersDAO) GetListFromSchool(schools []string) (results []*Users, err error) {
 	results, err = obj.GetListByOption(obj.WithSchools(schools))
+	return
+}
+
+// GetFromNullNoDefault 通过单个 null_no_default() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNullNoDefault(nullNoDefault *string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullNoDefault(nullNoDefault))
+	return
+}
+
+// GetListFromNullNoDefault 通过多个 null_no_default() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNullNoDefault(nullNoDefaults []*string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullNoDefaults(nullNoDefaults))
+	return
+}
+
+// GetFromNullDefaultNil 通过单个 null_default_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNullDefaultNil(nullDefaultNil *string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullDefaultNil(nullDefaultNil))
+	return
+}
+
+// GetListFromNullDefaultNil 通过多个 null_default_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNullDefaultNil(nullDefaultNils []*string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullDefaultNils(nullDefaultNils))
+	return
+}
+
+// GetFromNullDefaultNoNil 通过单个 null_default_no_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNullDefaultNoNil(nullDefaultNoNil *string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullDefaultNoNil(nullDefaultNoNil))
+	return
+}
+
+// GetListFromNullDefaultNoNil 通过多个 null_default_no_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNullDefaultNoNil(nullDefaultNoNils []*string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNullDefaultNoNils(nullDefaultNoNils))
+	return
+}
+
+// GetFromNoNullNoDefault 通过单个 no_null_no_default() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNoNullNoDefault(noNullNoDefault string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullNoDefault(noNullNoDefault))
+	return
+}
+
+// GetListFromNoNullNoDefault 通过多个 no_null_no_default() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNoNullNoDefault(noNullNoDefaults []string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullNoDefaults(noNullNoDefaults))
+	return
+}
+
+// GetFromNoNullDefaultNoNil 通过单个 no_null_default_no_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNoNullDefaultNoNil(noNullDefaultNoNil string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullDefaultNoNil(noNullDefaultNoNil))
+	return
+}
+
+// GetListFromNoNullDefaultNoNil 通过多个 no_null_default_no_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNoNullDefaultNoNil(noNullDefaultNoNils []string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullDefaultNoNils(noNullDefaultNoNils))
+	return
+}
+
+// GetFromNoNullDefaultNil 通过单个 no_null_default_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetFromNoNullDefaultNil(noNullDefaultNil string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullDefaultNil(noNullDefaultNil))
+	return
+}
+
+// GetListFromNoNullDefaultNil 通过多个 no_null_default_nil() 字段值，获取多条记录
+func (obj *UsersDAO) GetListFromNoNullDefaultNil(noNullDefaultNils []string) (results []*Users, err error) {
+	results, err = obj.GetListByOption(obj.WithNoNullDefaultNils(noNullDefaultNils))
 	return
 }
 
@@ -321,7 +458,7 @@ func (obj *UsersDAO) FetchUniqueByCardNo(cardNo string) (result *Users, err erro
 }
 
 // FetchUniqueIndexByUnqNameCard 通过 name, card_no 字段值，获取单条记录
-func (obj *UsersDAO) FetchUniqueIndexByUnqNameCard(name *string, cardNo string) (result *Users, err error) {
+func (obj *UsersDAO) FetchUniqueIndexByUnqNameCard(name string, cardNo string) (result *Users, err error) {
 	result, err = obj.GetByOption(
 		obj.WithName(name),
 		obj.WithCardNo(cardNo))

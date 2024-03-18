@@ -433,6 +433,26 @@ func TestModelSelect(t *testing.T) {
 	fmt.Printf("err:%v, aggratorData:%+v \n", err, aggratorData)
 }
 
+func TestUpdateOrCreate(t *testing.T) {
+	db := InitDB()
+	
+	userDAO := model.NewUsersDAO(context.Background(), db)
+	users := &model.Users{
+		ID: 50,
+		// Name: nil,
+		// Age:       18,
+		// Age:       0,
+		CardNo: "32131da40",
+		// HeadImg:   "https://dd.xx",
+		// School:    nil,
+		CreatedAt: 164339993,
+		UpdatedAt: 1643399938,
+		// DeletedAt: deletedAt,
+	}
+	rowsAffected, err := userDAO.UpdateOrCreate(users)
+	fmt.Printf("users:%+v rowsAffected:%d err:%v \n", users, rowsAffected, err)
+	
+}
 func TestModelSave(t *testing.T) {
 	db := InitDB()
 	

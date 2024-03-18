@@ -1,4 +1,4 @@
-# 根据表名生成表结构体和数据操作方法
+# 根据表名生成模型和 DAO 层数据操作方法
 ---
 
 # 一、快速使用
@@ -22,8 +22,8 @@ dbinfo:
 会在`./out/model`下生成3个文件
 
 - 模型：表名xxx.go
-- dao层：表名_dao.go
-- 基础dao层：base.go（只有在第一次该工具时生成）
+- DAO层：表名_DAO.go
+- 基础DAO层：base.go（只有在第一次该工具时生成）
 
 ## （二）帮助命令
 > go run main.go --help
@@ -42,7 +42,7 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
 ```
 
 > gorm 官网也提供 gentool 工具的使用。请查阅：https://gorm.io/gen/gen_tool.html
-> 使用过后，不是我想要的，特别是 Dao 层的使用方式，感兴趣的自行查看
+> 使用过后，不是我想要的，特别是 DAO 层的使用方式，感兴趣的自行查看
 
 # 二、注意
 
@@ -53,18 +53,20 @@ go run main.go --table=users [--packageName=model] [--structName=Users]
 当通过表模型结构体更新数据时，
 - GORM Updates() 方法只会更新非零字段。该工具底层就是用了这个方法，如果您想确保指定字段被更新，你应该使用 Select 更新选定字段、或者允许为零值的字段设置为指针、或使用 map 来完成更新操作
 
-> 工具会根据是否允许为空，判断允许为空则设置为指针，反之不设置；如果表设计是不允许为空，但是有存在零值，只能手动改为指针
+> ⚠️注意：工具会根据是否允许为空，判断允许为空则设置为指针，反之不设置；如果表设计是不允许为空，但是有存在零值，只能手动改为指针
 
 ## （一）保存或者更新 Save
-gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
+gorm 原生的 Save 是一个组合函数。 如果保存值不包含主键，它将执行 Create，否则它将执行 Update (包含所有字段)
 
-- 保存时：字段是指针 // prince@TODO:  2024/3/12 11:33
-- - 字段有默认值（非零值）：则不会保存该字段，因为不知道该字段是否为空
-- - 字段无默认值：
+> ⚠️注意：Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建。
 
-- 更新时：字段是指针 // prince@TODO:  2024/3/12 11:33
-- - 字段有默认值（非零值）：
-- - 字段有默认值：
+- 保存时：字段是指针（允许为空）
+- - 字段有非零值默认值：保存为默认值
+- - 字段有零值或者无默认值：因为是指针，不会保存零值，只会保存为NULL #细节待验证
+
+- 更新时：字段是指针（允许为空）
+- - 字段有非零值默认值： 保存为默认值 #细节待验证
+- - 字段有零值或者无默认值： 因为是指针，不会保存零值，只会保存为NULL #细节待验证
 
 ## （三）查询
 
@@ -82,12 +84,13 @@ CreatedAt/UpdatedAt:
 
 ## （一）关于模型
 
-1. 生成模型 ：生成gorm 模型，包含每个字段的注释，注释统一在右边//对齐，方便全局观察字段的定义情况。
-2. 生成表的所有字段映射：使用字段自定义查询时，统一使用映射的字段，在字段的维护上更方便;同时默认查询所有字段，不使用*，不使用反射查询所有字段。
+1. 生成模型 ：生成模型，包含每个字段的注释，注释统一在右边//对齐，方便全局观察字段的定义情况。
+2. 生成表的所有字段映射：使用字段自定义查询时，统一使用映射的字段，在字段的维护上更方便；同时默认查询所有字段，不使用*，不使用反射查询所有字段。
 3. 为所有字段生成`SetXxx()`、`GetXxx()`方法：用户设置/获取模型下指定字段的值
 
-## （二）关于dao层
-生成操作表的基本方法，对应文件名：base_dao.go
+## （二）关于DAO层
+生成操作表的基本方法，对应文件名：base_DAO.go
+对应的表 DAO 层：xxx_dao.go 里面包含多种操作表数据的简单、易用、易维护方法。
 
 - 生成`UpdateOrCreate()`方法：存在则更新（只会更新非零值），否则插入（会忽略零值字段）
 - 生成`Save()`方法：gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
@@ -101,7 +104,7 @@ CreatedAt/UpdatedAt:
 
 - 生成`GetCountByOption()`方法：函数选项模式获取多条记录：支持统计记录总数
 
-- 生成`GetCustomeResultByOption()`方法：函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
+- 生成`GetCustomeResultByOption()`方法：函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名；" 标签)
 
 - 生成`UpdateByOption()`：更新数据
 
@@ -115,11 +118,11 @@ CreatedAt/UpdatedAt:
 
 # 四、包含sql查询
 ```
-SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = 'p_procedure';
+SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'tmp' AND TABLE_NAME = 'p_procedure'；
 
-SHOW KEYS FROM p_procedure;
+SHOW KEYS FROM p_procedure；
 
-SHOW FULL COLUMNS FROM p_procedure;
+SHOW FULL COLUMNS FROM p_procedure；
 ```
 
 # 五、测试
@@ -139,15 +142,15 @@ CREATE TABLE `users` (
   UNIQUE KEY `card_no` (`card_no`),
   UNIQUE KEY `unq_name_card` (`name`,`card_no`),
   KEY `age` (`age`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表'；
 ```
 
 ```
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 'name01', 12, '1', '', 1639411296, 1639411296, 1639411296);
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (2, 'name02', 12, '2', '', 1639411296, 1639411296, 0);
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (3, 'name01', 13, '3', '', 1639411296, 1639411296, 0);
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (4, 'name01', 12, '4', '', 1639411296, 1639411296, 0);
-INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (6, 'name03', 18, '5', '', 1639411296, 1639411296, 0);
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (1, 'name01', 12, '1', '', 1639411296, 1639411296, 1639411296)；
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (2, 'name02', 12, '2', '', 1639411296, 1639411296, 0)；
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (3, 'name01', 13, '3', '', 1639411296, 1639411296, 0)；
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (4, 'name01', 12, '4', '', 1639411296, 1639411296, 0)；
+INSERT INTO `tmp`.`users` (`id`, `name`, `age`, `card_no`, `head_img`, `created_at`, `updated_at`, `deleted_at`) VALUES (6, 'name03', 18, '5', '', 1639411296, 1639411296, 0)；
 ```
 
 ## （二）测试运行的生成指令
@@ -172,13 +175,13 @@ out/model_test.go
     - WithXxxx() 方法使用 `map[string]interface{}` 的形式支持所有数据类型
     - 更新数据通过更新结构体时，就算结构体的字段不是指针类型，想要更新为零值时，可配合 `WithSelect()` 更新
 
-- [x] 表的 xxxColumns 放在 `dao` 层
+- [x] 表的 xxxColumns 放在 `DAO` 层
 
-- [x] 去除 `base_dao.go` 的 `updateOptionFunc` 方法
+- [x] 去除 `base_DAO.go` 的 `updateOptionFunc` 方法
 
 - [x] `FetchXxxx()` 方法依赖底层 `GetByOption()`、 `GetListByOption()` 方法
 
-- [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `dao` 层，外部通过 `repository` 调用 dao 层
+- [x] **DDD 架构**设计思想：`model` 层拆分为：`do(model)`层 + `DAO` 层，外部通过 `repository` 调用 DAO 层
     - 继续统一在 model 中，通用性更强。具体什么架构，使用者自行移动即可
 
 - [x] 添加保存执行 sql 的日志到文件中的测试: `logWriterFile`
@@ -310,7 +313,7 @@ func (obj *XXXDAO) XXXX() {
 - 取消默认的 deleted_at IS NULL: db.Unscoped()...
 - 取消自动更新 UpdatedAt 字段：通过 UpdateColumns() 方法（obj.prepare(opts...).UpdateColumns(&users)）
 - 查询数据时，`err != nil && errors.Is(err, gorm.ErrRecordNotFound)` 的情况需兼容
-  > ⚠️注意：github.com/jinzhu/gorm 使用本 dao 层需要删除部分方法，如：WithContext() 等
+  > ⚠️注意：github.com/jinzhu/gorm 使用本 DAO 层需要删除部分方法，如：WithContext() 等
 
 - [x] 表的结构体对象统一使用指针
 1. 更新/插入时传参
@@ -323,18 +326,18 @@ func (obj *XXXDAO) XXXX() {
 - [x] 添加 `Save()` 方法：存在则更新，否则插入
 - 通过`PrimaryKeyValue()`检查模型主键(如果非整型需要调整下，大部分数据库设计的主键都为整型，`Save()` 方法不使用反射降低性能)存在则更新
 
-- [x] 支持表的模型对应的 *_dao.go 文件归并到 `dao` 目录下，并与 `model` 目录同级。
-- 目的：将*_dao.go文件拷贝到业务项目的`dao`目录时，需要手动修改表的模型对应包的引用路径
+- [x] 支持表的模型对应的 *_DAO.go 文件归并到 `DAO` 目录下，并与 `model` 目录同级。
+- 目的：将*_DAO.go文件拷贝到业务项目的`DAO`目录时，需要手动修改表的模型对应包的引用路径
 - 无需项目支持，手动操作IDEA(goland)可实现目的.做法：
-- - 1.从该项目拷贝生成的`模型文件（*.go）`及模型文件对应的`DAO文件（*_dao.go）`到业务项目的`model`目录下，
-- - 2.手动迁移`DAO文件（*_dao.go）`，并利用IDEA(goland)的迁移`重构功能(Refactor)`，会自动补全model的包路径
+- - 1.从该项目拷贝生成的`模型文件（*.go）`及模型文件对应的`DAO文件（*_DAO.go）`到业务项目的`model`目录下，
+- - 2.手动迁移`DAO文件（*_DAO.go）`，并利用IDEA(goland)的迁移`重构功能(Refactor)`，会自动补全model的包路径
 
 - [x] 支持多次更新同一个模型
 - 问题场景操作步骤：
 - - 1.更新模型
 - - 2.再次按条件更新同一模型,出现条件错误：再次更新模型的条件会自动加上上一次模型的主键，如：`WHERE id = 2 AND id = 1`
 - 原因：上次模型的数据保存再DB中，模型的主键存在时，gorm会自动根据模型中的主键加上当前加上的条件，作为最后执行的sql
-- 解决：在`base_dao.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
+- 解决：在`base_DAO.go`的`GetDB()`方法中重新初始化模型，这样DAO层每次执行的sql都是空的模型（非nil）
 
 - [x] 允许自定义行记录的删除字段，存在删除字段时，`查询`方法默认会添加过滤已删除的记录
 
@@ -345,7 +348,7 @@ func (obj *XXXDAO) XXXX() {
 - [x] 支持多条件参数绑定
 ```userDAO.GetByOptions(userDAO.WithWhere("id >= ? AND id <= ?", 2, 10))```
 
-- [x] GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名;" 标签)
+- [x] GetCustomeResultByOption 函数选项模式获取多条记录到自定义结构体(result:务必使用指针变量)：支持包含自定义聚合字段(自定义的聚合字段务必添加 gorm:"column:字段的别名；" 标签)
 >   注意：是 `Find(result)`, 而不是 `Find(&result)`
 ```
 // 指定开始时间到当前时间的金额统计
@@ -375,10 +378,10 @@ func (obj *FundChangeEventDAO) GetCustomeResultByOption(result interface{}, opts
 
 - [x] `GetByOptions` 改名为 `GetListByOption`
 
-- [x] 解释是否需要 dao 层的上层是否需要 repository 层？答案：简单的CURD不需要，直接调用DAO层；复杂的需要repository层
+- [x] 解释是否需要 DAO 层的上层是否需要 repository 层？答案：简单的CURD不需要，直接调用DAO层；复杂的需要repository层
 ```
-使用 repo 的原因：model 和 dao 都可以生成，并且仅提供简单的方法.
-- 不用行不行？：不用也可以，反正都是基于dao 层去做CURD，那就直接去在dao外面组装，但是建议仅简单CURL这么做，涉及条件判断是否需要添加option条件的还是需要接入repo 层;
+使用 repo 的原因：model 和 DAO 都可以生成，并且仅提供简单的方法.
+- 不用行不行？：不用也可以，反正都是基于DAO 层去做CURD，那就直接去在DAO外面组装，但是建议仅简单CURL这么做，涉及条件判断是否需要添加option条件的还是需要接入repo 层；
 - 用了之后带来的好处？：封装复杂CURD，并提高复用性。根据model的字段值做条件判断确定是否需要组装option数组
  ```
 > repository 层设计参考
@@ -401,7 +404,7 @@ type TradingTimeRange struct {
 }
 
 // 初始化 FundChangeEvent 有关的"查询条件"。其他的select/group by/order by等非查询或者聚合条件的都应该放在repository具体的方法中组装
-func (r *MysqlRepo) MakeFundChangeEventWhereOpt(opt FundChangeEventWhereOpt) (options []dao.Option) {
+func (r *MysqlRepo) MakeFundChangeEventWhereOpt(opt FundChangeEventWhereOpt) (options []DAO.Option) {
 	if opt.OrgID > 0 {
 		options = append(options, r.bankHistoryMonthBudgetDAO.WithOrgID(opt.OrgID))
 	}
@@ -507,9 +510,9 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 			tx.Commit()
 		}
 	}()
-	// 重新初始化dao
-	fundChangeEventDAO := dao.NewFundChangeEventDAO(r.ctx, tx)
-	bankHistoryMonthBudgetDAO := dao.NewBankHistoryMonthBudgetDAO(r.ctx, tx)
+	// 重新初始化DAO
+	fundChangeEventDAO := DAO.NewFundChangeEventDAO(r.ctx, tx)
+	bankHistoryMonthBudgetDAO := DAO.NewBankHistoryMonthBudgetDAO(r.ctx, tx)
 
 	// 批量插入
 	_, err = bankHistoryMonthBudgetDAO.Create(batchBudget)
@@ -533,6 +536,7 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 - [x] 当时时间格式未使用整型时间戳，而是 timestamp/datatiem 时：结构体字段类型使用 *time.Time，而不是 time.Time, 避免初始化变量或者数据json转化后使用time.Time的默认值：`0001-01-01 00:00:00 +0000` 插入数据，导致查询删除字段是否为空错误
 另外一种方案是使用：gorm.DeletedAt 字段类型---本库未使用
 
+- [x] UpdateOrCreate 方法中，Fixed #1：有些表的主键不是以`id`命名，但是在此建议非常量定义，都需要建好自增主键ID，这个与存储引擎的数据结构有关。
 
 ---
 

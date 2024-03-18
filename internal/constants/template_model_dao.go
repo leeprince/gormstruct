@@ -51,7 +51,7 @@ func (obj *{{$allParams.StructName}}DAO) GetTableName() string {
 // UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
 func (obj *{{$allParams.StructName}}DAO) UpdateOrCreate({{$lowerStructName}} *{{$allParams.StructName}}) (rowsAffected int64, err error) {
 	if {{$lowerStructName}}.PrimaryKeyValue() > 0 {
-		return obj.UpdateByOption({{$lowerStructName}}, obj.WithID({{$lowerStructName}}.ID))
+		return obj.UpdateByOption({{$lowerStructName}}, obj.WithPrimaryKey({{$lowerStructName}}.PrimaryKeyValue()))
 	}
     return obj.Create({{$lowerStructName}})
 }
@@ -68,6 +68,12 @@ func (obj *{{$allParams.StructName}}DAO) Create({{$lowerStructName}} interface{}
 }
 
 // --- 表中的字段作为 option 条件 ---
+
+// WithPrimaryKey 设置真正的主键 字段作为 option 条件
+func (obj *{{$allParams.StructName}}DAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[(&{{$allParams.StructName}}{}).PrimaryKey()] = primaryKeyValue })
+}
+
 {{range $oem := $allParams.Em}}
 // With{{$oem.ColStructName}} 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) Option {
