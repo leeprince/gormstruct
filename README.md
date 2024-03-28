@@ -538,6 +538,8 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 
 - [x] UpdateOrCreate 方法中，Fixed #1：有些表的主键不是以`id`命名，但是在此建议非常量定义，都需要建好自增主键ID，这个与存储引擎的数据结构有关。
 
+
+- [ ] // prince@TODO: WithWhere 公司慢慢推荐这个工具有有同事反馈想要支持多次使用，之前不考虑使用是因为减少这种手动设置 2024/3/28 16:21
 ---
 
 ### 如果您觉得本工具对您有帮助，不妨在右上角点亮一颗小星星，以示鼓励！
