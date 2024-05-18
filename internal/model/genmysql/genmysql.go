@@ -113,7 +113,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 	for index, i2 := range columns {
 		columns[index].Desc = m.lineBreakToBlank(i2.Desc)
 	}
-	
+
 	for _, i2 := range columns {
 		var tmpColumns model.ColumnsElementInfo
 
