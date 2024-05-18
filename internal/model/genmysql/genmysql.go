@@ -78,6 +78,12 @@ func (m *mysqlModel) getTableComment(orm *mysqldb.MySqlDB, table string) (string
 	return desc, nil
 }
 
+func (m *mysqlModel) lineBreakToBlank(str string) string {
+	s := strings.ReplaceAll(str, "\r\n", "")
+	s = strings.ReplaceAll(s, "\n", "")
+	return s
+}
+
 func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (columnsElement []model.ColumnsElementInfo, err error) {
 	keyCount := make(map[string]int)
 	keyMap := make(map[string][]keys)
@@ -104,6 +110,10 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 	}
 
 	// 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
+	for index, i2 := range columns {
+		columns[index].Desc = m.lineBreakToBlank(i2.Desc)
+	}
+	
 	for _, i2 := range columns {
 		var tmpColumns model.ColumnsElementInfo
 
