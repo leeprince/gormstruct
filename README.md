@@ -538,6 +538,8 @@ func (r *MysqlRepo) TxBatchInsertBudbetAndUpdateFCE(opt FundChangeEventWhereOpt,
 
 - [x] UpdateOrCreate 方法中，Fixed #1：有些表的主键不是以`id`命名，但是在此建议非常量定义，都需要建好自增主键ID，这个与存储引擎的数据结构有关。
 
+- [x] 修复：#2 修复字段注释中包含换行符（未能通过navicat转义）；另外表注释中包含换行符（未能通过navicat转义）也已修复
+
 - [ ] // prince@TODO: WithWhere 公司慢慢推荐这个工具，有同事反馈想要支持多次使用，之前不考虑使用是因为减少这种手动设置 2024/3/28 16:21
 - [ ] // prince@TODO: WithWhere 公司慢慢推荐这个工具，有同事反馈想要直接输出到model层和dao层，目前是只有输出到一个指定目录和声明一个包 2024/3/28 16:21
 ---

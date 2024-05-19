@@ -1,20 +1,20 @@
 package logger
 
 import (
-    "sync"
-    
-    "github.com/sirupsen/logrus"
+	"sync"
+	
+	"github.com/sirupsen/logrus"
 )
 
 var (
 	defaultLogger *logrus.Logger
-    once   sync.Once
+	once          sync.Once
 )
 
 func init() {
-    once.Do(func() {
+	once.Do(func() {
 		defaultLogger = DefaultLogger()
-    })
+	})
 }
 
 func SetDefaultLogger(logger *logrus.Logger) {
@@ -55,6 +55,10 @@ func Infof(format string, args ...interface{}) {
 
 func Warn(args ...interface{}) {
 	defaultLogger.Warn(args...)
+}
+
+func Warnf(format string, args ...interface{}) {
+	defaultLogger.Warnf(format, args...)
 }
 
 func Error(args ...interface{}) {

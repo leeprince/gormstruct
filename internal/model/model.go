@@ -28,24 +28,24 @@ func Generate(info DBInfo) (out []GenOutInfo, g GenDBInfo) {
 	g = GenDBInfo{
 		info: info,
 	}
-
+	
 	// 设置生成表结构体
 	outByTable := g.GenerateByTableName()
 	out = append(out, outByTable...)
-
+	
 	// 设置生成操作数据库的基本方法&生成操作数据表的方法
 	out = append(out, g.generateFunc()...)
-
+	
 	return
 }
 
 func (g *GenDBInfo) GenerateByTableName() (out []GenOutInfo) {
 	if g.pkg == nil {
 		tab := g.info.Table
-
+		
 		var pkg genstruct.GenPackage
 		pkg.SetPackage(g.info.PackageName)
-
+		
 		var sct genstruct.GenStruct
 		var structName string
 		if config.GetStructName() != "" {
@@ -56,11 +56,11 @@ func (g *GenDBInfo) GenerateByTableName() (out []GenOutInfo) {
 		sct.SetStructName(structName)
 		sct.SetStructTableName(tab.Name)
 		sct.SetStructComment(tab.Comment)
-
+		
 		sct.SetStructElments(g.genTableElement(tab.ColumnsElement)...)
-
+		
 		pkg.SetStructs(sct)
-
+		
 		var outInfo GenOutInfo
 		outInfo.FileName = fmt.Sprintf("%s.go", tab.Name)
 		outInfo.FileCtx = pkg.GenFileCtx()
@@ -70,24 +70,20 @@ func (g *GenDBInfo) GenerateByTableName() (out []GenOutInfo) {
 }
 
 func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruct.GenElement) {
-	var columnNameMap = make(map[string]bool, len(els))
-
+	var columnNameMap = make(map[string]string, len(els))
+	
 	for _, el := range els {
 		var genEl genstruct.GenElement
 		columnName := utils.GetCamelName(el.Name)
-		for i := 2; i < 100; i++ { // 最多计算100次
-			if i >= 99 {
-				panic("表字段名重复次数超过99次，字段：" + columnName)
-			}
-
-			if _, ok := columnNameMap[columnName]; ok {
-				columnName = fmt.Sprintf("%s%s%d", columnName, "Gorm", i)
-			} else {
-				columnNameMap[columnName] = true
-				break
-			}
+		
+		// 对于可能转换后存在字段冲突问题，我认为是字段定义不符合规范，直接抛出异常
+		if oldFieldName, exist := columnNameMap[columnName]; !exist {
+			columnNameMap[columnName] = el.Name
+		} else {
+			errMsg := fmt.Sprintf("字段%s与字段%s定义存在冲突，建议修改字段定义后重新生成。", el.Name, oldFieldName)
+			panic(errMsg)
 		}
-
+		
 		genEl.Name = columnName
 		genEl.ColumnName = el.Name
 		genEl.Comment = el.Comment
@@ -97,7 +93,7 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
 		} else {
 			genEl.Type = getTypeName(el.Name, el.Type, el.IsNull)
 		}
-
+		
 		isPrimary := false
 		for _, i2 := range el.Keys {
 			if i2.Key == ColumnsKeyPrimary {
@@ -107,7 +103,7 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
 		}
 		genEl.IsPrimaryKey = isPrimary
 		genEl.TagString = g.getStructTag(isPrimary, el.IsNull, genEl.ColumnName, el.Type, el.Default, el.Extra)
-
+		
 		genEls = append(genEls, genEl)
 	}
 	return
@@ -117,12 +113,12 @@ func (g *GenDBInfo) genTableElement(els []ColumnsElementInfo) (genEls []genstruc
 func (g *GenDBInfo) getStructTag(isPrimary, isNull bool, clolumnName, fieldType, fieldDefault, extra string) string {
 	tagGorm := constants.TagDb
 	tagJson := constants.TagJson
-
+	
 	isNullText := "is null"
 	if !isNull {
 		isNullText = "not null"
 	}
-
+	
 	var gormTag string
 	if isPrimary {
 		if extra == constants.PrimaryKeyExtra {
@@ -156,7 +152,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		FileCtx:  baseBuff.String(),
 	})
 	// --- 生成操作数据库的基本方法-end
-
+	
 	// --- 生成操作数据表的方法
 	var pkg genstruct.GenPackage
 	pkg.SetPackage(g.info.PackageName)
@@ -164,7 +160,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 	pkg.AddImport(`"fmt"`)
 	pkg.AddImport(`"context"`)
 	pkg.AddImport(constants.ImportFile["gorm.Model"])
-
+	
 	var data funDef
 	data.TableName = g.info.Table.Name
 	if config.GetStructName() != "" {
@@ -172,27 +168,13 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 	} else {
 		data.StructName = utils.GetCamelName(g.info.Table.Name)
 	}
-
+	
 	var primary, unique, uniqueIndex, index []FList
 	// 根据表的属性信息构建模版所需字段
-	var columnNameMap = make(map[string]bool, len(g.info.Table.ColumnsElement))
 	for _, el := range g.info.Table.ColumnsElement {
 		columnName := utils.GetCamelName(el.Name)
-		for i := 2; i < 100; i++ { // 最多计算100次
-			if i >= 99 {
-				panic("表字段名重复次数超过99次，字段：" + columnName)
-			}
-
-			if _, ok := columnNameMap[columnName]; ok {
-				columnName = fmt.Sprintf("%s%s%d", columnName, "Gorm", i)
-			} else {
-				columnNameMap[columnName] = true
-				break
-			}
-		}
-
 		typeName := getTypeName(el.Name, el.Type, el.IsNull)
-
+		
 		// 构建索引（包含主键）的方法需要的信息
 		if strings.EqualFold(el.Type, constants.GormModelWord) {
 			data.Em = append(data.Em, getGormModelElement()...)
@@ -201,7 +183,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		} else {
 			// 该字段值在表中是否可重复
 			isMulti := true
-
+			
 			for _, key := range el.Keys {
 				switch key.Key {
 				case ColumnsKeyPrimary:
@@ -217,7 +199,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 					buildFList(&index, data.StructName, ColumnsKeyIndex, key.KeyName, typeName, el.Name)
 				}
 			}
-
+			
 			data.Em = append(data.Em, EmInfo{
 				IsMulti:       isMulti,
 				Notes:         fixNotes(el.Comment),
@@ -232,7 +214,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 				}
 			}
 		}
-
+		
 		// 行记录是否存在删除的字段
 		if !data.IsHaveDeleteFlag && infrautils.InString(el.Name, config.GenDeleteFlagFieldList()) {
 			data.IsHaveDeleteFlag = true
@@ -247,7 +229,7 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 	data.Primary = append(data.Primary, unique...)
 	data.Primary = append(data.Primary, uniqueIndex...)
 	data.Index = append(data.Index, index...)
-
+	
 	logicTmpl, err := template.New("GetGenLogic").
 		Funcs(GenLogicTemplateFuncs()).
 		Parse(genfunc.GetGenLogic())
@@ -265,6 +247,6 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		FileCtx:  pkg.GenFileCtx(),
 	})
 	// --- 生成操作数据表的方法-end
-
+	
 	return
 }
