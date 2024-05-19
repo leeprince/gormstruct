@@ -27,19 +27,19 @@ func getTypeName(sourceColumnName, sourceTypeName string, isNull bool) string {
 	if v, ok := selfDefineTypeMqlDicMap[sourceTypeName]; ok {
 		return fixNullToPoint(sourceColumnName, v, isNull)
 	}
-	
+
 	// Precise matching first.先精确匹配
 	if v, ok := constants.TypeMysqlDicMp[sourceTypeName]; ok {
 		return fixNullToPoint(sourceColumnName, v, isNull)
 	}
-	
+
 	// Fuzzy Regular Matching.模糊正则匹配
 	for _, l := range constants.TypeMysqlMatchList {
 		if ok, _ := regexp.MatchString(l.Key, sourceTypeName); ok {
 			return fixNullToPoint(sourceColumnName, l.Value, isNull)
 		}
 	}
-	
+
 	panic(fmt.Sprintf("type (%v) not match in any way.maybe need to add on (https://github.com/xxjwxc/gormt/blob/master/data/view/cnf/def.go)", sourceTypeName))
 }
 
@@ -74,7 +74,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "id",
 		ColStructName: "ID",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "创建时间",
@@ -83,7 +83,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "created_at",
 		ColStructName: "CreatedAt",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "更新时间",
@@ -92,7 +92,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "updated_at",
 		ColStructName: "UpdatedAt",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "删除时间",
@@ -180,26 +180,46 @@ func GenFListIndex(info FList, status int) string {
 		if len(withFuncs) == 1 {
 			return strings.Join(withFuncs, ", ")
 		}
-		
+
 		return fmt.Sprintf("\n %s", strings.Join(withFuncs, ", \n"))
 	}
-	
+
 	return ""
+}
+func validHasSpecStr(s string) bool {
+	// 正则表达式匹配除了数字和英文字符以外的任何字符
+	reg, err := regexp.Compile(`[^a-zA-Z0-9]`)
+	if err != nil {
+		fmt.Println("Error compiling regex:", err)
+		return false
+	}
+
+	// 测试字符串是否与正则表达式匹配
+	return reg.MatchString(s)
 }
 
 func widthFunctionName(info FList) string {
+	funcName := utils.GetCamelName(info.KeyName)
+	if validHasSpecStr(info.KeyName) {
+		funcName = ""
+		for _, v := range info.KeyNameEl {
+			funcName += v.ColStructName
+		}
+	}
+
 	switch info.Key {
+
 	// case ColumnsKeyDefault:
 	case ColumnsKeyPrimary: // primary key.主键
 		return "FetchByPrimaryKey"
 	case ColumnsKeyUnique: // unique key.唯一索引
-		return "FetchUniqueBy" + utils.GetCamelName(info.KeyName)
+		return "FetchUniqueBy" + funcName
 	case ColumnsKeyIndex: // index key.复合索引
-		return "FetchIndexBy" + utils.GetCamelName(info.KeyName)
+		return "FetchIndexBy" + funcName
 	case ColumnsKeyUniqueIndex: // unique index key.唯一复合索引
-		return "FetchUniqueIndexBy" + utils.GetCamelName(info.KeyName)
+		return "FetchUniqueIndexBy" + funcName
 	}
-	
+
 	return ""
 }
 
@@ -209,9 +229,9 @@ func CapLowercase(name string) string { // IDAPIID == > idAPIID
 	if len(list) == 0 {
 		return ""
 	}
-	
+
 	re := list[0] + name[len(list[0]):]
-	
+
 	return FilterKeywords(re)
 }
 
