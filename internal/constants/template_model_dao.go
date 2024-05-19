@@ -76,12 +76,12 @@ func (obj *{{$allParams.StructName}}DAO) WithPrimaryKey(primaryKeyValue interfac
 
 {{range $oem := $allParams.Em}}
 // With{{$oem.ColStructName}} 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段作为 option 条件
-func (obj *{{$allParams.StructName}}DAO) With{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) Option {
+func (obj *{{$allParams.StructName}}DAO) With{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) Option {
     return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}} })
 }
 
 // With{{$oem.ColStructName}}s 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段的切片作为 option 条件
-func (obj *{{$allParams.StructName}}DAO) With{{$oem.ColStructName}}s({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) Option {
+func (obj *{{$allParams.StructName}}DAO) With{{$oem.WithColStructName}}s({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) Option {
     return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}}s })
 }
 {{end}}
@@ -137,19 +137,19 @@ func (obj *{{$allParams.StructName}}DAO) UpdateByOption({{$lowerStructName}} *{{
 // --- 单个字段作为查询条件 ---
 {{range $oem := $allParams.Em}}
 // GetFrom{{$oem.ColStructName}} 通过单个 {{$oem.ColName}}({{$oem.Notes}}) 字段值，{{if $oem.IsMulti}}获取多条记录
-func (obj *{{$allParams.StructName}}DAO) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
-    results, err = obj.GetListByOption(obj.With{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}))
+func (obj *{{$allParams.StructName}}DAO) GetFrom{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
+    results, err = obj.GetListByOption(obj.With{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}}))
     return
 }
 {{else}}获取单条记录
-func (obj *{{$allParams.StructName}}DAO) GetFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (result *{{$allParams.StructName}}, err error) {
-    result, err = obj.GetByOption(obj.With{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}))
+func (obj *{{$allParams.StructName}}DAO) GetFrom{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) (result *{{$allParams.StructName}}, err error) {
+    result, err = obj.GetByOption(obj.With{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}}))
     return
 }
 {{end}}
 // GetListFrom{{$oem.ColStructName}} 通过多个 {{$oem.ColName}}({{$oem.Notes}}) 字段值，获取多条记录
-func (obj *{{$allParams.StructName}}DAO) GetListFrom{{$oem.ColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
-    results, err = obj.GetListByOption(obj.With{{$oem.ColStructName}}s({{CapLowercase $oem.ColStructName}}s))
+func (obj *{{$allParams.StructName}}DAO) GetListFrom{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) (results []*{{$allParams.StructName}}, err error) {
+    results, err = obj.GetListByOption(obj.With{{$oem.WithColStructName}}s({{CapLowercase $oem.ColStructName}}s))
     return
 }
 {{end}}

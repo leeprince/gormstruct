@@ -62,7 +62,7 @@ const (
 // 生成的文件列表
 type GenOutInfo struct {
 	FileName string // output file name .输出文件名
-	
+
 	// 输出的方式：1. 动态生成行并输出；2. 使用模版匹配输出
 	FileCtx string // output file context. 输出文件内容.
 }
@@ -80,12 +80,13 @@ type funDef struct {
 
 // EmInfo element of func info
 type EmInfo struct {
-	IsMulti       bool   // 一个字段值是否存在多条记录
-	Notes         string // 注释
-	Type          string // 类型
-	ColName       string // 列名
-	ColNameEx     string // `列名`
-	ColStructName string // 列结构体
+	IsMulti           bool   // 一个字段值是否存在多条记录
+	Notes             string // 注释
+	Type              string // 类型
+	ColName           string // 列名
+	ColNameEx         string // `列名`
+	ColStructName     string // 列结构体
+	WithColStructName string // 列结构体
 }
 
 // FList index of list
