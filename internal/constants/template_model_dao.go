@@ -22,7 +22,7 @@ type {{$allParams.StructName}}DAO struct {
     *_BaseDAO
 }
 
-// {{$allParams.StructName}}DAO 初始化
+// New{{$allParams.StructName}}DAO 初始化
 func New{{$allParams.StructName}}DAO(ctx context.Context, db *gorm.DB) *{{$allParams.StructName}}DAO {
     if db == nil {
         panic(fmt.Errorf("{{$allParams.StructName}}DAO need init by db"))

@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-03-05 22:50:39
+ * @Date:   2024-05-20 00:44:51
  * @Desc:   user_base 表的 DAO 层
  */
 
@@ -45,7 +45,7 @@ func (obj *UserBaseDAO) GetTableName() string {
 // UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
 func (obj *UserBaseDAO) UpdateOrCreate(userBase *UserBase) (rowsAffected int64, err error) {
 	if userBase.PrimaryKeyValue() > 0 {
-		return obj.UpdateByOption(userBase, obj.WithID(userBase.ID))
+		return obj.UpdateByOption(userBase, obj.WithPrimaryKey(userBase.PrimaryKeyValue()))
 	}
 	return obj.Create(userBase)
 }
@@ -63,32 +63,37 @@ func (obj *UserBaseDAO) Create(userBase interface{}) (rowsAffected int64, err er
 
 // --- 表中的字段作为 option 条件 ---
 
-// WithID 设置 id() 字段作为 option 条件
+// WithPrimaryKey 设置真正的主键 字段作为 option 条件
+func (obj *UserBaseDAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
+	return queryOptionFunc(func(o *options) { o.queryMap[(&UserBase{}).PrimaryKey()] = primaryKeyValue })
+}
+
+// WithID 设置 id(主键id) 字段作为 option 条件
 func (obj *UserBaseDAO) WithID(id int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = id })
 }
 
-// WithIDs 设置 id() 字段的切片作为 option 条件
+// WithIDs 设置 id(主键id) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithIDs(ids []int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = ids })
 }
 
-// WithName 设置 name() 字段作为 option 条件
+// WithName 设置 name(姓名) 字段作为 option 条件
 func (obj *UserBaseDAO) WithName(name string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = name })
 }
 
-// WithNames 设置 name() 字段的切片作为 option 条件
+// WithNames 设置 name(姓名) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithNames(names []string) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = names })
 }
 
-// WithAge 设置 age() 字段作为 option 条件
+// WithAge 设置 age(年龄) 字段作为 option 条件
 func (obj *UserBaseDAO) WithAge(age int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = age })
 }
 
-// WithAges 设置 age() 字段的切片作为 option 条件
+// WithAges 设置 age(年龄) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithAges(ages []int64) Option {
 	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = ages })
 }
@@ -136,38 +141,38 @@ func (obj *UserBaseDAO) UpdateByOption(userBase *UserBase, opts ...Option) (rows
 
 // --- 单个字段作为查询条件 ---
 
-// GetFromID 通过单个 id() 字段值，获取单条记录
+// GetFromID 通过单个 id(主键id) 字段值，获取单条记录
 func (obj *UserBaseDAO) GetFromID(id int64) (result *UserBase, err error) {
 	result, err = obj.GetByOption(obj.WithID(id))
 	return
 }
 
-// GetsFromID 通过多个 id() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetsFromID(ids []int64) (results []*UserBase, err error) {
+// GetListFromID 通过多个 id(主键id) 字段值，获取多条记录
+func (obj *UserBaseDAO) GetListFromID(ids []int64) (results []*UserBase, err error) {
 	results, err = obj.GetListByOption(obj.WithIDs(ids))
 	return
 }
 
-// GetFromName 通过单个 name() 字段值，获取多条记录
+// GetFromName 通过单个 name(姓名) 字段值，获取多条记录
 func (obj *UserBaseDAO) GetFromName(name string) (results []*UserBase, err error) {
 	results, err = obj.GetListByOption(obj.WithName(name))
 	return
 }
 
-// GetsFromName 通过多个 name() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetsFromName(names []string) (results []*UserBase, err error) {
+// GetListFromName 通过多个 name(姓名) 字段值，获取多条记录
+func (obj *UserBaseDAO) GetListFromName(names []string) (results []*UserBase, err error) {
 	results, err = obj.GetListByOption(obj.WithNames(names))
 	return
 }
 
-// GetFromAge 通过单个 age() 字段值，获取多条记录
+// GetFromAge 通过单个 age(年龄) 字段值，获取多条记录
 func (obj *UserBaseDAO) GetFromAge(age int64) (results []*UserBase, err error) {
 	results, err = obj.GetListByOption(obj.WithAge(age))
 	return
 }
 
-// GetsFromAge 通过多个 age() 字段值，获取多条记录
-func (obj *UserBaseDAO) GetsFromAge(ages []int64) (results []*UserBase, err error) {
+// GetListFromAge 通过多个 age(年龄) 字段值，获取多条记录
+func (obj *UserBaseDAO) GetListFromAge(ages []int64) (results []*UserBase, err error) {
 	results, err = obj.GetListByOption(obj.WithAges(ages))
 	return
 }
