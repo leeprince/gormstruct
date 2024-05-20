@@ -229,6 +229,21 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 	data.Primary = append(data.Primary, uniqueIndex...)
 	data.Index = append(data.Index, index...)
 
+	tempData := data
+	for i, v := range tempData.Em {
+		tempData.Em[i].WithColStructName = v.ColStructName
+	}
+	// 判断如果有重复就改名字
+	for i := 0; i < 9; i++ {
+		tempData2, isRepeat, err2 := g.processNameNames(tempData)
+		tempData = tempData2
+		if err2 != nil {
+			panic(fmt.Sprintf("GetGenLogic err:%s", err2.Error()))
+		}
+		if !isRepeat {
+			break
+		}
+	}
 	logicTmpl, err := template.New("GetGenLogic").
 		Funcs(GenLogicTemplateFuncs()).
 		Parse(genfunc.GetGenLogic())
@@ -236,16 +251,45 @@ func (g *GenDBInfo) generateFunc() (genOut []GenOutInfo) {
 		panic(fmt.Sprintf("GetGenLogic err:%s", err.Error()))
 	}
 	var funcBuf bytes.Buffer
-	logicErr := logicTmpl.Execute(&funcBuf, data)
+	logicErr := logicTmpl.Execute(&funcBuf, tempData)
 	if logicErr != nil {
 		panic(fmt.Sprintf("GetGenLogic Execute err:%s", logicErr.Error()))
 	}
+
 	pkg.AddFuncStr(funcBuf.String())
 	genOut = append(genOut, GenOutInfo{
 		FileName: fmt.Sprintf("%v_dao.go", g.info.Table.Name),
 		FileCtx:  pkg.GenFileCtx(),
 	})
 	// --- 生成操作数据表的方法-end
+
+	return
+}
+
+func (g *GenDBInfo) processNameNames(data funDef) (data2 funDef, isRepeat bool, err error) {
+	columns := make(map[string]bool, len(data.Em))
+
+	for _, v := range data.Em {
+		columns[v.WithColStructName] = true
+	}
+	repeatColumns := make(map[string]bool, 0)
+	for key, _ := range columns {
+		if _, ok := columns[key+"s"]; ok {
+			repeatColumns[key+"s"] = true
+		}
+	}
+
+	isRepeat = false
+	if len(repeatColumns) > 0 {
+		isRepeat = true
+		for i, v := range data.Em {
+			singColumn := v.WithColStructName
+			if _, ok := repeatColumns[singColumn]; ok {
+				data.Em[i].WithColStructName = v.ColStructName + "Gorm2"
+			}
+		}
+	}
+	data2 = data
 
 	return
 }
