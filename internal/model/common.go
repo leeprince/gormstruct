@@ -26,6 +26,11 @@ func getTypeName(sourceColumnName, sourceTypeName string, isNull bool) string {
 	selfDefineTypeMqlDicMap := config.GetSelfTypeDefine()
 	if v, ok := selfDefineTypeMqlDicMap[sourceTypeName]; ok {
 		return fixNullToPoint(sourceColumnName, v, isNull)
+	} else { // 如果精确匹配不到比如tinyint(4) 就找tinyint
+		newSourceTypeName := strings.Split(sourceTypeName, "(")[0]
+		if v1, ok1 := selfDefineTypeMqlDicMap[newSourceTypeName]; ok1 {
+			return fixNullToPoint(newSourceTypeName, v1, isNull)
+		}
 	}
 
 	// Precise matching first.先精确匹配
