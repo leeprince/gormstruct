@@ -31,12 +31,12 @@ func NewMySQLModel() model.IModel {
 func (m *mysqlModel) GenModel() model.DBInfo {
 	orm := mysqldb.OnInitDBOrm(config.GetConfigDBOfMysqlConStr())
 	defer orm.OnDestoryDB()
-	
+
 	var dbInfo model.DBInfo
 	m.getTableInfo(orm, &dbInfo)
 	dbInfo.PackageName = m.GetPkgName()
 	dbInfo.DbName = m.GetDbName()
-	
+
 	// debugInfo, _ := json.Marshal(dbInfo)
 	// fmt.Printf("获取数据库相关属性:%s", string(debugInfo))
 	return dbInfo
@@ -61,7 +61,7 @@ func (m *mysqlModel) getTableInfo(orm *mysqldb.MySqlDB, info *model.DBInfo) {
 	}
 	tableComment = m.lineBreakToBlank(tableComment)
 	logger.Info(fmt.Sprintf("获取表信息。config：%s; 表注释：%#v", config.GetTable(), tableComment))
-	
+
 	// 获取字段信息
 	info.Table.Name = config.GetTable()
 	info.Table.Comment = tableComment
@@ -75,7 +75,7 @@ func (m *mysqlModel) getTableComment(orm *mysqldb.MySqlDB, table string) (string
 	if err != nil {
 		return "", err
 	}
-	
+
 	return desc, nil
 }
 
@@ -89,7 +89,7 @@ func (m *mysqlModel) lineBreakToBlank(str string) string {
 func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (columnsElement []model.ColumnsElementInfo, err error) {
 	keyCount := make(map[string]int)
 	keyMap := make(map[string][]keys)
-	
+
 	// 获取索引信息
 	var keys []keys
 	keysSql := fmt.Sprintf("SHOW KEYS FROM %s", table)
@@ -98,39 +98,39 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 		keyCount[key.KeyName]++
 		keyMap[key.ColumnName] = append(keyMap[key.ColumnName], key)
 	}
-	
+
 	// 获取字段信息
 	var columns []genColumns
 	colSql := fmt.Sprintf("SHOW FULL COLUMNS FROM %s", table)
 	orm.Raw(colSql).Scan(&columns)
-	
+
 	// 判断数据库设计是否符合 gorm.Model， 符合则定义表存在 gorm.Model
 	if checkGormModel(&columns) {
 		columnsElement = append(columnsElement, model.ColumnsElementInfo{
 			Type: constants.GormModelWord,
 		})
 	}
-	
+
 	// 获取字段名称/类型/注释/默认值/是否允许null/索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
 	for index, i2 := range columns {
 		columns[index].Desc = m.lineBreakToBlank(i2.Desc)
 	}
-	
+
 	for _, i2 := range columns {
 		var tmpColumns model.ColumnsElementInfo
-		
+
 		// 字段名称
 		tmpColumns.Name = i2.Field
-		
+
 		// 字段类型
 		tmpColumns.Type = i2.Type
-		
+
 		// 字段注释
 		tmpColumns.Comment = i2.Desc
-		
+
 		// 主键时，是否为自动递增。自增：Extra==auto_increment
 		tmpColumns.Extra = i2.Extra
-		
+
 		// 默认值
 		if i2.Default != nil {
 			if *i2.Default == "" {
@@ -139,10 +139,10 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 				tmpColumns.Default = fmt.Sprintf("DEFAULT:%s", *i2.Default)
 			}
 		}
-		
+
 		// 是否允许null
 		tmpColumns.IsNull = strings.EqualFold(i2.Null, FIELD_IS_NULL)
-		
+
 		// 生成格式化文档，用于文档编写
 		if config.GenDoc() {
 			var docDefault string
@@ -157,7 +157,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 			}
 			gendoc.AddColumnLine(fmt.Sprintf("%s\\t%s\\t%t\\t%s\\t%s", i2.Field, i2.Type, tmpColumns.IsNull, docDefault, docComment))
 		}
-		
+
 		// 索引信息(主键唯一索引、普通索引、唯一索引、唯一复合索引、唯一非复合索引)
 		if keys, ok := keyMap[i2.Field]; ok {
 			for _, key := range keys {
@@ -166,7 +166,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 					if strings.EqualFold(key.KeyName, KEY_NAME_PRIMARY) {
 						tmpColumns.Keys = append(tmpColumns.Keys, model.KeyList{
 							Key:     model.ColumnsKeyPrimary,
-							Multi:   (keyCount[key.KeyName] > 1),
+							Multi:   keyCount[key.KeyName] > 1,
 							KeyName: key.KeyName,
 							KeyFunc: key.IndexType,
 						})
@@ -176,7 +176,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 					if keyCount[key.KeyName] == 1 {
 						tmpColumns.Keys = append(tmpColumns.Keys, model.KeyList{
 							Key:     model.ColumnsKeyUnique,
-							Multi:   (keyCount[key.KeyName] > 1),
+							Multi:   keyCount[key.KeyName] > 1,
 							KeyName: key.KeyName,
 							KeyFunc: key.IndexType,
 						})
@@ -185,14 +185,14 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 					// 唯一复合索引
 					tmpColumns.Keys = append(tmpColumns.Keys, model.KeyList{
 						Key:     model.ColumnsKeyUniqueIndex,
-						Multi:   (keyCount[key.KeyName] > 1),
+						Multi:   keyCount[key.KeyName] > 1,
 						KeyName: key.KeyName,
 						KeyFunc: key.IndexType,
 					})
 				} else { // 非唯一索引。包含：普通索引｜普通复合索引
 					tmpColumns.Keys = append(tmpColumns.Keys, model.KeyList{
 						Key:     model.ColumnsKeyIndex,
-						Multi:   (keyCount[key.KeyName] > 1),
+						Multi:   keyCount[key.KeyName] > 1,
 						KeyName: key.KeyName,
 						KeyFunc: key.IndexType,
 					})
@@ -201,7 +201,7 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 		}
 		columnsElement = append(columnsElement, tmpColumns)
 	}
-	
+
 	if config.GenDoc() {
 		docKeys := make(map[string]*docKey)
 		for _, key := range keys {
@@ -228,6 +228,6 @@ func (m *mysqlModel) getTableColumns(orm *mysqldb.MySqlDB, table string) (column
 		}
 	}
 	gendoc.FmtGenDoc(table)
-	
+
 	return
 }

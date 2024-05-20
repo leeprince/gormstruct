@@ -27,19 +27,19 @@ func getTypeName(sourceColumnName, sourceTypeName string, isNull bool) string {
 	if v, ok := selfDefineTypeMqlDicMap[sourceTypeName]; ok {
 		return fixNullToPoint(sourceColumnName, v, isNull)
 	}
-	
+
 	// Precise matching first.先精确匹配
 	if v, ok := constants.TypeMysqlDicMp[sourceTypeName]; ok {
 		return fixNullToPoint(sourceColumnName, v, isNull)
 	}
-	
+
 	// Fuzzy Regular Matching.模糊正则匹配
 	for _, l := range constants.TypeMysqlMatchList {
 		if ok, _ := regexp.MatchString(l.Key, sourceTypeName); ok {
 			return fixNullToPoint(sourceColumnName, l.Value, isNull)
 		}
 	}
-	
+
 	panic(fmt.Sprintf("type (%v) not match in any way.maybe need to add on (https://github.com/xxjwxc/gormt/blob/master/data/view/cnf/def.go)", sourceTypeName))
 }
 
@@ -74,7 +74,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "id",
 		ColStructName: "ID",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "创建时间",
@@ -83,7 +83,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "created_at",
 		ColStructName: "CreatedAt",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "更新时间",
@@ -92,7 +92,7 @@ func getGormModelElement() []EmInfo {
 		ColNameEx:     "updated_at",
 		ColStructName: "UpdatedAt",
 	})
-	
+
 	result = append(result, EmInfo{
 		IsMulti:       true,
 		Notes:         "删除时间",
@@ -117,6 +117,7 @@ func buildFList(list *[]FList, tableStructName string, key ColumnsKey, keyName s
 		}
 	}
 	// 还未添加过,则添加
+	keyName = strings.ReplaceAll(keyName, " ", "_")
 	*list = append(*list, FList{
 		TableStructName: tableStructName,
 		Key:             key,
@@ -180,10 +181,10 @@ func GenFListIndex(info FList, status int) string {
 		if len(withFuncs) == 1 {
 			return strings.Join(withFuncs, ", ")
 		}
-		
+
 		return fmt.Sprintf("\n %s", strings.Join(withFuncs, ", \n"))
 	}
-	
+
 	return ""
 }
 
@@ -199,7 +200,7 @@ func widthFunctionName(info FList) string {
 	case ColumnsKeyUniqueIndex: // unique index key.唯一复合索引
 		return "FetchUniqueIndexBy" + utils.GetCamelName(info.KeyName)
 	}
-	
+
 	return ""
 }
 
@@ -209,9 +210,9 @@ func CapLowercase(name string) string { // IDAPIID == > idAPIID
 	if len(list) == 0 {
 		return ""
 	}
-	
+
 	re := list[0] + name[len(list[0]):]
-	
+
 	return FilterKeywords(re)
 }
 
