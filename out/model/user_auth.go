@@ -6,19 +6,18 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-01-17 18:49:00
+ * @Date:   2024-06-02 23:19:16
  * @Desc:   user_auth 表
  */
 
-//
 type UserAuth struct {
-	ID         int64      `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`             // 主键
-	UserID     int64      `gorm:"column:user_id;type:int(11);not null;DEFAULT:0" json:"user_id"`         // 用户ID
-	ExpireTime time.Time  `gorm:"column:expire_time;type:datetime;is null;" json:"expire_time"`          // 授权过期时间
-	AccessTime int64      `gorm:"column:access_time;type:int(11);not null;DEFAULT:0" json:"access_time"` // 访问时间
-	UpdatedAt  time.Time  `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`         // 更新时间
-	CreatedAt  time.Time  `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`         // 创建时间
-	DeletedAt  *time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`         // 删除时间
+	ID         int64     `gorm:"column:id;primaryKey;type:int(11);autoIncrement" json:"id"`             // 主键
+	UserID     int64     `gorm:"column:user_id;type:int(11);not null;DEFAULT:0" json:"user_id"`         // 用户ID
+	ExpireTime time.Time `gorm:"column:expire_time;type:datetime;is null;" json:"expire_time"`          // 授权过期时间
+	AccessTime int64     `gorm:"column:access_time;type:int(11);not null;DEFAULT:0" json:"access_time"` // 访问时间
+	UpdatedAt  time.Time `gorm:"column:updated_at;type:datetime(3);is null;" json:"updated_at"`         // 更新时间
+	CreatedAt  time.Time `gorm:"column:created_at;type:datetime(3);is null;" json:"created_at"`         // 创建时间
+	DeletedAt  time.Time `gorm:"column:deleted_at;type:datetime(3);is null;" json:"deleted_at"`         // 删除时间
 }
 
 // 获取结构体对应的表名方法
@@ -103,7 +102,7 @@ func (m *UserAuth) SetCreatedAt(v time.Time) {
 }
 
 // 设置值：删除时间
-func (m *UserAuth) SetDeletedAt(v *time.Time) {
+func (m *UserAuth) SetDeletedAt(v time.Time) {
 	m.DeletedAt = v
 }
 
@@ -138,6 +137,6 @@ func (m *UserAuth) GetCreatedAt() time.Time {
 }
 
 // 获取值：删除时间
-func (m *UserAuth) GetDeletedAt() *time.Time {
+func (m *UserAuth) GetDeletedAt() time.Time {
 	return m.DeletedAt
 }

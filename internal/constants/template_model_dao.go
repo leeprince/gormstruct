@@ -71,18 +71,18 @@ func (obj *{{$allParams.StructName}}DAO) Create({{$lowerStructName}} interface{}
 
 // WithPrimaryKey 设置真正的主键 字段作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[(&{{$allParams.StructName}}{}).PrimaryKey()] = primaryKeyValue })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[(&{{$allParams.StructName}}{}).PrimaryKey()] = primaryKeyValue })
 }
 
 {{range $oem := $allParams.Em}}
 // With{{$oem.ColStructName}} 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$oem.WithColStructName}}({{CapLowercase $oem.ColStructName}} {{$oem.Type}}) Option {
-    return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}} })
+    return queryMapOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}} })
 }
 
 // With{{$oem.ColStructName}}s 设置 {{$oem.ColName}}({{$oem.Notes}}) 字段的切片作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$oem.WithColStructName}}s({{CapLowercase $oem.ColStructName}}s []{{$oem.Type}}) Option {
-    return queryOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}}s })
+    return queryMapOptionFunc(func(o *options) { o.queryMap[{{$allParams.StructName}}Columns.{{$oem.ColStructName}}] = {{CapLowercase $oem.ColStructName}}s })
 }
 {{end}}
 
@@ -90,7 +90,7 @@ func (obj *{{$allParams.StructName}}DAO) With{{$oem.WithColStructName}}s({{CapLo
 {{if $allParams.DeleteFlagIsTime}}
 // With{{$allParams.DeleteFlagStructField}}IsNull 设置 {{$allParams.DeleteFlagStructField}}(删除标记) 字段为NULL作为 option 条件
 func (obj *{{$allParams.StructName}}DAO) With{{$allParams.DeleteFlagStructField}}IsNull() Option {
- return queryArgOptionFunc(func(o *options) { o.queryArg.query = fmt.Sprintf("%s IS NULL", {{$allParams.StructName}}Columns.{{$allParams.DeleteFlagStructField}}) })
+	return queryArgListOptionFunc(func(o *options) {o.queryArgList = append(o.queryArgList, queryArg{query: fmt.Sprintf("%s IS NULL", {{$allParams.StructName}}Columns.{{$allParams.DeleteFlagStructField}}), arg:   nil}) })
 }
 {{end}}
 {{end}}

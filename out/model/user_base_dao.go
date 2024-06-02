@@ -65,69 +65,69 @@ func (obj *UserBaseDAO) Create(userBase interface{}) (rowsAffected int64, err er
 
 // WithPrimaryKey 设置真正的主键 字段作为 option 条件
 func (obj *UserBaseDAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[(&UserBase{}).PrimaryKey()] = primaryKeyValue })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[(&UserBase{}).PrimaryKey()] = primaryKeyValue })
 }
 
 // WithID 设置 id(主键id) 字段作为 option 条件
 func (obj *UserBaseDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = id })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = id })
 }
 
 // WithIDs 设置 id(主键id) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = ids })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.ID] = ids })
 }
 
 // WithName 设置 name(姓名 \r 姓名) 字段作为 option 条件
 func (obj *UserBaseDAO) WithName(name string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = name })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = name })
 }
 
 // WithNames 设置 name(姓名 \r 姓名) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithNames(names []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = names })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name] = names })
 }
 
 // WithAge 设置 age(年龄 \n 年龄) 字段作为 option 条件
 func (obj *UserBaseDAO) WithAge(age int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = age })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = age })
 }
 
 // WithAges 设置 age(年龄 \n 年龄) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithAges(ages []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = ages })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Age] = ages })
 }
 
 // WithSchoool 设置 schoool(学校 \r\n 学校) 字段作为 option 条件
 func (obj *UserBaseDAO) WithSchoool(schoool string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Schoool] = schoool })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Schoool] = schoool })
 }
 
 // WithSchoools 设置 schoool(学校 \r\n 学校) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithSchoools(schoools []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Schoool] = schoools })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Schoool] = schoools })
 }
 
 // WithName1 设置 name_1(姓名\n姓名换行) 字段作为 option 条件
 func (obj *UserBaseDAO) WithName1(name1 string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name1] = name1 })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name1] = name1 })
 }
 
 // WithName1s 设置 name_1(姓名\n姓名换行) 字段的切片作为 option 条件
 func (obj *UserBaseDAO) WithName1s(name1s []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name1] = name1s })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserBaseColumns.Name1] = name1s })
 }
 
 // GetByOption 函数选项模式获取单条记录
 func (obj *UserBaseDAO) GetByOption(opts ...Option) (result *UserBase, err error) {
-
+	
 	err = obj.prepare(opts...).Find(&result).Error
 	return
 }
 
 // GetListByOption 函数选项模式获取多条记录：支持分页
 func (obj *UserBaseDAO) GetListByOption(opts ...Option) (results []*UserBase, err error) {
-
+	
 	err = obj.prepare(opts...).Find(&results).Error
 	return
 }
@@ -135,7 +135,7 @@ func (obj *UserBaseDAO) GetListByOption(opts ...Option) (results []*UserBase, er
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserBaseDAO) GetCountByOption(opts ...Option) (count int64) {
 	obj.setIsDefaultColumns(false)
-
+	
 	obj.prepare(opts...).Count(&count)
 	return
 }

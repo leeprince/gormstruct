@@ -108,6 +108,22 @@ func (obj *_BaseDAO) setIsDefaultColumns(b bool) {
 	obj.isDefaultColumns = b
 }
 
+// 执行 sql 前的准备
+func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
+    options := initOption(opts...)
+    
+    tx = obj.withContext().
+        Scopes(obj.selectField(&options)).
+		Scopes(obj.queryArgList(&options)).
+        Where(options.queryMap).
+        Or(options.queryMapOr).
+        Scopes(obj.paginate(&options)).
+        Scopes(obj.orderBy(&options)).
+        Scopes(obj.groupBy(&options)).
+        Scopes(obj.having(&options))
+    return
+}
+
 // 查询指定字段
 func (obj *_BaseDAO) WithSelect(query interface{}, args ...interface{}) Option {
     return selectOptionFunc(func(o *options) {
@@ -118,28 +134,28 @@ func (obj *_BaseDAO) WithSelect(query interface{}, args ...interface{}) Option {
     })
 }
 
-// 自定义查询条件
+// 自定义查询条件：支持多次添加其他条件，最终将所有条件组合在一起
 func (obj *_BaseDAO) WithWhere(query interface{}, args ...interface{}) Option {
-	return queryArgOptionFunc(func(o *options) {
-		o.queryArg = queryArg{
+	return queryArgListOptionFunc(func(o *options) {
+		o.queryArgList = append(o.queryArgList, queryArg{
 			query: query,
 			arg:   args,
-		}
+		})
 	})
 }
 
 // Or 查询：将所有 Withxxx 的 options.queryMap 作为 Or 的查询条件
 func (obj *_BaseDAO) WithOrOption(opts ...Option) Option {
-    optionOr := initOption(opts...)
-    
-    return queryOrOptionFunc(func(o *options) {
-        if len(optionOr.queryMap) > 0 {
-            o.queryMapOr = make(map[string]interface{}, len(optionOr.queryMap))
-            for key, value := range optionOr.queryMap {
-                o.queryMapOr[key] = value
-            }
-        }
-    })
+	optionOr := initOption(opts...)
+	
+	return queryMapOrOptionFunc(func(o *options) {
+		if len(optionOr.queryMap) > 0 {
+			o.queryMapOr = make(map[string]interface{}, len(optionOr.queryMap))
+			for key, value := range optionOr.queryMap {
+				o.queryMapOr[key] = value
+			}
+		}
+	})
 }
 
 // 设置 offset、limit 作为 option 条件支持分页
@@ -174,22 +190,6 @@ func (obj *_BaseDAO) WithHaving(query interface{}, args ...interface{}) Option {
     })
 }
 
-// 执行 sql 前的准备
-func (obj *_BaseDAO) prepare(opts ...Option) (tx *gorm.DB) {
-    options := initOption(opts...)
-    
-    tx = obj.withContext().
-        Scopes(obj.selectField(&options)).
-		Scopes(obj.queryArg(&options)).
-        Where(options.queryMap).
-        Or(options.queryMapOr).
-        Scopes(obj.paginate(&options)).
-        Scopes(obj.orderBy(&options)).
-        Scopes(obj.groupBy(&options)).
-        Scopes(obj.having(&options))
-    return
-}
-
 // 选择字段
 func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
     return func(db *gorm.DB) *gorm.DB {
@@ -206,14 +206,23 @@ func (obj *_BaseDAO) selectField(opt *options) func(*gorm.DB) *gorm.DB {
 }
 
 // 自定义查询条件
-func (obj *_BaseDAO) queryArg(opt *options) func(*gorm.DB) *gorm.DB {
+func (obj *_BaseDAO) queryArgList(opt *options) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if opt.queryArg.query != nil && opt.queryArg.query != "" {
-			if opt.queryArg.arg != nil && len(opt.queryArg.arg) > 0 {
-				return db.Where(opt.queryArg.query, opt.queryArg.arg...)
+		if len(opt.queryArgList) > 0 {
+			for _, queryArg := range opt.queryArgList {
+				queryArg := queryArg
+				
+				if queryArg.query != nil && queryArg.query != "" {
+					if queryArg.arg != nil && len(queryArg.arg) > 0 {
+						db = db.Where(queryArg.query, queryArg.arg...)
+						continue
+					}
+					db = db.Where(queryArg.query)
+				}
 			}
-			return db.Where(opt.queryArg.query)
+			return db
 		}
+		
 		return db
 	}
 }
@@ -269,7 +278,7 @@ type options struct {
 	// 指定字段：查询指定字段或者更新指定字段
     selectField queryArg
 	// 自定义查询条件
-	queryArg queryArg
+	queryArgList []queryArg
 	// 查询条件AND
     queryMap    map[string]interface{}
 	// 查询条件OR
@@ -309,23 +318,23 @@ func (f selectOptionFunc) apply(o *options) {
 }
 
 // options.queryArg 实现 Option 接口
-type queryArgOptionFunc func(*options)
+type queryArgListOptionFunc func(*options)
 
-func (f queryArgOptionFunc) apply(o *options) {
+func (f queryArgListOptionFunc) apply(o *options) {
 	f(o)
 }
 
 // options.queryMap 实现 Option 接口
-type queryOptionFunc func(*options)
+type queryMapOptionFunc func(*options)
 
-func (f queryOptionFunc) apply(o *options) {
+func (f queryMapOptionFunc) apply(o *options) {
     f(o)
 }
 
-// options.queryMap 实现 Option 接口
-type queryOrOptionFunc func(*options)
+// options.queryMapOr 实现 Option 接口
+type queryMapOrOptionFunc func(*options)
 
-func (f queryOrOptionFunc) apply(o *options) {
+func (f queryMapOrOptionFunc) apply(o *options) {
     f(o)
 }
 
@@ -364,10 +373,7 @@ func initOption(opts ...Option) options {
 			query: nil,
 			arg:   nil,
 		},
-		queryArg: queryArg{
-			query: nil,
-			arg:   nil,
-		},
+		queryArgList: []queryArg{},
         queryMap:   make(map[string]interface{}, len(opts)),
         queryMapOr: make(map[string]interface{}, len(opts)),
         page: paging{

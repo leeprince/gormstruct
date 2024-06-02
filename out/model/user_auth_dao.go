@@ -9,7 +9,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-01-17 18:49:00
+ * @Date:   2024-06-02 23:19:16
  * @Desc:   user_auth 表的 DAO 层
  */
 
@@ -17,7 +17,7 @@ type UserAuthDAO struct {
 	*_BaseDAO
 }
 
-// UserAuthDAO 初始化
+// NewUserAuthDAO 初始化
 func NewUserAuthDAO(ctx context.Context, db *gorm.DB) *UserAuthDAO {
 	if db == nil {
 		panic(fmt.Errorf("UserAuthDAO need init by db"))
@@ -43,10 +43,10 @@ func (obj *UserAuthDAO) GetTableName() string {
 	return userAuth.TableName()
 }
 
-// UpdateOrCreate 存在则更新，否则插入。Create 插入会忽略零值字段
+// UpdateOrCreate 存在则更新，否则插入，会忽略零值字段
 func (obj *UserAuthDAO) UpdateOrCreate(userAuth *UserAuth) (rowsAffected int64, err error) {
 	if userAuth.PrimaryKeyValue() > 0 {
-		return obj.UpdateByOption(userAuth, obj.WithID(userAuth.ID))
+		return obj.UpdateByOption(userAuth, obj.WithPrimaryKey(userAuth.PrimaryKeyValue()))
 	}
 	return obj.Create(userAuth)
 }
@@ -64,79 +64,86 @@ func (obj *UserAuthDAO) Create(userAuth interface{}) (rowsAffected int64, err er
 
 // --- 表中的字段作为 option 条件 ---
 
+// WithPrimaryKey 设置真正的主键 字段作为 option 条件
+func (obj *UserAuthDAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[(&UserAuth{}).PrimaryKey()] = primaryKeyValue })
+}
+
 // WithID 设置 id(主键) 字段作为 option 条件
 func (obj *UserAuthDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ID] = id })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ID] = id })
 }
 
 // WithIDs 设置 id(主键) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ID] = ids })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ID] = ids })
 }
 
 // WithUserID 设置 user_id(用户ID) 字段作为 option 条件
 func (obj *UserAuthDAO) WithUserID(userID int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UserID] = userID })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UserID] = userID })
 }
 
 // WithUserIDs 设置 user_id(用户ID) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithUserIDs(userIDs []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UserID] = userIDs })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UserID] = userIDs })
 }
 
 // WithExpireTime 设置 expire_time(授权过期时间) 字段作为 option 条件
 func (obj *UserAuthDAO) WithExpireTime(expireTime time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ExpireTime] = expireTime })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ExpireTime] = expireTime })
 }
 
 // WithExpireTimes 设置 expire_time(授权过期时间) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithExpireTimes(expireTimes []time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ExpireTime] = expireTimes })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.ExpireTime] = expireTimes })
 }
 
 // WithAccessTime 设置 access_time(访问时间) 字段作为 option 条件
 func (obj *UserAuthDAO) WithAccessTime(accessTime int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.AccessTime] = accessTime })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.AccessTime] = accessTime })
 }
 
 // WithAccessTimes 设置 access_time(访问时间) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithAccessTimes(accessTimes []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.AccessTime] = accessTimes })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.AccessTime] = accessTimes })
 }
 
 // WithUpdatedAt 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *UserAuthDAO) WithUpdatedAt(updatedAt time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UpdatedAt] = updatedAt })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UpdatedAt] = updatedAt })
 }
 
 // WithUpdatedAts 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithUpdatedAts(updatedAts []time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UpdatedAt] = updatedAts })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.UpdatedAt] = updatedAts })
 }
 
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *UserAuthDAO) WithCreatedAt(createdAt time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.CreatedAt] = createdAt })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.CreatedAt] = createdAt })
 }
 
 // WithCreatedAts 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *UserAuthDAO) WithCreatedAts(createdAts []time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.CreatedAt] = createdAts })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.CreatedAt] = createdAts })
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAt(deletedAt *time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAt })
+func (obj *UserAuthDAO) WithDeletedAt(deletedAt time.Time) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAts(deletedAts []*time.Time) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAts })
+func (obj *UserAuthDAO) WithDeletedAts(deletedAts []time.Time) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAts })
 }
 
 // WithDeletedAtIsNull 设置 DeletedAt(删除标记) 字段为NULL作为 option 条件
 func (obj *UserAuthDAO) WithDeletedAtIsNull() Option {
-	return queryArgOptionFunc(func(o *options) { o.queryArg.query = fmt.Sprintf("%s IS NULL", UserAuthColumns.DeletedAt) })
+	return queryArgListOptionFunc(func(o *options) {
+		o.queryArgList = append(o.queryArgList, queryArg{query: fmt.Sprintf("%s IS NULL", UserAuthColumns.DeletedAt), arg: nil})
+	})
 }
 
 // GetByOption 函数选项模式获取单条记录
@@ -168,9 +175,10 @@ func (obj *UserAuthDAO) GetCustomeResultByOption(result interface{}, opts ...Opt
 }
 
 // UpdateByOption 更新数据
-// 	参数说明：
-//      userAuth: 要更新的数据
-//      opts: 更新的条件
+//
+//		参数说明：
+//	     userAuth: 要更新的数据
+//	     opts: 更新的条件
 func (obj *UserAuthDAO) UpdateByOption(userAuth *UserAuth, opts ...Option) (rowsAffected int64, err error) {
 	obj.setIsDefaultColumns(false)
 	tx := obj.prepare(opts...).Updates(userAuth)
@@ -187,8 +195,8 @@ func (obj *UserAuthDAO) GetFromID(id int64) (result *UserAuth, err error) {
 	return
 }
 
-// GetsFromID 通过多个 id(主键) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromID(ids []int64) (results []*UserAuth, err error) {
+// GetListFromID 通过多个 id(主键) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromID(ids []int64) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithIDs(ids))
 	return
 }
@@ -199,8 +207,8 @@ func (obj *UserAuthDAO) GetFromUserID(userID int64) (results []*UserAuth, err er
 	return
 }
 
-// GetsFromUserID 通过多个 user_id(用户ID) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromUserID(userIDs []int64) (results []*UserAuth, err error) {
+// GetListFromUserID 通过多个 user_id(用户ID) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromUserID(userIDs []int64) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithUserIDs(userIDs))
 	return
 }
@@ -211,8 +219,8 @@ func (obj *UserAuthDAO) GetFromExpireTime(expireTime time.Time) (results []*User
 	return
 }
 
-// GetsFromExpireTime 通过多个 expire_time(授权过期时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromExpireTime(expireTimes []time.Time) (results []*UserAuth, err error) {
+// GetListFromExpireTime 通过多个 expire_time(授权过期时间) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromExpireTime(expireTimes []time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithExpireTimes(expireTimes))
 	return
 }
@@ -223,8 +231,8 @@ func (obj *UserAuthDAO) GetFromAccessTime(accessTime int64) (results []*UserAuth
 	return
 }
 
-// GetsFromAccessTime 通过多个 access_time(访问时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromAccessTime(accessTimes []int64) (results []*UserAuth, err error) {
+// GetListFromAccessTime 通过多个 access_time(访问时间) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromAccessTime(accessTimes []int64) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithAccessTimes(accessTimes))
 	return
 }
@@ -235,8 +243,8 @@ func (obj *UserAuthDAO) GetFromUpdatedAt(updatedAt time.Time) (results []*UserAu
 	return
 }
 
-// GetsFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromUpdatedAt(updatedAts []time.Time) (results []*UserAuth, err error) {
+// GetListFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromUpdatedAt(updatedAts []time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAts(updatedAts))
 	return
 }
@@ -247,20 +255,20 @@ func (obj *UserAuthDAO) GetFromCreatedAt(createdAt time.Time) (results []*UserAu
 	return
 }
 
-// GetsFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromCreatedAt(createdAts []time.Time) (results []*UserAuth, err error) {
+// GetListFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromCreatedAt(createdAts []time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAts(createdAts))
 	return
 }
 
 // GetFromDeletedAt 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt *time.Time) (results []*UserAuth, err error) {
+func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAt(deletedAt))
 	return
 }
 
-// GetsFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetsFromDeletedAt(deletedAts []*time.Time) (results []*UserAuth, err error) {
+// GetListFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
+func (obj *UserAuthDAO) GetListFromDeletedAt(deletedAts []time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }

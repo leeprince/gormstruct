@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-03-19 02:01:26
+ * @Date:   2024-06-02 23:19:13
  * @Desc:   users 表的 DAO 层
  */
 
@@ -16,7 +16,7 @@ type UsersDAO struct {
 	*_BaseDAO
 }
 
-// UsersDAO 初始化
+// NewUsersDAO 初始化
 func NewUsersDAO(ctx context.Context, db *gorm.DB) *UsersDAO {
 	if db == nil {
 		panic(fmt.Errorf("UsersDAO need init by db"))
@@ -65,157 +65,157 @@ func (obj *UsersDAO) Create(users interface{}) (rowsAffected int64, err error) {
 
 // WithPrimaryKey 设置真正的主键 字段作为 option 条件
 func (obj *UsersDAO) WithPrimaryKey(primaryKeyValue interface{}) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[(&Users{}).PrimaryKey()] = primaryKeyValue })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[(&Users{}).PrimaryKey()] = primaryKeyValue })
 }
 
 // WithID 设置 id(主键) 字段作为 option 条件
 func (obj *UsersDAO) WithID(id int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = id })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = id })
 }
 
 // WithIDs 设置 id(主键) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithIDs(ids []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = ids })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.ID] = ids })
 }
 
 // WithName 设置 name(名称) 字段作为 option 条件
 func (obj *UsersDAO) WithName(name string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = name })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = name })
 }
 
 // WithNames 设置 name(名称) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNames(names []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = names })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.Name] = names })
 }
 
 // WithAge 设置 age(年龄) 字段作为 option 条件
 func (obj *UsersDAO) WithAge(age int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = age })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = age })
 }
 
 // WithAges 设置 age(年龄) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithAges(ages []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = ages })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.Age] = ages })
 }
 
 // WithCardNo 设置 card_no(身份证) 字段作为 option 条件
 func (obj *UsersDAO) WithCardNo(cardNo string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNo })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNo })
 }
 
 // WithCardNos 设置 card_no(身份证) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithCardNos(cardNos []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNos })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.CardNo] = cardNos })
 }
 
 // WithHeadImg 设置 head_img(头像) 字段作为 option 条件
 func (obj *UsersDAO) WithHeadImg(headImg string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImg })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImg })
 }
 
 // WithHeadImgs 设置 head_img(头像) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithHeadImgs(headImgs []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImgs })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.HeadImg] = headImgs })
 }
 
 // WithSchool 设置 school() 字段作为 option 条件
 func (obj *UsersDAO) WithSchool(school string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = school })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = school })
 }
 
 // WithSchools 设置 school() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithSchools(schools []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = schools })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.School] = schools })
 }
 
 // WithNullNoDefault 设置 null_no_default() 字段作为 option 条件
 func (obj *UsersDAO) WithNullNoDefault(nullNoDefault *string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefault })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefault })
 }
 
 // WithNullNoDefaults 设置 null_no_default() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNullNoDefaults(nullNoDefaults []*string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefaults })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullNoDefault] = nullNoDefaults })
 }
 
 // WithNullDefaultNil 设置 null_default_nil() 字段作为 option 条件
 func (obj *UsersDAO) WithNullDefaultNil(nullDefaultNil *string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNil })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNil })
 }
 
 // WithNullDefaultNils 设置 null_default_nil() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNullDefaultNils(nullDefaultNils []*string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNils })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNil] = nullDefaultNils })
 }
 
 // WithNullDefaultNoNil 设置 null_default_no_nil() 字段作为 option 条件
 func (obj *UsersDAO) WithNullDefaultNoNil(nullDefaultNoNil *string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNil })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNil })
 }
 
 // WithNullDefaultNoNils 设置 null_default_no_nil() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNullDefaultNoNils(nullDefaultNoNils []*string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNils })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NullDefaultNoNil] = nullDefaultNoNils })
 }
 
 // WithNoNullNoDefault 设置 no_null_no_default() 字段作为 option 条件
 func (obj *UsersDAO) WithNoNullNoDefault(noNullNoDefault string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefault })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefault })
 }
 
 // WithNoNullNoDefaults 设置 no_null_no_default() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNoNullNoDefaults(noNullNoDefaults []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefaults })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullNoDefault] = noNullNoDefaults })
 }
 
 // WithNoNullDefaultNoNil 设置 no_null_default_no_nil() 字段作为 option 条件
 func (obj *UsersDAO) WithNoNullDefaultNoNil(noNullDefaultNoNil string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNil })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNil })
 }
 
 // WithNoNullDefaultNoNils 设置 no_null_default_no_nil() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNoNullDefaultNoNils(noNullDefaultNoNils []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNils })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNoNil] = noNullDefaultNoNils })
 }
 
 // WithNoNullDefaultNil 设置 no_null_default_nil() 字段作为 option 条件
 func (obj *UsersDAO) WithNoNullDefaultNil(noNullDefaultNil string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNil })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNil })
 }
 
 // WithNoNullDefaultNils 设置 no_null_default_nil() 字段的切片作为 option 条件
 func (obj *UsersDAO) WithNoNullDefaultNils(noNullDefaultNils []string) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNils })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.NoNullDefaultNil] = noNullDefaultNils })
 }
 
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
 func (obj *UsersDAO) WithCreatedAt(createdAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAt })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAt })
 }
 
 // WithCreatedAts 设置 created_at(创建时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithCreatedAts(createdAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAts })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.CreatedAt] = createdAts })
 }
 
 // WithUpdatedAt 设置 updated_at(更新时间) 字段作为 option 条件
 func (obj *UsersDAO) WithUpdatedAt(updatedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAt })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAt })
 }
 
 // WithUpdatedAts 设置 updated_at(更新时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithUpdatedAts(updatedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAts })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.UpdatedAt] = updatedAts })
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
 func (obj *UsersDAO) WithDeletedAt(deletedAt int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAt })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
 func (obj *UsersDAO) WithDeletedAts(deletedAts []int64) Option {
-	return queryOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAts })
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UsersColumns.DeletedAt] = deletedAts })
 }
 
 // GetByOption 函数选项模式获取单条记录

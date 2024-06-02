@@ -11,7 +11,7 @@
  Target Server Version : 80013
  File Encoding         : 65001
 
- Date: 12/03/2024 20:26:28
+ Date: 03/06/2024 00:03:20
 */
 
 SET NAMES utf8mb4;
@@ -50,39 +50,41 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `user_base`;
 CREATE TABLE `user_base` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  `age` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `name` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '姓名 \\r 姓名',
+  `age` int(11) NOT NULL COMMENT '年龄 \\n 年龄',
+  `schoool` varchar(255) NOT NULL COMMENT '学校 \\r\\n 学校',
+  `name_1` varchar(255) NOT NULL COMMENT '姓名\n姓名换行',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `age` (`age`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='用户基础表\n用户基础表换行';
 
 -- ----------------------------
 -- Records of user_base
 -- ----------------------------
 BEGIN;
-INSERT INTO `user_base` VALUES (1, 'n001', 1);
-INSERT INTO `user_base` VALUES (2, 'p002', 2);
-INSERT INTO `user_base` VALUES (3, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (4, 'tt-02', 10);
-INSERT INTO `user_base` VALUES (5, 'tt-03', 10);
-INSERT INTO `user_base` VALUES (6, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (7, 'tt-02', 10);
-INSERT INTO `user_base` VALUES (8, 'tt-03', 10);
-INSERT INTO `user_base` VALUES (9, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (10, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (11, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (12, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (13, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (14, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (15, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (16, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (17, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (18, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (19, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (20, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (21, 'tt-0101', 10);
-INSERT INTO `user_base` VALUES (22, 'tt-0101', 10);
+INSERT INTO `user_base` VALUES (1, 'n001', 1, '', '');
+INSERT INTO `user_base` VALUES (2, 'p002', 2, '', '');
+INSERT INTO `user_base` VALUES (3, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (4, 'tt-02', 10, '', '');
+INSERT INTO `user_base` VALUES (5, 'tt-03', 10, '', '');
+INSERT INTO `user_base` VALUES (6, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (7, 'tt-02', 10, '', '');
+INSERT INTO `user_base` VALUES (8, 'tt-03', 10, '', '');
+INSERT INTO `user_base` VALUES (9, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (10, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (11, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (12, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (13, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (14, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (15, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (16, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (17, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (18, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (19, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (20, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (21, 'tt-0101', 10, '', '');
+INSERT INTO `user_base` VALUES (22, 'tt-0101', 10, '', '');
 COMMIT;
 
 -- ----------------------------
@@ -115,7 +117,7 @@ CREATE TABLE `users` (
 -- Records of users
 -- ----------------------------
 BEGIN;
-INSERT INTO `users` VALUES (1, 'insert-prince01', 3, '', 'http://pp.com', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
+INSERT INTO `users` VALUES (1, 'insert-prince01', 3, '', 'http://pp.com', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 0);
 INSERT INTO `users` VALUES (2, 'insert-prince01', 0, '2', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
 INSERT INTO `users` VALUES (3, 'insert-prince01', 0, '3', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1701537032, 1642337297);
 INSERT INTO `users` VALUES (4, 'name01', 20, '4', '', '', NULL, NULL, 'x', '', 'y', '', 1639411296, 1639411296, 0);
@@ -142,7 +144,7 @@ INSERT INTO `users` VALUES (40, 'insert-prince1', 0, '46100101', 'https://dd.xx'
 INSERT INTO `users` VALUES (41, 'insert-prince1', 0, '46100102', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654927935, 0);
 INSERT INTO `users` VALUES (42, 'insert-prince1', 0, '46100103', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928048, 0);
 INSERT INTO `users` VALUES (45, 'insert-prince1', 18, '46100104', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928145, 0);
-INSERT INTO `users` VALUES (50, 'insert-prince2', 18, '46100105', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654928214, 0);
+INSERT INTO `users` VALUES (50, 'insert-prince2', 18, '32131da40', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 164339993, 1710782761, 0);
 INSERT INTO `users` VALUES (53, 'insert-prince2', 18, '46100106', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1654929571, 0);
 INSERT INTO `users` VALUES (56, 'insert-prince2', 18, '46100206', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652245, 0);
 INSERT INTO `users` VALUES (57, 'insert-prince2', 18, '46100207', 'https://dd.xx', '', NULL, NULL, 'x', '', 'y', '', 1643399938, 1655652561, 0);
