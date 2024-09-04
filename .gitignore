@@ -79,6 +79,6 @@ experiments
 go.sum
 build
 cover.html
-test/*
+test/gormgentool/gen.yaml
 
 config.yaml

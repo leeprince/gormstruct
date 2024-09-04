@@ -14,18 +14,64 @@ import (
  * @Desc:
  */
 
-func TestDataTimeTT(t *testing.T) {
+func TestInsertData(t *testing.T) {
 	db := InitDB()
-	userAuthDao := model.NewUsersDAO(context.Background(), db)
-	list, err := userAuthDao.GetListByOption()
-	fmt.Println(len(list), list, err)
+	userAuthDao := model.NewUserAuthDAO(context.Background(), db)
+	userauth := &model.UserAuth{
+		ID:         0,
+		UserID:     0,
+		ExpireTime: time.Time{},
+		AccessTime: 0,
+		UpdatedAt:  time.Time{},
+		CreatedAt:  time.Time{},
+		DeletedAt:  nil,
+	}
+	row, err := userAuthDao.Save(userauth)
+	fmt.Println(row, err)
 	
-	for _, order := range list {
-		fmt.Println(order)
+}
+
+func TestInsertDataCreateAt(t *testing.T) {
+	db := InitDB()
+	userAuthDao := model.NewUserAuthDAO(context.Background(), db)
+	userauth := &model.UserAuth{
+		ID:         0,
+		UserID:     0,
+		ExpireTime: time.Now(),
+		AccessTime: 0,
+		UpdatedAt:  time.Time{},
+		CreatedAt:  time.Now(),
+		DeletedAt:  nil,
+	}
+	row, err := userAuthDao.Save(userauth)
+	fmt.Println(row, err)
+}
+
+func TestGetOne(t *testing.T) {
+	db := InitDB()
+	userAuthDao := model.NewUserAuthDAO(context.Background(), db)
+	one, err := userAuthDao.GetByOption(userAuthDao.WithID(1))
+	fmt.Println(one, err)
+	if err != nil {
+		fmt.Println("err")
+	}
+	fmt.Println(one.CreatedAt.Format("2006-01-02 15:04:05"))
+}
+
+func TestGetList(t *testing.T) {
+	db := InitDB()
+	userAuthDao := model.NewUserAuthDAO(context.Background(), db)
+	userAuthList, err := userAuthDao.GetListByOption(userAuthDao.WithIDs([]int64{1, 2}))
+	fmt.Println(userAuthList, err)
+	if err != nil {
+		fmt.Println("err")
+	}
+	for _, auth := range userAuthList {
+		fmt.Printf("auth: %+v \n", auth)
 	}
 }
 
-func TestDataTimeNotNull(t *testing.T) {
+func TestGetByOption(t *testing.T) {
 	db := InitDB()
 	userAuthDao := model.NewUserAuthDAO(context.Background(), db)
 	

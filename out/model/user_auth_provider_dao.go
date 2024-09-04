@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
+	"time"
 )
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-06-21 15:28:01
+ * @Date:   2024-07-26 15:20:11
  * @Desc:   user_auth_provider 表的 DAO 层
  */
 
@@ -110,12 +111,12 @@ func (obj *UserAuthProviderDAO) WithProviderUserIDs(providerUserIDs []string) Op
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.ProviderUserID] = providerUserIDs })
 }
 
-// WithProviderUserUnionid 设置 provider_user_unionid() 字段作为 option 条件
+// WithProviderUserUnionid 设置 provider_user_unionid(第三方登录提供商在开放平台下统一的用户ID) 字段作为 option 条件
 func (obj *UserAuthProviderDAO) WithProviderUserUnionid(providerUserUnionid string) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.ProviderUserUnionid] = providerUserUnionid })
 }
 
-// WithProviderUserUnionids 设置 provider_user_unionid() 字段的切片作为 option 条件
+// WithProviderUserUnionids 设置 provider_user_unionid(第三方登录提供商在开放平台下统一的用户ID) 字段的切片作为 option 条件
 func (obj *UserAuthProviderDAO) WithProviderUserUnionids(providerUserUnionids []string) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.ProviderUserUnionid] = providerUserUnionids })
 }
@@ -131,45 +132,52 @@ func (obj *UserAuthProviderDAO) WithProviderDatas(providerDatas []datatypes.JSON
 }
 
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
-func (obj *UserAuthProviderDAO) WithCreatedAt(createdAt int64) Option {
+func (obj *UserAuthProviderDAO) WithCreatedAt(createdAt time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.CreatedAt] = createdAt })
 }
 
 // WithCreatedAts 设置 created_at(创建时间) 字段的切片作为 option 条件
-func (obj *UserAuthProviderDAO) WithCreatedAts(createdAts []int64) Option {
+func (obj *UserAuthProviderDAO) WithCreatedAts(createdAts []time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.CreatedAt] = createdAts })
 }
 
 // WithUpdatedAt 设置 updated_at(更新时间) 字段作为 option 条件
-func (obj *UserAuthProviderDAO) WithUpdatedAt(updatedAt int64) Option {
+func (obj *UserAuthProviderDAO) WithUpdatedAt(updatedAt time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.UpdatedAt] = updatedAt })
 }
 
 // WithUpdatedAts 设置 updated_at(更新时间) 字段的切片作为 option 条件
-func (obj *UserAuthProviderDAO) WithUpdatedAts(updatedAts []int64) Option {
+func (obj *UserAuthProviderDAO) WithUpdatedAts(updatedAts []time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.UpdatedAt] = updatedAts })
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UserAuthProviderDAO) WithDeletedAt(deletedAt int64) Option {
+func (obj *UserAuthProviderDAO) WithDeletedAt(deletedAt *time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UserAuthProviderDAO) WithDeletedAts(deletedAts []int64) Option {
+func (obj *UserAuthProviderDAO) WithDeletedAts(deletedAts []*time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthProviderColumns.DeletedAt] = deletedAts })
+}
+
+// WithDeletedAtIsNull 设置 DeletedAt(删除标记) 字段为NULL作为 option 条件
+func (obj *UserAuthProviderDAO) WithDeletedAtIsNull() Option {
+	return queryArgListOptionFunc(func(o *options) {
+		o.queryArgList = append(o.queryArgList, queryArg{query: fmt.Sprintf("%s IS NULL", UserAuthProviderColumns.DeletedAt), arg: nil})
+	})
 }
 
 // GetByOption 函数选项模式获取单条记录
 func (obj *UserAuthProviderDAO) GetByOption(opts ...Option) (result *UserAuthProvider, err error) {
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	err = obj.prepare(opts...).Find(&result).Error
 	return
 }
 
 // GetListByOption 函数选项模式获取多条记录：支持分页
 func (obj *UserAuthProviderDAO) GetListByOption(opts ...Option) (results []*UserAuthProvider, err error) {
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	err = obj.prepare(opts...).Find(&results).Error
 	return
 }
@@ -177,7 +185,7 @@ func (obj *UserAuthProviderDAO) GetListByOption(opts ...Option) (results []*User
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserAuthProviderDAO) GetCountByOption(opts ...Option) (count int64) {
 	obj.setIsDefaultColumns(false)
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	obj.prepare(opts...).Count(&count)
 	return
 }
@@ -251,13 +259,13 @@ func (obj *UserAuthProviderDAO) GetListFromProviderUserID(providerUserIDs []stri
 	return
 }
 
-// GetFromProviderUserUnionid 通过单个 provider_user_unionid() 字段值，获取多条记录
+// GetFromProviderUserUnionid 通过单个 provider_user_unionid(第三方登录提供商在开放平台下统一的用户ID) 字段值，获取多条记录
 func (obj *UserAuthProviderDAO) GetFromProviderUserUnionid(providerUserUnionid string) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithProviderUserUnionid(providerUserUnionid))
 	return
 }
 
-// GetListFromProviderUserUnionid 通过多个 provider_user_unionid() 字段值，获取多条记录
+// GetListFromProviderUserUnionid 通过多个 provider_user_unionid(第三方登录提供商在开放平台下统一的用户ID) 字段值，获取多条记录
 func (obj *UserAuthProviderDAO) GetListFromProviderUserUnionid(providerUserUnionids []string) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithProviderUserUnionids(providerUserUnionids))
 	return
@@ -276,37 +284,37 @@ func (obj *UserAuthProviderDAO) GetListFromProviderData(providerDatas []datatype
 }
 
 // GetFromCreatedAt 通过单个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetFromCreatedAt(createdAt int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetFromCreatedAt(createdAt time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAt(createdAt))
 	return
 }
 
 // GetListFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetListFromCreatedAt(createdAts []int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetListFromCreatedAt(createdAts []time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAts(createdAts))
 	return
 }
 
 // GetFromUpdatedAt 通过单个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetFromUpdatedAt(updatedAt int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetFromUpdatedAt(updatedAt time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAt(updatedAt))
 	return
 }
 
 // GetListFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetListFromUpdatedAt(updatedAts []int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetListFromUpdatedAt(updatedAts []time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAts(updatedAts))
 	return
 }
 
 // GetFromDeletedAt 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetFromDeletedAt(deletedAt int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetFromDeletedAt(deletedAt *time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAt(deletedAt))
 	return
 }
 
 // GetListFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthProviderDAO) GetListFromDeletedAt(deletedAts []int64) (results []*UserAuthProvider, err error) {
+func (obj *UserAuthProviderDAO) GetListFromDeletedAt(deletedAts []*time.Time) (results []*UserAuthProvider, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }

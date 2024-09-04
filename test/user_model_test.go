@@ -544,7 +544,7 @@ func TestModelSave(t *testing.T) {
 		UpdatedAt: 1643399938,
 		// DeletedAt: deletedAt,
 	}
-	rowsAffected := userDAO.Save(users)
+	rowsAffected, _ := userDAO.Save(users)
 	fmt.Printf("users:%+v rowsAffected:%d \n", users, rowsAffected)
 	
 	users.Name = ""
@@ -555,7 +555,7 @@ func TestModelSave(t *testing.T) {
 	time.Sleep(time.Second * 2)
 	users.Age = 19
 	users.UpdatedAt = 1643399938
-	rowsAffected = userDAO.Save(users)
+	rowsAffected, _ = userDAO.Save(users)
 	// db.Save(users)
 	fmt.Printf("users:%+v rowsAffected:%d \n", users, rowsAffected)
 }

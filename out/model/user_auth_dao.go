@@ -9,7 +9,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-06-02 23:19:16
+ * @Date:   2024-07-26 11:08:31
  * @Desc:   user_auth 表的 DAO 层
  */
 
@@ -52,8 +52,9 @@ func (obj *UserAuthDAO) UpdateOrCreate(userAuth *UserAuth) (rowsAffected int64, 
 }
 
 // Save gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
-func (obj *UserAuthDAO) Save(userAuth *UserAuth) (rowsAffected int64) {
-	return obj.db.Save(userAuth).RowsAffected
+func (obj *UserAuthDAO) Save(userAuth *UserAuth) (rowsAffected int64, err error) {
+	tx := obj.db.Save(userAuth)
+	return tx.RowsAffected, tx.Error
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片
@@ -130,12 +131,12 @@ func (obj *UserAuthDAO) WithCreatedAts(createdAts []time.Time) Option {
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAt(deletedAt time.Time) Option {
+func (obj *UserAuthDAO) WithDeletedAt(deletedAt *time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UserAuthDAO) WithDeletedAts(deletedAts []time.Time) Option {
+func (obj *UserAuthDAO) WithDeletedAts(deletedAts []*time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserAuthColumns.DeletedAt] = deletedAts })
 }
 
@@ -262,13 +263,13 @@ func (obj *UserAuthDAO) GetListFromCreatedAt(createdAts []time.Time) (results []
 }
 
 // GetFromDeletedAt 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt time.Time) (results []*UserAuth, err error) {
+func (obj *UserAuthDAO) GetFromDeletedAt(deletedAt *time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAt(deletedAt))
 	return
 }
 
 // GetListFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserAuthDAO) GetListFromDeletedAt(deletedAts []time.Time) (results []*UserAuth, err error) {
+func (obj *UserAuthDAO) GetListFromDeletedAt(deletedAts []*time.Time) (results []*UserAuth, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }

@@ -8,7 +8,7 @@ import (
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-06-02 23:19:13
+ * @Date:   2024-07-26 11:01:10
  * @Desc:   users 表的 DAO 层
  */
 
@@ -51,8 +51,9 @@ func (obj *UsersDAO) UpdateOrCreate(users *Users) (rowsAffected int64, err error
 }
 
 // Save gorm 原生的 Save 会保存所有的字段，即使字段是零值。仅会判断主键是否存在，存在则更新，不存在则创建
-func (obj *UsersDAO) Save(users *Users) (rowsAffected int64) {
-	return obj.db.Save(users).RowsAffected
+func (obj *UsersDAO) Save(users *Users) (rowsAffected int64, err error) {
+	tx := obj.db.Save(users)
+	return tx.RowsAffected, tx.Error
 }
 
 // Create 创建数据:允许单条/批量创建，批量创建时传入切片

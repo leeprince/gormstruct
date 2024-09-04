@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 /**
  * @Author: prince.lee <leeprince@foxmail.com>
- * @Date:   2024-06-21 15:15:44
+ * @Date:   2024-07-26 16:04:51
  * @Desc:   user_info 表的 DAO 层
  */
 
@@ -139,46 +140,73 @@ func (obj *UserInfoDAO) WithAvatars(avatars []string) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.Avatar] = avatars })
 }
 
+// WithLevel 设置 level(用户等级；1：普通用户；2：VIP用户) 字段作为 option 条件
+func (obj *UserInfoDAO) WithLevel(level int8) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.Level] = level })
+}
+
+// WithLevels 设置 level(用户等级；1：普通用户；2：VIP用户) 字段的切片作为 option 条件
+func (obj *UserInfoDAO) WithLevels(levels []int8) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.Level] = levels })
+}
+
+// WithLevelExpired 设置 level_expired(用户等级过期时间；非1：普通用户时才有意义) 字段作为 option 条件
+func (obj *UserInfoDAO) WithLevelExpired(levelExpired time.Time) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.LevelExpired] = levelExpired })
+}
+
+// WithLevelExpireds 设置 level_expired(用户等级过期时间；非1：普通用户时才有意义) 字段的切片作为 option 条件
+func (obj *UserInfoDAO) WithLevelExpireds(levelExpireds []time.Time) Option {
+	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.LevelExpired] = levelExpireds })
+}
+
 // WithCreatedAt 设置 created_at(创建时间) 字段作为 option 条件
-func (obj *UserInfoDAO) WithCreatedAt(createdAt int64) Option {
+func (obj *UserInfoDAO) WithCreatedAt(createdAt time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.CreatedAt] = createdAt })
 }
 
 // WithCreatedAts 设置 created_at(创建时间) 字段的切片作为 option 条件
-func (obj *UserInfoDAO) WithCreatedAts(createdAts []int64) Option {
+func (obj *UserInfoDAO) WithCreatedAts(createdAts []time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.CreatedAt] = createdAts })
 }
 
 // WithUpdatedAt 设置 updated_at(更新时间) 字段作为 option 条件
-func (obj *UserInfoDAO) WithUpdatedAt(updatedAt int64) Option {
+func (obj *UserInfoDAO) WithUpdatedAt(updatedAt time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.UpdatedAt] = updatedAt })
 }
 
 // WithUpdatedAts 设置 updated_at(更新时间) 字段的切片作为 option 条件
-func (obj *UserInfoDAO) WithUpdatedAts(updatedAts []int64) Option {
+func (obj *UserInfoDAO) WithUpdatedAts(updatedAts []time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.UpdatedAt] = updatedAts })
 }
 
 // WithDeletedAt 设置 deleted_at(删除时间) 字段作为 option 条件
-func (obj *UserInfoDAO) WithDeletedAt(deletedAt int64) Option {
+func (obj *UserInfoDAO) WithDeletedAt(deletedAt *time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.DeletedAt] = deletedAt })
 }
 
 // WithDeletedAts 设置 deleted_at(删除时间) 字段的切片作为 option 条件
-func (obj *UserInfoDAO) WithDeletedAts(deletedAts []int64) Option {
+func (obj *UserInfoDAO) WithDeletedAts(deletedAts []*time.Time) Option {
 	return queryMapOptionFunc(func(o *options) { o.queryMap[UserInfoColumns.DeletedAt] = deletedAts })
+}
+
+// WithDeletedAtIsNull 设置 DeletedAt(删除标记) 字段为NULL作为 option 条件
+func (obj *UserInfoDAO) WithDeletedAtIsNull() Option {
+	return queryArgListOptionFunc(func(o *options) {
+		o.queryArgList = append(o.queryArgList, queryArg{query: fmt.Sprintf("%s IS NULL", UserInfoColumns.DeletedAt), arg: nil})
+	})
 }
 
 // GetByOption 函数选项模式获取单条记录
 func (obj *UserInfoDAO) GetByOption(opts ...Option) (result *UserInfo, err error) {
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	err = obj.prepare(opts...).Find(&result).Error
 	return
 }
 
 // GetListByOption 函数选项模式获取多条记录：支持分页
 func (obj *UserInfoDAO) GetListByOption(opts ...Option) (results []*UserInfo, err error) {
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	err = obj.prepare(opts...).Find(&results).Error
 	return
 }
@@ -186,7 +214,7 @@ func (obj *UserInfoDAO) GetListByOption(opts ...Option) (results []*UserInfo, er
 // GetCountByOption 函数选项模式获取多条记录：支持统计记录总数
 func (obj *UserInfoDAO) GetCountByOption(opts ...Option) (count int64) {
 	obj.setIsDefaultColumns(false)
-	opts = append(opts, obj.WithDeletedAt(0))
+	opts = append(opts, obj.WithDeletedAtIsNull())
 	obj.prepare(opts...).Count(&count)
 	return
 }
@@ -296,38 +324,62 @@ func (obj *UserInfoDAO) GetListFromAvatar(avatars []string) (results []*UserInfo
 	return
 }
 
+// GetFromLevel 通过单个 level(用户等级；1：普通用户；2：VIP用户) 字段值，获取多条记录
+func (obj *UserInfoDAO) GetFromLevel(level int8) (results []*UserInfo, err error) {
+	results, err = obj.GetListByOption(obj.WithLevel(level))
+	return
+}
+
+// GetListFromLevel 通过多个 level(用户等级；1：普通用户；2：VIP用户) 字段值，获取多条记录
+func (obj *UserInfoDAO) GetListFromLevel(levels []int8) (results []*UserInfo, err error) {
+	results, err = obj.GetListByOption(obj.WithLevels(levels))
+	return
+}
+
+// GetFromLevelExpired 通过单个 level_expired(用户等级过期时间；非1：普通用户时才有意义) 字段值，获取多条记录
+func (obj *UserInfoDAO) GetFromLevelExpired(levelExpired time.Time) (results []*UserInfo, err error) {
+	results, err = obj.GetListByOption(obj.WithLevelExpired(levelExpired))
+	return
+}
+
+// GetListFromLevelExpired 通过多个 level_expired(用户等级过期时间；非1：普通用户时才有意义) 字段值，获取多条记录
+func (obj *UserInfoDAO) GetListFromLevelExpired(levelExpireds []time.Time) (results []*UserInfo, err error) {
+	results, err = obj.GetListByOption(obj.WithLevelExpireds(levelExpireds))
+	return
+}
+
 // GetFromCreatedAt 通过单个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetFromCreatedAt(createdAt int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetFromCreatedAt(createdAt time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAt(createdAt))
 	return
 }
 
 // GetListFromCreatedAt 通过多个 created_at(创建时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetListFromCreatedAt(createdAts []int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetListFromCreatedAt(createdAts []time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithCreatedAts(createdAts))
 	return
 }
 
 // GetFromUpdatedAt 通过单个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetFromUpdatedAt(updatedAt int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetFromUpdatedAt(updatedAt time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAt(updatedAt))
 	return
 }
 
 // GetListFromUpdatedAt 通过多个 updated_at(更新时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetListFromUpdatedAt(updatedAts []int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetListFromUpdatedAt(updatedAts []time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithUpdatedAts(updatedAts))
 	return
 }
 
 // GetFromDeletedAt 通过单个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetFromDeletedAt(deletedAt int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetFromDeletedAt(deletedAt *time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAt(deletedAt))
 	return
 }
 
 // GetListFromDeletedAt 通过多个 deleted_at(删除时间) 字段值，获取多条记录
-func (obj *UserInfoDAO) GetListFromDeletedAt(deletedAts []int64) (results []*UserInfo, err error) {
+func (obj *UserInfoDAO) GetListFromDeletedAt(deletedAts []*time.Time) (results []*UserInfo, err error) {
 	results, err = obj.GetListByOption(obj.WithDeletedAts(deletedAts))
 	return
 }
